@@ -5,11 +5,11 @@ export const AspectRatioTool: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
   return (
-    <div style={{ maxWidth: '800px', margin: '40px auto', width: '100%', padding: '0 16px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '8px' }}>Encuadre perfecto</h2>
-        <p style={{ color: 'var(--color-text-secondary)' }}>Selecciona la imagen que deseas adaptar a proporciones ideales.</p>
-      </div>
+    <div className="home-container" style={{ paddingTop: '20px' }}>
+      <section className="hero-section" style={{ marginBottom: '40px' }}>
+        <h1 className="hero-title">Encuadre <span>perfecto.</span></h1>
+        <p className="hero-subtitle">Adapta tus fotografías a las proporciones ideales para cada red social con un par de trazos.</p>
+      </section>
 
       <CropperModule 
         imageUrl={currentImage} 

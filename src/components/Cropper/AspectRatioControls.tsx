@@ -23,7 +23,15 @@ export const AspectRatioControls: React.FC<AspectRatioControlsProps> = ({
             onClick={() => onChangeRatio(option.value)}
             disabled={disabled}
           >
-            {option.label}
+            {option.icon && (
+              <svg className="aspect-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d={option.icon} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+            <div className="aspect-btn-text">
+              <span className="aspect-label">{option.label}</span>
+              {option.subLabel && <span className="aspect-sublabel">{option.subLabel}</span>}
+            </div>
           </button>
         ))}
       </div>

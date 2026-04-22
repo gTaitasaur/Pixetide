@@ -131,10 +131,7 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
       <div 
         className="cropper-image-wrapper" 
         style={{
-          width: '100%',
-          backgroundColor: !imageUrl ? 'transparent' : undefined,
-          boxShadow: !imageUrl ? 'none' : undefined,
-          border: isDragOver ? '2px dashed var(--color-accent)' : '2px dashed transparent',
+          border: isDragOver ? '3px dashed var(--color-accent)' : undefined,
           position: 'relative'
         }}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -154,12 +151,11 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
                 }
               }}
             />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
               <button 
-                className="btn-secondary" 
+                className="btn-secondary-hand" 
                 onClick={() => fileInputRef.current?.click()} 
                 disabled={isExporting}
-                style={{ padding: '6px 16px', fontSize: '0.85rem' }}
               >
                 Cambiar Imagen
               </button>
@@ -169,7 +165,7 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
               onChange={(_, percentCrop) => setCrop(percentCrop)}
               onComplete={(c) => setCompletedCrop(c)}
               aspect={aspect}
-              keepSelection // Evita que se desaparezca al hacer clic afuera
+              keepSelection
             >
               <img 
                 ref={imgRef} 
@@ -180,22 +176,21 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
             </ReactCrop>
           </>
         ) : (
-          <div style={{ width: '100%', minHeight: '300px' }}>
+          <div style={{ width: '100%', minHeight: '350px', display: 'flex' }}>
             <DragAndDrop onImageSelected={onImageSelected} />
           </div>
         )}
       </div>
 
       {!imageUrl ? (
-        <p style={{ color: 'var(--color-text-secondary)', marginTop: '24px' }}>Por favor sube una imagen para continuar.</p>
+        <p className="cropper-hint">Sube una foto para empezar a recortar</p>
       ) : (
         <button 
           className="btn-download" 
           onClick={handleDownload}
           disabled={!completedCrop || isExporting}
-          style={{ marginTop: '24px' }}
         >
-          {isExporting ? 'Procesando...' : 'Descargar Alta Calidad'}
+          {isExporting ? 'Guardando trazos...' : 'Descargar Recorte'}
         </button>
       )}
     </div>

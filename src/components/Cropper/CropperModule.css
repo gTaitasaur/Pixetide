@@ -1,17 +1,27 @@
+/* ==========================================================================
+   CROPPER MODULE - Temática "Cuaderno de Clases"
+   
+   Adaptamos el editor de fotos para que parezca una mesa de trabajo sobre
+   el cuaderno, usando bordes asimétricos y texturas de lápiz.
+   ========================================================================== */
+
 /* Traemos la base css de la librería */
 @import 'react-image-crop/dist/ReactCrop.css';
 
 .cropper-stage {
-  /* Diseño Modo Oscuro 'Theater' para enfocarse en la foto */
-  background-color: #0b0b0d;
-  border-radius: var(--radius-lg);
+  /* Fondo estilo papel limpio dentro del cuaderno */
+  background-color: var(--color-bg-surface);
+  border: 3px solid var(--color-text-primary);
+  /* Efecto dibujado a mano */
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
   padding: var(--spacing-xl) var(--spacing-md);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   animation: fadeIn 0.4s ease-out;
-  box-shadow: var(--shadow-md);
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -19,7 +29,6 @@
     opacity: 0;
     transform: translateY(10px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -29,21 +38,24 @@
 .cropper-image-wrapper {
   max-width: 100%;
   max-height: 65vh;
-  border-radius: var(--spacing-sm);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   margin-bottom: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Borde de guía para la zona de la imagen */
+  border: 1px dashed var(--color-grid);
+  padding: var(--spacing-sm);
+  background-color: #ffffff;
 }
 
-/* Alterando react-image-crop para estilos premium y contención total */
+/* Alterando react-image-crop para que las líneas parezcan lápiz */
 .ReactCrop {
   max-width: 100%;
   max-height: 60vh;
   display: flex;
   justify-content: center;
+  overflow: hidden; /* IMPORTANTE: Recorta la sombra para que no se escape a toda la página */
 }
 
 .ReactCrop__image {
@@ -53,14 +65,14 @@
   display: block;
 }
 
-/* Contorno principal brillante y definido */
+/* Selección del recorte con estilo de trazo manual */
 .ReactCrop__crop-selection {
-  border: 1px solid rgba(255, 255, 255, 0.8) !important;
-  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.15) !important;
-  /* Máscara externa */
+  border: 2px solid var(--color-accent) !important;
+  /* La sombra ahora se queda dentro de .ReactCrop gracias al overflow: hidden */
+  box-shadow: 0 0 0 9999em rgba(255, 255, 255, 0.4) !important; 
 }
 
-/* Inyección de "Regla de los Tercios" por medio de CSS puro */
+/* Regla de los tercios con estilo lápiz suave */
 .ReactCrop__crop-selection::before,
 .ReactCrop__crop-selection::after {
   content: '';
@@ -70,31 +82,29 @@
   right: 0;
   bottom: 0;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
-/* Lineas horizontales (tercios) */
 .ReactCrop__crop-selection::before {
-  border-top: 1px dashed rgba(255, 255, 255, 0.8);
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.8);
+  border-top: 1px dashed var(--color-text-primary);
+  border-bottom: 1px dashed var(--color-text-primary);
   height: 33.33%;
   top: 33.33%;
 }
 
-/* Lineas verticales (tercios) */
 .ReactCrop__crop-selection::after {
-  border-left: 1px dashed rgba(255, 255, 255, 0.8);
-  border-right: 1px dashed rgba(255, 255, 255, 0.8);
+  border-left: 1px dashed var(--color-text-primary);
+  border-right: 1px dashed var(--color-text-primary);
   width: 33.33%;
   left: 33.33%;
 }
 
-/* Tiradores (Corners) en estilo minimalista de iOS */
+/* Tiradores (Corners) estilo "borrador" o "pin" */
 .ReactCrop__drag-handle {
-  width: 14px !important;
-  height: 14px !important;
-  background-color: white !important;
-  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  width: 12px !important;
+  height: 12px !important;
+  background-color: var(--color-bg-main) !important;
+  border: 2px solid var(--color-accent) !important;
   border-radius: 50%;
 }
 
@@ -104,16 +114,16 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
   width: 100%;
 }
 
 .aspect-controls-title {
-  color: #a1a1a6;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: var(--spacing-sm);
+  font-family: var(--font-handwriting);
+  color: var(--color-text-primary);
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 400;
 }
 
 .aspect-buttons {
@@ -123,62 +133,143 @@
   justify-content: center;
 }
 
+/* Botones de formato con estilo crayón */
 .btn-aspect {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid transparent;
-  padding: 8px 16px;
-  border-radius: var(--radius-lg);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-text-primary);
+  padding: 12px;
+  border-radius: 15px 50px 30px 5px / 50px 20px 10px 40px;
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+  flex: 1 1 120px; /* Permite que crezcan un poco */
+  max-width: 180px;
+}
+
+.aspect-btn-icon {
+  width: 40px; /* Íconos más grandes */
+  height: 40px;
+  opacity: 0.8;
+  transition: transform 0.2s;
+  color: var(--color-accent);
+}
+
+.aspect-btn-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.aspect-label {
+  font-family: var(--font-handwriting);
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.aspect-sublabel {
+  font-family: var(--font-handwriting);
+  font-size: 1rem;
+  opacity: 0.8;
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+.btn-aspect:hover .aspect-btn-icon {
+  transform: scale(1.15);
+  opacity: 1;
+}
+
+.btn-aspect.active .aspect-btn-icon {
+  opacity: 1;
+  stroke-width: 2.5px;
+  color: white; /* Corregido: para que no desaparezca sobre el fondo azul */
 }
 
 .btn-aspect:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  transform: rotate(1deg) scale(1.05);
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
 }
 
 .btn-aspect.active {
   background-color: var(--color-accent);
   color: white;
-  box-shadow: 0 2px 10px rgba(0, 113, 227, 0.4);
+  border-color: var(--color-accent);
+  box-shadow: 4px 4px 0px rgba(37, 99, 235, 0.2);
 }
 
-/* Botón prominente de descarga */
+.btn-aspect.active .aspect-label,
+.btn-aspect.active .aspect-sublabel {
+  color: white;
+}
+
+/* Botón prominente de descarga - Estilo Crayon */
 .btn-download {
   background-color: var(--color-success);
   color: white;
-  border: none;
-  font-size: 1.1rem;
-  font-weight: 600;
+  border: 3px solid #166534; /* Verde oscuro para el borde del crayón */
+  font-family: var(--font-handwriting);
+  font-size: 1.5rem;
+  font-weight: 400;
   padding: 12px 32px;
-  border-radius: 100px;
-  /* Pillow button */
+  border-radius: 40px 10px 50px 20px / 10px 40px 20px 50px;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.2s;
-  box-shadow: 0 4px 14px rgba(52, 199, 89, 0.3);
+  transition: all 0.2s;
+  box-shadow: 6px 6px 0px rgba(22, 101, 52, 0.1);
+  margin-top: var(--spacing-lg);
 }
 
 .btn-download:hover {
-  transform: translateY(-2px);
-  background-color: #30b753;
+  transform: translate(-2px, -2px) rotate(-1deg);
+  box-shadow: 8px 8px 0px rgba(22, 101, 52, 0.15);
 }
 
 .btn-download:active {
-  transform: translateY(0);
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0px rgba(22, 101, 52, 0.1);
 }
 
-.btn-back-link {
-  background: transparent;
-  border: none;
-  color: #a1a1a6;
-  text-decoration: underline;
-  margin-top: var(--spacing-md);
+.btn-download:disabled {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+  color: #6b7280;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Botón secundario para cambiar imagen */
+.btn-secondary-hand {
+  background-color: transparent;
+  border: 1.5px solid var(--color-text-primary);
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  padding: 6px 16px;
+  border-radius: 12px 4px 10px 3px / 4px 12px 3px 10px;
   cursor: pointer;
-  font-size: 0.9rem;
+  color: var(--color-text-primary);
+  transition: all 0.2s;
 }
 
-.btn-back-link:hover {
-  color: white;
+.btn-secondary-hand:hover {
+  background-color: #f8fafc;
+  transform: rotate(2deg);
+}
+
+.cropper-hint {
+  font-family: var(--font-handwriting);
+  color: var(--color-text-secondary);
+  font-size: 1.2rem;
+  margin-top: var(--spacing-md);
+  text-align: center;
 }

@@ -11,7 +11,28 @@ export interface OptimizationResult {
 }
 
 /**
+ * Determina si un formato es "sin pérdida" por naturaleza.
+ * PNG, BMP, TIFF no usan calidad visual como JPG/WebP.
+ */
+const isLosslessFormat = (format: MagickFormat): boolean => {
+  return format === MagickFormat.Png 
+    || format === MagickFormat.Bmp 
+    || format === MagickFormat.Tiff 
+    || format === MagickFormat.Gif;
+};
+
+/**
  * Optimiza una imagen usando ImageMagick WASM.
+ * 
+ * Casos de uso cubiertos:
+ * 1. Lossless + preservar resolución + formato nativo → Solo strip metadata
+ * 2. Lossless + WebP → WebP Lossless (compresión sin pérdida visual)
+ * 3. Normal/Agresiva/Máxima + formato nativo → Recompresión con calidad del preset
+ * 4. Cualquier preset + WebP → Conversión a WebP con calidad del preset
+ * 5. Sin preservar resolución → Redimensionar + comprimir
+ * 
+ * Mecanismo de Defensa: Si el resultado pesa más que el original,
+ * devolvemos el original intacto para no perjudicar al usuario.
  */
 export async function rawOptimizeImage(
   originalFile: File,
@@ -25,35 +46,48 @@ export async function rawOptimizeImage(
   return new Promise((resolve, reject) => {
     try {
       ImageMagick.read(buffer, (img) => {
-        // Redimensionado si no es preserveResolution
+        const originalFormat = img.format;
+        const targetFormat = useWebP ? MagickFormat.WebP : originalFormat;
+
+        // ── Paso 1: Redimensionado condicional ──
         if (!preserveResolution) {
-          // El signo > asegura que solo reduzca la imagen si excede las dimensiones, 
-          // manteniendo la relación de aspecto y nunca ampliando.
           const geom = new MagickGeometry(`${preset.maxWidthOrHeight}x${preset.maxWidthOrHeight}>`);
           img.resize(geom);
         }
         
-        // Strip EXIF y perfiles incrustados para bajar el peso al máximo
+        // ── Paso 2: Strip metadata (siempre, para bajar peso) ──
         img.strip();
 
-        // Seleccionar formato de salida
-        const targetFormat = useWebP ? MagickFormat.WebP : img.format;
-
-        // Configurar la compresión
+        // ── Paso 3: Configurar compresión según el formato y el preset ──
         if (preset.id === 'lossless') {
           if (useWebP) {
-            // WebP Lossless
+            // WebP Lossless: compresión sin pérdida visual
             img.settings.setDefine(MagickFormat.WebP, 'lossless', 'true');
             img.quality = 100;
+          } else if (isLosslessFormat(originalFormat)) {
+            // PNG/BMP/TIFF/GIF: No tocamos la calidad.
+            // Para PNG, quality controla zlib, no calidad visual.
+            // Dejamos que Magick use su default interno para no inflar.
           } else {
-            // Para JPG/PNG, mantener la calidad original para evitar inflar el archivo.
-            // Si la calidad original no está disponible, usamos un tope inteligente (92).
-            img.quality = img.quality && img.quality > 0 ? img.quality : 92;
+            // JPG u otros formatos con pérdida: mantener calidad original
+            // Si ImageMagick no puede leerla (devuelve 0), usamos 92 como tope seguro.
+            const originalQuality = img.quality;
+            img.quality = originalQuality > 0 ? originalQuality : 92;
           }
         } else {
-          img.quality = Math.round(preset.quality * 100);
+          // Presets con compresión (Normal, Agresiva, Máxima)
+          const targetQuality = Math.round(preset.quality * 100);
+
           if (useWebP) {
-             img.settings.setDefine(MagickFormat.WebP, 'lossless', 'false');
+            img.settings.setDefine(MagickFormat.WebP, 'lossless', 'false');
+            img.quality = targetQuality;
+          } else if (isLosslessFormat(originalFormat)) {
+            // Para PNG: no tiene sentido bajar "calidad visual" porque PNG es lossless.
+            // Lo que sí podemos hacer es redimensionar (ya hecho arriba) y strip (ya hecho).
+            // La compresión real viene del redimensionado, no de una variable quality.
+          } else {
+            // JPG: aplicar calidad del preset directamente
+            img.quality = targetQuality;
           }
         }
         
@@ -73,14 +107,14 @@ export async function rawOptimizeImage(
           let finalFile = compressedFile;
           let finalSize = newSize;
 
-          // Mecanismo de Defensa: Si el peso empeoró, y no pidieron cambio de formato (WebP) 
-          // ni redimensionado, es mejor devolver el original intacto para no perjudicar al usuario.
-          if (newSize > originalSize && !useWebP && preserveResolution) {
+          // ── Mecanismo de Defensa Universal ──
+          // Si el resultado pesa más que el original, devolvemos el original.
+          // Esto cubre TODOS los edge cases (PNG lossless, JPG ya muy comprimido, etc.)
+          if (newSize > originalSize) {
             finalFile = originalFile;
             finalSize = originalSize;
           }
 
-          // Calculamos reducción
           const reductionPercentage = Math.max(0, ((originalSize - finalSize) / originalSize) * 100);
 
           resolve({

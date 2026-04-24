@@ -26,26 +26,26 @@ export const Home: React.FC = () => {
         </Link>
         
         {/* Optimización de Peso */}
-        <div style={{opacity: 0.6}} className="tool-card">
-          <div className="tool-icon-wrapper" style={{ backgroundColor: '#f5f5f7', color: '#86868b' }}>
+        <Link to="/herramientas/optimizar-peso" className="tool-card">
+          <div className="tool-icon-wrapper">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
           </div>
           <h3>Optimización de Peso</h3>
-          <p>Comprime drásticamente el peso de tus imágenes (hasta un 80% menos) conservando su resolución. (Próximamente)</p>
-        </div>
+          <p>Comprime drásticamente el peso de tus imágenes (hasta un 80% menos) conservando su resolución.</p>
+        </Link>
 
         {/* Cambio de formato */}
-        <div style={{opacity: 0.6}} className="tool-card">
-          <div className="tool-icon-wrapper" style={{ backgroundColor: '#f5f5f7', color: '#86868b' }}>
+        <Link to="/herramientas/cambiar-formato" className="tool-card">
+          <div className="tool-icon-wrapper">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
           </div>
           <h3>Conversor de Formatos</h3>
-          <p>Transforma al instante entre JPG, PNG, y los modernos WebP / AVIF para la web. (Próximamente)</p>
-        </div>
+          <p>Transforma al instante entre JPG, PNG, y los modernos WebP / AVIF para la web.</p>
+        </Link>
 
         {/* Marca de agua */}
         <div style={{opacity: 0.6}} className="tool-card">

@@ -4,10 +4,10 @@ import { validateImageFile } from '../../utils/fileUpload';
 
 interface MultiDragAndDropProps {
   onFilesSelected: (files: File[]) => void;
-  maxFiles?: number;
+  maxFiles?: number; // Si no se pasa, no hay límite
 }
 
-export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelected, maxFiles = 5 }) => {
+export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelected, maxFiles }) => {
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,9 +29,11 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
       }
     }
 
-    if (validFiles.length > 0) {
-      // Limitar al máximo en este lote (el padre filtrará el total si suma más de 5)
+    if (maxFiles && validFiles.length > maxFiles) {
+      setError(`Solo puedes subir un máximo de ${maxFiles} imágenes a la vez.`);
       onFilesSelected(validFiles.slice(0, maxFiles));
+    } else if (validFiles.length > 0) {
+      onFilesSelected(validFiles);
     } else if (!error) {
       setError("No se encontraron imágenes válidas.");
     }
@@ -87,7 +89,7 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
           </svg>
-          <span className="text-primary">Añade hasta {maxFiles} imágenes</span>
+          <span className="text-primary">Selecciona tus imágenes</span>
           <span className="text-secondary">Haz clic o arrastra fotos aquí</span>
         </div>
       </div>

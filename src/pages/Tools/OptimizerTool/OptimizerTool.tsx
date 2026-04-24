@@ -11,11 +11,11 @@ export const OptimizerTool: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '40px auto', width: '100%', padding: '0 16px' }}>
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '8px' }}>Optimización de Peso</h2>
-        <p style={{ color: 'var(--color-text-secondary)' }}>Reduce el peso de tu imagen al extremo manteniendo la mejor calidad visual.</p>
-      </div>
+    <div className="home-container" style={{ paddingTop: '20px' }}>
+      <section className="hero-section" style={{ marginBottom: '40px' }}>
+        <h1 className="hero-title">Peso <span>pluma.</span></h1>
+        <p className="hero-subtitle">Reduce el tamaño de tus imágenes hasta un 80% sin que nadie note la diferencia.</p>
+      </section>
 
       <OptimizerModule 
         originalUrl={currentUrl}

@@ -72,13 +72,11 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
   return (
     <div className="optimizer-stage">
       
-      {/* Vista previa y datos originales */}
+      {/* Zona de Vista Previa */}
       <div 
         className="optimizer-hero" 
         style={{
-          backgroundColor: !originalUrl ? 'transparent' : undefined,
-          padding: !originalUrl ? 0 : undefined,
-          border: isDragOver ? '2px dashed var(--color-accent)' : '2px dashed transparent',
+          border: isDragOver ? '3px dashed var(--color-accent)' : undefined,
           position: 'relative'
         }}
         onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
@@ -99,12 +97,11 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
                 }
               }}
             />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
               <button 
                 className="btn-secondary" 
                 onClick={() => fileInputRef.current?.click()} 
                 disabled={isProcessing}
-                style={{ padding: '6px 16px', fontSize: '0.85rem' }}
               >
                 Cambiar Imagen
               </button>
@@ -143,18 +140,25 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             </div>
           </>
         ) : (
-          <div style={{ width: '100%', minHeight: '300px' }}>
+          <div style={{ width: '100%', minHeight: '350px', display: 'flex' }}>
             <DragAndDrop onImageSelected={onImageSelected} />
           </div>
         )}
+      </div>
 
+      {/* Controles de Configuración */}
+      <div className="optimizer-controls">
+        <h3 className="section-title">Nivel de Optimización</h3>
+        <PresetSelector 
+          selectedId={selectedPreset.id} 
+          disabled={!originalUrl}
+          onSelect={(preset) => setSelectedPreset(preset)} 
+        />
+
+        {/* Opciones Avanzadas */}
         <div 
           className="advanced-toggles" 
           style={{ 
-            marginTop: '32px', 
-            width: '100%', 
-            maxWidth: '700px', 
-            marginBottom: 0,
             opacity: !originalUrl ? 0.4 : 1,
             pointerEvents: !originalUrl ? 'none' : 'auto'
           }}
@@ -183,28 +187,18 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             </div>
           </label>
         </div>
-      </div>
-
-      {/* Controles de Configuración */}
-      <div className="optimizer-controls">
-        <h3 className="section-title">Nivel de Optimización</h3>
-        <PresetSelector 
-          selectedId={selectedPreset.id} 
-          disabled={!originalUrl}
-          onSelect={(preset) => setSelectedPreset(preset)} 
-        />
 
         {/* Acciones */}
-        <div className="optimizer-actions" style={{ justifyContent: 'center', marginTop: '24px' }}>
+        <div className="optimizer-actions">
           {!originalUrl ? (
-            <p style={{ color: 'var(--color-text-secondary)' }}>Por favor sube una imagen para continuar.</p>
+            <p className="optimizer-hint">Sube una foto para empezar a optimizar</p>
           ) : (
             <button 
               className="btn-success" 
               onClick={handleDownload}
               disabled={isProcessing || !result}
             >
-              {isProcessing ? 'Calculando peso...' : `Descargar Imagen (${formatBytes(result?.newSize || 0)})`}
+              {isProcessing ? 'Calculando peso...' : `Descargar (${formatBytes(result?.newSize || 0)})`}
             </button>
           )}
         </div>

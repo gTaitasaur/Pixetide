@@ -17,6 +17,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
   const [conversionList, setConversionList] = useState<ConverterFile[]>([]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [globalFormat, setGlobalFormat] = useState<TargetFormat>('image/jpeg');
+  const addFilesInputRef = useRef<HTMLInputElement>(null);
 
   /**
    * FIX CRÍTICO: Usamos un Set de refs para rastrear qué objetos File
@@ -192,9 +193,35 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
             </select>
           </div>
           
-          <button className="btn-clear-all" onClick={handleClearInternal} disabled={isProcessing}>
-            Borrar Todo
-          </button>
+          <div className="converter-header-buttons">
+            <input 
+              type="file" 
+              accept="image/*" 
+              multiple 
+              ref={addFilesInputRef} 
+              style={{ display: 'none' }} 
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  onAddFiles(Array.from(e.target.files));
+                  e.target.value = '';
+                }
+              }}
+            />
+            <button 
+              className="btn-add-more" 
+              onClick={() => addFilesInputRef.current?.click()} 
+              disabled={isProcessing}
+              title="Agregar más imágenes"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '18px', height: '18px' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+              </svg>
+              Agregar
+            </button>
+            <button className="btn-clear-all" onClick={handleClearInternal} disabled={isProcessing}>
+              Borrar Todo
+            </button>
+          </div>
         </div>
 
         {/* Advertencia de rendimiento */}
@@ -293,14 +320,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
           })}
         </div>
 
-        {/* Zona inferior para sumar más fotos */}
-        {!isProcessing && (
-          <div style={{ marginTop: '24px' }}>
-             <MultiDragAndDrop 
-               onFilesSelected={onAddFiles} 
-             />
-          </div>
-        )}
+
       </div>
 
       <div className="converter-actions">

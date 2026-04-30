@@ -1,0 +1,75 @@
+/* Reutilizamos el estilo general que usan las otras herramientas (definido en App.css o en tool-page-container) */
+.tool-page-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.tool-nav {
+  margin-bottom: var(--spacing-xl);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-handwriting);
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  border: 2px dashed transparent;
+  padding: 4px 12px;
+  margin-left: -12px; /* Alineación óptica */
+}
+
+.back-link:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  border-radius: 12px 4px 10px 3px / 4px 12px 3px 10px;
+  background-color: rgba(0, 113, 227, 0.05);
+  transform: rotate(-1deg);
+}
+
+.tool-header {
+  text-align: center;
+  margin-bottom: calc(var(--spacing-xl) * 1.5);
+}
+
+.tool-header h1 {
+  font-family: var(--font-handwriting);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-md);
+  position: relative;
+  display: inline-block;
+  line-height: 1.1;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+}
+
+.tool-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: -5%;
+  width: 110%;
+  height: 10px;
+  background-color: rgba(255, 204, 0, 0.3);
+  z-index: -1;
+  transform: rotate(-1deg);
+  border-radius: 20px;
+}
+
+.tool-header p {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}

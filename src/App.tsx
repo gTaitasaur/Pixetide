@@ -5,6 +5,7 @@ import { Home } from './pages/Home/Home';
 import { AspectRatioTool } from './pages/Tools/AspectRatioTool/AspectRatioTool';
 import { OptimizerTool } from './pages/Tools/OptimizerTool/OptimizerTool';
 import { ConverterTool } from './pages/Tools/ConverterTool/ConverterTool';
+import { RotateFlipTool } from './pages/Tools/RotateFlipTool/RotateFlipTool';
 import './App.css'; // Mantenemos variables de envoltura si quedan
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           <Route path="herramientas/recorte-aspect-ratio" element={<AspectRatioTool />} />
           <Route path="herramientas/optimizar-peso" element={<OptimizerTool />} />
           <Route path="herramientas/cambiar-formato" element={<ConverterTool />} />
+          <Route path="herramientas/girar-voltear" element={<RotateFlipTool />} />
         </Route>
       </Routes>
     </BrowserRouter>

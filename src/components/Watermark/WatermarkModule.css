@@ -1,0 +1,390 @@
+/* ══════════════════════════════════════════════════
+   Marca de Agua Module — Estilos
+   Estilo "cuaderno escolar" consistente con el resto de la suite.
+   ══════════════════════════════════════════════════ */
+
+.wm-stage {
+  background-color: var(--color-bg-surface);
+  border: 3px solid var(--color-text-primary);
+  border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px;
+  padding: var(--spacing-xl) var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto var(--spacing-xxl);
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease-out;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wm-stage.drag-active {
+  border-color: var(--color-accent);
+  border-style: dashed;
+  box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1), 8px 8px 0px rgba(0, 0, 0, 0.05);
+}
+
+.wm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* ── Barra Superior ── */
+.wm-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.wm-header-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.btn-wm-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  border: 2px solid var(--color-accent);
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  padding: 6px 18px;
+  border-radius: 12px 4px 10px 3px / 4px 12px 3px 10px;
+  cursor: pointer;
+  color: var(--color-accent);
+  transition: all 0.2s;
+}
+
+.btn-wm-action:hover {
+  background-color: rgba(0, 113, 227, 0.06);
+  transform: rotate(-1deg);
+}
+
+.btn-wm-action:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.wm-mini-preview {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid var(--color-accent);
+}
+
+/* ── Visor Principal ── */
+.wm-viewer-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-lg);
+  border: 2px dashed var(--color-text-secondary);
+  border-radius: 12px;
+  overflow: visible;
+  background-color: #f8f9fa;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.wm-viewer-checkerboard {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image:
+    linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
+    linear-gradient(-45deg, #e5e5e5 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e5e5e5 75%),
+    linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  overflow: visible;
+}
+
+.wm-viewer-photo {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/*
+  Wrapper que se ajusta exactamente al tamaño renderizado de la imagen.
+  Todas las coordenadas de la marca de agua se calculan respecto a este div,
+  no respecto al contenedor externo. Esto corrige el desalineamiento al
+  cambiar entre imágenes horizontales y verticales.
+*/
+.wm-image-wrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 0; /* elimina espacio fantasma debajo de la img */
+  overflow: visible; /* permite que la marca se vea aunque se salga parcialmente */
+}
+
+.wm-overlay-img {
+  /* Posición y dimensiones se aplican inline */
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+.wm-viewer-hint {
+  padding: var(--spacing-md);
+  text-align: center;
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* ── Controles (Sliders) ── */
+.wm-controls {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto var(--spacing-lg);
+  background-color: #fefefe;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid var(--color-text-primary);
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.wm-control-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wm-control-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  color: var(--color-text-primary);
+  font-weight: bold;
+}
+
+.wm-control-value {
+  font-weight: normal;
+  color: var(--color-accent);
+  font-size: 1rem;
+}
+
+/* Slider personalizado */
+.wm-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e5e5e5;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.wm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.wm-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.wm-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Galería de Thumbnails ── */
+.wm-gallery-section {
+  width: 100%;
+  margin-top: var(--spacing-md);
+}
+
+.wm-gallery-title {
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  border-top: 2px dashed #e5e5e5;
+  padding-top: var(--spacing-md);
+}
+
+.wm-gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  justify-content: center;
+}
+
+.wm-thumb-card {
+  position: relative;
+  width: 140px;
+  border-radius: 12px;
+  border: 2px solid #e5e5e5;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+}
+
+.wm-thumb-card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.1);
+}
+
+.wm-thumb-card.active {
+  border-color: var(--color-accent);
+  border-width: 3px;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.wm-thumb-img-container {
+  width: 100%;
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+}
+
+.wm-thumb-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.wm-thumb-overlay {
+  user-select: none;
+  pointer-events: none;
+}
+
+.wm-thumb-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: var(--color-error);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 5;
+}
+
+.wm-thumb-card:hover .wm-thumb-remove {
+  opacity: 1;
+}
+
+.wm-thumb-badge {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+.wm-thumb-badge.status-processing {
+  background-color: #fffbeb;
+  color: #92400e;
+}
+
+.wm-thumb-badge.status-done {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.wm-thumb-badge.status-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* ── Acciones ── */
+.wm-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+}
+
+.wm-hint {
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .wm-header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-xs);
+  }
+
+  .wm-header-buttons {
+    justify-content: flex-end;
+  }
+
+  .wm-thumb-card {
+    width: 110px;
+  }
+
+  .wm-thumb-img-container {
+    height: 80px;
+  }
+
+  .wm-thumb-remove {
+    opacity: 1; /* Siempre visible en móvil */
+  }
+
+  .wm-controls {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}

@@ -59,15 +59,15 @@ export const Home: React.FC = () => {
         </Link>
 
         {/* Marca de agua */}
-        <div style={{opacity: 0.6}} className="tool-card">
-          <div className="tool-icon-wrapper" style={{ backgroundColor: '#f5f5f7', color: '#86868b' }}>
+        <Link to="/herramientas/marca-de-agua" className="tool-card">
+          <div className="tool-icon-wrapper">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
           </div>
           <h3>Poner Marca de Agua a Fotos</h3>
-          <p>Protege tus fotografías añadiendo tu logo o texto como marca de agua. Como procesamos todo localmente, nadie más verá tus archivos originales. (Próximamente)</p>
-        </div>
+          <p>Protege tus fotografías añadiendo tu logo o texto como marca de agua. Todo se procesa localmente en tu navegador para garantizar tu privacidad.</p>
+        </Link>
 
         {/* Mejorar Calidad */}
         <div style={{opacity: 0.6}} className="tool-card">

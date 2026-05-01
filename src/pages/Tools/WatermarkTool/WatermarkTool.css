@@ -1,0 +1,10 @@
+/* Reutiliza estilos base de herramientas (tool-page-container, tool-nav, etc.) */
+.tool-page-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}

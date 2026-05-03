@@ -80,16 +80,16 @@ export const Home: React.FC = () => {
           <p>Aumenta la resolución de fotos borrosas o antiguas. Agranda imágenes sin pixelarlas usando tecnología de escalado avanzada desde tu navegador. (Próximamente)</p>
         </div>
 
-        {/* Removedor de Fondo */}
-        <div style={{opacity: 0.6}} className="tool-card">
-          <div className="tool-icon-wrapper" style={{ backgroundColor: '#f5f5f7', color: '#86868b' }}>
+        {/* Quitar Fondo */}
+        <Link to="/herramientas/quitar-fondo" className="tool-card">
+          <div className="tool-icon-wrapper">
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
             </svg>
           </div>
-          <h3>Quitar Fondo de Imagen</h3>
-          <p>Elimina el fondo de tus fotos automáticamente de forma segura. Crea recortes perfectos con fondo transparente para tus diseños web o miniaturas. (Próximamente)</p>
-        </div>
+          <h3>Quitar Fondo</h3>
+          <p>Elimina el fondo de cualquier imagen mágicamente usando IA directamente en tu navegador. Compara el antes y después al instante.</p>
+        </Link>
 
         {/* Paleta de Colores */}
         <Link to="/herramientas/paleta-colores" className="tool-card">

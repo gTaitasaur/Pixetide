@@ -9,6 +9,7 @@ import { RotateFlipTool } from './pages/Tools/RotateFlipTool/RotateFlipTool';
 import { WatermarkTool } from './pages/Tools/WatermarkTool/WatermarkTool';
 import { ColorPaletteTool } from './pages/Tools/ColorPaletteTool/ColorPaletteTool';
 import { Base64Tool } from './pages/Tools/Base64Tool/Base64Tool';
+import { BackgroundRemoverTool } from './pages/Tools/BackgroundRemoverTool/BackgroundRemoverTool';
 import './App.css'; // Mantenemos variables de envoltura si quedan
 
 const App: React.FC = () => {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
           <Route path="herramientas/marca-de-agua" element={<WatermarkTool />} />
           <Route path="herramientas/paleta-colores" element={<ColorPaletteTool />} />
           <Route path="herramientas/base64" element={<Base64Tool />} />
+          <Route path="herramientas/quitar-fondo" element={<BackgroundRemoverTool />} />
         </Route>
       </Routes>
     </BrowserRouter>

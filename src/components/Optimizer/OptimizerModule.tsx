@@ -3,6 +3,7 @@ import { OptimizationPreset, OPTIMIZATION_PRESETS } from '../../types/optimizer'
 import { rawOptimizeImage, formatBytes, OptimizationResult } from '../../utils/imageOptimizer';
 import { PresetSelector } from './PresetSelector';
 import { validateImageFile } from '../../utils/fileUpload';
+import { ToolError } from '../Errors/ToolError';
 import './OptimizerModule.css';
 
 import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
@@ -22,13 +23,15 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
   // Estados de procesamiento
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [result, setResult] = useState<OptimizationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const processNewFile = (file: File) => {
+    setError(null);
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      alert(validation.error);
+      setError(validation.error || 'Error desconocido al validar el archivo.');
       return;
     }
     const url = URL.createObjectURL(file);
@@ -140,7 +143,15 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             </div>
           </>
         ) : (
-          <div style={{ width: '100%', minHeight: '350px', display: 'flex' }}>
+          <div style={{ width: '100%', minHeight: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {error && (
+              <div style={{ width: '100%', maxWidth: '500px' }}>
+                <ToolError 
+                  message={error} 
+                  onRetry={() => setError(null)} 
+                />
+              </div>
+            )}
             <DragAndDrop onImageSelected={onImageSelected} />
           </div>
         )}

@@ -59,13 +59,29 @@
   font-size: 1.05rem;
   color: var(--color-text-primary);
   font-weight: 600;
-  transition: opacity 0.2s;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+/* Subrayado Magnético Neobrutalista */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: var(--color-accent);
+  transition: width 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
 .nav-link:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 4px;
+  transform: translateY(-2px);
+  color: var(--color-accent);
+}
+
+.nav-link:hover::after {
+  width: 100%;
 }
 
 .nav-support-wrapper {
@@ -76,13 +92,42 @@
 }
 
 .nav-support-microcopy {
-  font-family: var(--font-handwriting, cursive); /* Usamos fuente manuscrita si existe */
+  font-family: var(--font-handwriting, cursive);
+  /* Usamos fuente manuscrita si existe */
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--color-text-secondary);
   margin-bottom: 4px;
-  transform: rotate(-2deg); /* Un toque neobrutalista / imperfecto */
+  transform: rotate(-2deg);
+  /* Un toque neobrutalista / imperfecto */
   white-space: nowrap;
+}
+
+/* Animación Heartbeat para Ko-fi */
+@keyframes ko-fi-heartbeat {
+  0% {
+    transform: scale(1);
+  }
+
+  5% {
+    transform: scale(1.08);
+  }
+
+  10% {
+    transform: scale(1);
+  }
+
+  15% {
+    transform: scale(1.05);
+  }
+
+  20% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .nav-btn-support {
@@ -93,14 +138,24 @@
   border: 2px solid var(--color-text-primary);
   padding: 8px 20px;
   font-weight: 700;
-  background-color: #ffd600; /* Color Ko-fi pero con borde negro */
+  background-color: #ffc813;
+  /* Color Ko-fi */
   box-shadow: 3px 3px 0px rgba(0, 0, 0, 1);
-  transition: all 0.1s ease;
+  transition: all 0.2s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  animation: ko-fi-heartbeat 5s ease-in-out infinite;
 }
 
 .nav-btn-support:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px rgba(0, 0, 0, 1);
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+  background-color: #ffd600;
+  /* Amarillo más suave */
+  animation-play-state: paused;
+}
+
+.nav-btn-support:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 1);
 }
 
 /* ---- Burger Menu Button ---- */

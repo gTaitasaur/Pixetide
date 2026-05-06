@@ -4,6 +4,7 @@ import { ImageComparisonSlider } from './ImageComparisonSlider';
 // @ts-ignore
 import BgWorker from '../../workers/bgRemoval.worker?worker';
 import { MaskEditor } from './MaskEditor';
+import { ToolError } from '../Errors/ToolError';
 import './BackgroundRemoverModule.css';
 
 type ProcessingState = 'idle' | 'ready_to_process' | 'downloading_model' | 'processing' | 'done' | 'editing_mask' | 'error';
@@ -176,10 +177,12 @@ export const BackgroundRemoverModule: React.FC = () => {
         )}
 
         {status === 'error' && (
-          <div className="bgrm-loading-state bgrm-error fade-in">
-            <h3>❌ Error</h3>
-            <p>{errorMessage}</p>
-            <button className="bgrm-btn-primary" onClick={() => setStatus('ready_to_process')}>Volver a intentar</button>
+          <div style={{ width: '100%', maxWidth: '500px' }}>
+            <ToolError 
+              title="Error de la IA"
+              message={errorMessage} 
+              onRetry={() => setStatus('ready_to_process')} 
+            />
           </div>
         )}
 

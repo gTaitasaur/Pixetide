@@ -41,7 +41,7 @@ export const Navbar: React.FC = () => {
                 rel="noopener noreferrer"
                 className="nav-btn-support"
               >
-                ☕ Apoya Pixetide
+                Apoya a Pixetide ☕
               </a>
             </div>
           </div>
@@ -77,7 +77,7 @@ export const Navbar: React.FC = () => {
               className="overlay-link support-btn"
               onClick={closeMenu}
             >
-              ☕ Apoya Pixetide
+              Apoya a Pixetide ☕
             </a>
           </div>
         </div>

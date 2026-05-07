@@ -26,9 +26,7 @@
   align-items: center;
   width: 100%;
   margin-bottom: var(--spacing-xl);
-  border: 1px dashed var(--color-grid);
-  padding: var(--spacing-md);
-  background-color: #ffffff;
+  /* El borde y fondo se eliminan para normalizar con el Workspace */
 }
 
 /* ---- Preview de la Imagen ---- */

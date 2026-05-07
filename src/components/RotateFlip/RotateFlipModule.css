@@ -23,10 +23,9 @@
   width: 100%;
   max-width: 800px;
   margin: 0 auto var(--spacing-lg);
-  border: 2px dashed var(--color-text-secondary);
-  border-radius: 12px;
+  /* Borde eliminado para normalizar con Workspace */
   overflow: hidden;
-  background-color: #f8f9fa;
+  background-color: transparent;
   min-height: 300px;
   display: flex;
   align-items: center;

@@ -1,49 +1,54 @@
 /* ==========================================================================
-   DRAG AND DROP - Temática "Cuaderno de Clases"
-   
-   Hacemos que la zona de carga parezca un recuadro dibujado con regla y lápiz
-   en el cuaderno, usando tipografía manual.
+   DRAG AND DROP - Estética Pixetide Neobrutalista Ligera
    ========================================================================== */
 
 .drag-drop-container {
   width: 100%;
-  height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: var(--spacing-md);
 }
 
 .drop-zone {
   position: relative;
-  /* Borde de lápiz grafito */
-  border: 2px dashed var(--color-text-secondary);
-  /* Bordes asimétricos para que parezca un dibujo */
-  border-radius: 40px 10px 30px 10px / 10px 40px 10px 30px;
-  padding: var(--spacing-xl) var(--spacing-md);
-  text-align: center;
-  background-color: #ffffff; /* Blanco papel */
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-  min-height: 250px;
-  height: 100%;
+  width: 100%;
+  min-height: 280px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Sombra suave de papel */
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+  padding: var(--spacing-xl);
+  
+  /* Diseño Base */
+  background-color: transparent;
+  border: 2px dashed #d1d1d6; /* Color neutro suave */
+  border-radius: 16px;
+  cursor: pointer;
+  
+  /* Transiciones suaves */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
 }
 
-/* Estado activo cuando se arrastra algo encima */
+/* Estado Hover */
+.drop-zone:hover {
+  border-color: var(--color-accent);
+  background-color: rgba(37, 99, 235, 0.02);
+  transform: translateY(-2px);
+}
+
+/* Estado Drag Active */
 .drop-zone.active {
   border-color: var(--color-accent);
   border-style: solid;
-  background-color: #f0f7ff;
-  transform: scale(1.02) rotate(0.5deg);
+  background-color: rgba(37, 99, 235, 0.05);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  transform: scale(1.01);
 }
 
-/* Input oculto */
+/* Input oculto pero funcional */
 .file-input {
   position: absolute;
   top: 0;
@@ -60,54 +65,59 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   gap: var(--spacing-sm);
 }
 
-/* Icono estilo dibujo lineal */
+/* Icono Premium */
 .upload-icon {
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
   color: var(--color-accent);
   margin-bottom: var(--spacing-sm);
-  filter: drop-shadow(2px 2px 0px rgba(37, 99, 235, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.drop-zone:hover .upload-icon {
+  transform: translateY(-5px);
 }
 
 .text-primary {
   font-family: var(--font-handwriting);
   color: var(--color-text-primary);
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 400;
   line-height: 1.2;
 }
 
 .text-secondary {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   color: var(--color-text-secondary);
-  font-size: 1.1rem;
-  opacity: 0.8;
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.7;
 }
 
-/* Mensajes de error con estilo tachado o nota */
+/* Mensajes de Error */
 .error-message {
-  color: #b91c1c;
+  color: #dc2626;
   background-color: #fef2f2;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 1.5px solid #f87171;
-  border-radius: 10px 30px 10px 30px / 30px 10px 30px 10px;
-  font-family: var(--font-handwriting);
-  font-size: 1.1rem;
+  padding: 12px 20px;
+  border: 2px solid #fee2e2;
+  border-radius: 12px;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
   text-align: center;
-  margin-bottom: var(--spacing-md);
-  animation: shake 0.4s ease;
+  animation: slideDown 0.3s ease;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Previsualización estilo polaroid o foto pegada */
+/* Previsualización (Polaroid Estilizada) */
 .preview-container {
   display: flex;
   flex-direction: column;
@@ -115,30 +125,50 @@
   gap: var(--spacing-md);
   background-color: white;
   border: 2px solid var(--color-text-primary);
-  border-radius: 2px; /* Más cuadrado como papel */
-  padding: var(--spacing-md);
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow: 6px 6px 0px rgba(0,0,0,1);
 }
 
 .image-preview {
   max-width: 100%;
   max-height: 400px;
   object-fit: contain;
+  border: 1px solid #e5e5e5;
 }
 
 .btn-reset {
   background-color: transparent;
-  color: #b91c1c;
-  border: 1.5px solid #b91c1c;
+  color: #dc2626;
+  border: 2px solid #dc2626;
   font-family: var(--font-handwriting);
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: 12px 4px 10px 3px / 4px 12px 3px 10px;
+  padding: 8px 20px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   transition: all 0.2s;
 }
 
 .btn-reset:hover {
-  background-color: #fef2f2;
+  background-color: #dc2626;
+  color: white;
   transform: rotate(-1deg);
 }
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .text-primary {
+    font-size: 1.5rem;
+  }
+  
+  .drop-zone {
+    min-height: 220px;
+    padding: var(--spacing-lg);
+  }
+  
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+  }
+}
+

@@ -261,9 +261,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
   // ── Estado inicial: sin fotos → mostrar MultiDragAndDrop ──
   if (!hasPhotos) {
     return (
-      <div className="wm-stage">
-        <MultiDragAndDrop onFilesSelected={onAddPhotos} />
-      </div>
+      <MultiDragAndDrop onFilesSelected={onAddPhotos} />
     );
   }
 

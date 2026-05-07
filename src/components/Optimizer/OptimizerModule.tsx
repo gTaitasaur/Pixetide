@@ -72,6 +72,10 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
     a.click();
   };
 
+  if (!originalUrl) {
+    return <DragAndDrop onImageSelected={onImageSelected} />;
+  }
+
   return (
     <div className="optimizer-stage">
       
@@ -86,75 +90,58 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
         onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
         onDrop={handleDrop}
       >
-        
-        {originalUrl && originalFile ? (
-          <>
-            <input 
-              type="file" 
-              accept="image/*" 
-              ref={fileInputRef} 
-              style={{ display: 'none' }} 
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  processNewFile(e.target.files[0]);
-                }
-              }}
-            />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
-              <button 
-                className="btn-secondary" 
-                onClick={() => fileInputRef.current?.click()} 
-                disabled={isProcessing}
-              >
-                Cambiar Imagen
-              </button>
+        <input 
+          type="file" 
+          accept="image/*" 
+          ref={fileInputRef} 
+          style={{ display: 'none' }} 
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              processNewFile(e.target.files[0]);
+            }
+          }}
+        />
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+          <button 
+            className="btn-secondary" 
+            onClick={() => fileInputRef.current?.click()} 
+            disabled={isProcessing}
+          >
+            Cambiar Imagen
+          </button>
+        </div>
+        <div className="optimizer-preview-container">
+          <img 
+            src={result ? result.url : originalUrl} 
+            alt="Preview" 
+            className={`optimizer-preview-img ${isProcessing ? 'is-processing' : ''}`} 
+          />
+          {isProcessing && (
+            <div className="processing-spinner-overlay">
+              <div className="spinner"></div>
+              <span className="processing-text">Comprimiendo de forma segura...</span>
             </div>
-            <div className="optimizer-preview-container">
-              <img 
-                src={result ? result.url : originalUrl} 
-                alt="Preview" 
-                className={`optimizer-preview-img ${isProcessing ? 'is-processing' : ''}`} 
-              />
-              {isProcessing && (
-                <div className="processing-spinner-overlay">
-                  <div className="spinner"></div>
-                  <span className="processing-text">Comprimiendo de forma segura...</span>
-                </div>
-              )}
-            </div>
-            <div className="optimizer-stats-panel">
-              <div className="stat-group">
-                <span className="stat-label">Original</span>
-                <span className="stat-value">{formatBytes(originalFile.size)}</span>
-              </div>
-              
-              {result && (
-                <>
-                  <div className="stat-arrow">→</div>
-                  <div className="stat-group success">
-                    <span className="stat-label">Optimizado</span>
-                    <span className="stat-value">{formatBytes(result.newSize)}</span>
-                  </div>
-                  <div className="stat-badge">
-                    -{result.reductionPercentage.toFixed(1)}%
-                  </div>
-                </>
-              )}
-            </div>
-          </>
-        ) : (
-          <div style={{ width: '100%', minHeight: '350px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {error && (
-              <div style={{ width: '100%', maxWidth: '500px' }}>
-                <ToolError 
-                  message={error} 
-                  onRetry={() => setError(null)} 
-                />
-              </div>
-            )}
-            <DragAndDrop onImageSelected={onImageSelected} />
+          )}
+        </div>
+        <div className="optimizer-stats-panel">
+          <div className="stat-group">
+            <span className="stat-label">Original</span>
+            <span className="stat-value">{formatBytes(originalFile!.size)}</span>
           </div>
-        )}
+          
+          {result && (
+            <>
+              <div className="stat-arrow">→</div>
+              <div className="stat-group success">
+                <span className="stat-label">Optimizado</span>
+                <span className="stat-value">{formatBytes(result.newSize)}</span>
+              </div>
+              <div className="stat-badge">
+                -{result.reductionPercentage.toFixed(1)}%
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Controles de Configuración */}
@@ -167,13 +154,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
         />
 
         {/* Opciones Avanzadas */}
-        <div 
-          className="advanced-toggles" 
-          style={{ 
-            opacity: !originalUrl ? 0.4 : 1,
-            pointerEvents: !originalUrl ? 'none' : 'auto'
-          }}
-        >
+        <div className="advanced-toggles">
           <label className="toggle-label">
             <input 
               type="checkbox" 
@@ -201,17 +182,13 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
 
         {/* Acciones */}
         <div className="optimizer-actions">
-          {!originalUrl ? (
-            <p className="optimizer-hint">Sube o arrastra una foto para empezar a comprimir de forma privada</p>
-          ) : (
-            <button 
-              className="btn-success" 
-              onClick={handleDownload}
-              disabled={isProcessing || !result}
-            >
-              {isProcessing ? 'Optimizando...' : `Descargar Imagen Optimizada (${formatBytes(result?.newSize || 0)})`}
-            </button>
-          )}
+          <button 
+            className="btn-success" 
+            onClick={handleDownload}
+            disabled={isProcessing || !result}
+          >
+            {isProcessing ? 'Optimizando...' : `Descargar Imagen Optimizada (${formatBytes(result?.newSize || 0)})`}
+          </button>
         </div>
       </div>
     </div>

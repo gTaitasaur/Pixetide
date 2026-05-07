@@ -152,9 +152,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
   // Si no hay archivos, inyectamos el MultiDragAndDrop al 100%
   if (conversionList.length === 0) {
     return (
-      <div className="converter-stage" style={{ backgroundColor: 'transparent', padding: 0, border: 'none', boxShadow: 'none' }}>
-        <MultiDragAndDrop onFilesSelected={onAddFiles} />
-      </div>
+      <MultiDragAndDrop onFilesSelected={onAddFiles} />
     );
   }
 

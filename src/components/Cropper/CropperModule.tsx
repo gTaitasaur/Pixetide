@@ -120,6 +120,10 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
     }
   };
 
+  if (!imageUrl) {
+    return <DragAndDrop onImageSelected={onImageSelected} />;
+  }
+
   return (
     <div className="cropper-stage">
       <AspectRatioControls 
@@ -138,61 +142,49 @@ export const CropperModule: React.FC<CropperModuleProps> = ({ imageUrl, onImageS
         onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
         onDrop={handleDrop}
       >
-        {imageUrl ? (
-          <>
-            <input 
-              type="file" 
-              accept="image/*" 
-              ref={fileInputRef} 
-              style={{ display: 'none' }} 
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  processNewFile(e.target.files[0]);
-                }
-              }}
-            />
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
-              <button 
-                className="btn-secondary-hand" 
-                onClick={() => fileInputRef.current?.click()} 
-                disabled={isExporting}
-              >
-                Seleccionar Otra Foto
-              </button>
-            </div>
-            <ReactCrop
-              crop={crop}
-              onChange={(_, percentCrop) => setCrop(percentCrop)}
-              onComplete={(c) => setCompletedCrop(c)}
-              aspect={aspect}
-              keepSelection
-            >
-              <img 
-                ref={imgRef} 
-                src={imageUrl} 
-                alt="Para recortar" 
-                onLoad={onImageLoad} 
-              />
-            </ReactCrop>
-          </>
-        ) : (
-          <div style={{ width: '100%', minHeight: '350px', display: 'flex' }}>
-            <DragAndDrop onImageSelected={onImageSelected} />
-          </div>
-        )}
+        <input 
+          type="file" 
+          accept="image/*" 
+          ref={fileInputRef} 
+          style={{ display: 'none' }} 
+          onChange={(e) => {
+            if (e.target.files && e.target.files.length > 0) {
+              processNewFile(e.target.files[0]);
+            }
+          }}
+        />
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
+          <button 
+            className="btn-secondary-hand" 
+            onClick={() => fileInputRef.current?.click()} 
+            disabled={isExporting}
+          >
+            Seleccionar Otra Foto
+          </button>
+        </div>
+        <ReactCrop
+          crop={crop}
+          onChange={(_, percentCrop) => setCrop(percentCrop)}
+          onComplete={(c) => setCompletedCrop(c)}
+          aspect={aspect}
+          keepSelection
+        >
+          <img 
+            ref={imgRef} 
+            src={imageUrl} 
+            alt="Para recortar" 
+            onLoad={onImageLoad} 
+          />
+        </ReactCrop>
       </div>
 
-      {!imageUrl ? (
-        <p className="cropper-hint">Sube o arrastra una foto para empezar a recortarla gratis</p>
-      ) : (
-        <button 
-          className="btn-download" 
-          onClick={handleDownload}
-          disabled={!completedCrop || isExporting}
-        >
-          {isExporting ? 'Procesando...' : 'Descargar Imagen Recortada'}
-        </button>
-      )}
+      <button 
+        className="btn-download" 
+        onClick={handleDownload}
+        disabled={!completedCrop || isExporting}
+      >
+        {isExporting ? 'Procesando...' : 'Descargar Imagen Recortada'}
+      </button>
     </div>
   );
 };

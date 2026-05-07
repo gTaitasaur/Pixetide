@@ -87,10 +87,10 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
         />
         <div className="drop-zone-content">
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
           </svg>
-          <span className="text-primary">Selecciona tus imágenes</span>
-          <span className="text-secondary">Haz clic o arrastra fotos aquí</span>
+          <span className="text-primary">Sube varias fotos a la vez</span>
+          <span className="text-secondary">Haz clic o arrastra tus archivos aquí</span>
         </div>
       </div>
     </div>

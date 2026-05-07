@@ -68,10 +68,10 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({ onImageSelected }) => 
         />
         <div className="drop-zone-content">
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <span className="text-primary">Haz clic aquí o arrastra tu imagen</span>
-          <span className="text-secondary">JPG, PNG o WebP (Max 20MB)</span>
+          <span className="text-primary">Elige una imagen para empezar</span>
+          <span className="text-secondary">Haz clic o arrastra tu archivo aquí (Máx. 20MB)</span>
         </div>
       </div>
     </div>

@@ -34,10 +34,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Borde de guía para la zona de la imagen */
-  border: 1px dashed var(--color-grid);
-  padding: var(--spacing-sm);
-  background-color: #ffffff;
+  /* El borde y fondo se eliminan para normalizar con el Workspace */
+  padding: 0;
 }
 
 /* Alterando react-image-crop para que las líneas parezcan lápiz */

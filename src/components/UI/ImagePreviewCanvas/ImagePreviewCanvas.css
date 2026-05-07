@@ -27,12 +27,31 @@
 }
 
 .image-preview-canvas__image {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
   image-rendering: -webkit-optimize-contrast;
   
   /* Sombra sutil para despegar la imagen del fondo */
   filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+
+  /* Transición estándar para toda la suite */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-preview-canvas--error {
+  flex-direction: column;
+  gap: 12px;
+  background-image: none; /* Quitamos cuadros si hay error */
+  background-color: #fff5f5;
+  border-color: #feb2b2;
+}
+
+.image-preview-canvas__error-msg {
+  color: #c53030;
+  font-family: var(--font-handwriting);
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 20px;
 }

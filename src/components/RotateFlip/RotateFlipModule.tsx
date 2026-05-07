@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
 import { processRotationAndFlip, RotateFlipParams } from '../../utils/rotateFlip';
 import { validateImageFile } from '../../utils/fileUpload';
+import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import './RotateFlipModule.css';
 
 interface RotateFlipModuleProps {
@@ -105,13 +106,9 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
   }
 
   // Estilo CSS para la vista previa interactiva
-  const isRotated = Math.abs((params.rotation / 90) % 2) === 1;
   const previewStyle: React.CSSProperties = {
     transform: `rotate(${params.rotation}deg) scaleX(${params.flipHorizontal ? -1 : 1}) scaleY(${params.flipVertical ? -1 : 1})`,
-    transition: 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    // Para evitar que se corte al rotar 90/270 grados (la altura original se vuelve ancho, y el ancho original se vuelve altura)
-    maxWidth: isRotated ? '380px' : '100%',
-    maxHeight: isRotated ? '100%' : '380px'
+    transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
   };
 
   const hasChanges = (params.rotation % 360) !== 0 || params.flipHorizontal || params.flipVertical;
@@ -149,16 +146,15 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
           </button>
         </div>
 
-        {/* Zona de Vista Previa */}
+        {/* Zona de Vista Previa con el nuevo componente estándar */}
         <div className="rotate-flip-preview-container">
-          <div className="preview-checkerboard">
-            <img 
-              src={originalUrl} 
-              alt="Preview" 
-              className="rotate-flip-preview-img" 
-              style={previewStyle}
-            />
-          </div>
+          <ImagePreviewCanvas 
+            imageUrl={originalUrl} 
+            maxHeight="450px"
+            imageStyle={previewStyle}
+            rotate={params.rotation}
+            alt="Vista previa de rotación"
+          />
         </div>
 
         {/* Controles de Herramientas */}

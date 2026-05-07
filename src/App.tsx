@@ -24,7 +24,7 @@ const App: React.FC = () => {
             <Route path="/" element={<MainLayout />}>
               {/* Index Route es el Home Page */}
               <Route index element={<Home />} />
-              
+
               {/* Rutas de las Herramientas */}
               <Route path="herramientas/recorte-aspect-ratio" element={<AspectRatioTool />} />
               <Route path="herramientas/optimizar-peso" element={<OptimizerTool />} />
@@ -34,7 +34,7 @@ const App: React.FC = () => {
               <Route path="herramientas/paleta-colores" element={<ColorPaletteTool />} />
               <Route path="herramientas/base64" element={<Base64Tool />} />
               <Route path="herramientas/quitar-fondo" element={<BackgroundRemoverTool />} />
-              
+
               {/* Ruta Comodín 404 */}
               <Route path="*" element={<NotFound />} />
             </Route>

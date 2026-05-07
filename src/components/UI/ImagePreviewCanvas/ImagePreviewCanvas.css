@@ -1,0 +1,38 @@
+.image-preview-canvas {
+  --checker-size: 16px;
+  --checker-color: #f0f0f0;
+  --bg-color: #ffffff;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px; /* Un toque de suavidad */
+  border: 1px solid #e0e0e0;
+  
+  /* Patrón de cuadros tipo Photoshop con CSS puro */
+  background-color: var(--bg-color);
+  background-image: 
+    linear-gradient(45deg, var(--checker-color) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--checker-color) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--checker-color) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--checker-color) 75%);
+  background-size: var(--checker-size) var(--checker-size);
+  background-position: 0 0, 0 calc(var(--checker-size) / 2), calc(var(--checker-size) / 2) calc(var(--checker-size) / -2), calc(var(--checker-size) / -2) 0px;
+  
+  /* Sombra interna para dar profundidad */
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.image-preview-canvas__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  image-rendering: -webkit-optimize-contrast;
+  
+  /* Sombra sutil para despegar la imagen del fondo */
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+}

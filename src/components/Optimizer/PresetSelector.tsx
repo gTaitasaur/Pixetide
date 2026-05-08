@@ -3,30 +3,27 @@ import { OptimizationPreset, OPTIMIZATION_PRESETS } from '../../types/optimizer'
 
 interface PresetSelectorProps {
   selectedId: string;
-  disabled?: boolean;
   onSelect: (preset: OptimizationPreset) => void;
+  disabled?: boolean;
 }
 
-export const PresetSelector: React.FC<PresetSelectorProps> = ({ selectedId, disabled, onSelect }) => {
+export const PresetSelector: React.FC<PresetSelectorProps> = ({ selectedId, onSelect, disabled }) => {
   return (
-    <div className={`preset-grid ${disabled ? 'disabled' : ''}`} style={{ opacity: disabled ? 0.4 : 1, pointerEvents: disabled ? 'none' : 'auto' }}>
+    <div className="preset-grid">
       {OPTIMIZATION_PRESETS.map((preset) => (
         <button
           key={preset.id}
-          className={`preset-card ${selectedId === preset.id ? 'active' : ''}`}
+          className={`preset-chip ${selectedId === preset.id ? 'is-active' : ''}`}
           onClick={() => onSelect(preset)}
-          type="button"
           disabled={disabled}
+          type="button"
         >
-          <div className="preset-header">
-            <h4>{preset.label}</h4>
-            {preset.badge && <span className="preset-badge">{preset.badge}</span>}
+          <div className="chip-content">
+            <span className="chip-label">{preset.id === 'lossless' ? 'Sin pérdida' : preset.label}</span>
+            <span className="chip-value">{Math.round(preset.quality * 100)}%</span>
+            <span className="chip-desc">{preset.id === 'lossless' ? 'Original' : preset.id === 'normal' ? 'Equilibrado' : preset.id === 'aggressive' ? 'Para Web' : 'Mínimo peso'}</span>
           </div>
-          <p className="preset-desc">{preset.description}</p>
-          <div className="preset-specs">
-            <span>Calidad: {preset.quality * 100}%</span>
-            <span>Máx. Ancho: {preset.maxWidthOrHeight === 99999 ? 'Original' : `${preset.maxWidthOrHeight}px`}</span>
-          </div>
+          {preset.id === 'normal' && <div className="chip-dot"></div>}
         </button>
       ))}
     </div>

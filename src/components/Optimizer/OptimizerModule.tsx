@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { OptimizationPreset, OPTIMIZATION_PRESETS } from '../../types/optimizer';
 import { rawOptimizeImage, formatBytes, OptimizationResult } from '../../utils/imageOptimizer';
 import { PresetSelector } from './PresetSelector';
 import { validateImageFile } from '../../utils/fileUpload';
-import { ToolError } from '../Errors/ToolError';
-import './OptimizerModule.css';
-
 import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
+import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
+import { showToast } from '../UI/Toast/toastManager';
+import './OptimizerModule.css';
 
 interface OptimizerModuleProps {
   originalUrl: string | null;
@@ -15,27 +15,26 @@ interface OptimizerModuleProps {
 }
 
 export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, originalFile, onImageSelected }) => {
-  // Opciones de configuración del usuario
-  const [selectedPreset, setSelectedPreset] = useState<OptimizationPreset>(OPTIMIZATION_PRESETS[1]); // Default a Normal
+  // Opciones de configuración
+  const [selectedPreset, setSelectedPreset] = useState<OptimizationPreset>(OPTIMIZATION_PRESETS[1]);
   const [preserveResolution, setPreserveResolution] = useState<boolean>(false);
-  const [useWebP, setUseWebP] = useState<boolean>(true); // WebP como recomendado
+  const [useWebP, setUseWebP] = useState<boolean>(true);
 
   // Estados de procesamiento
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [result, setResult] = useState<OptimizationResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const processNewFile = (file: File) => {
-    setError(null);
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      setError(validation.error || 'Error desconocido al validar el archivo.');
+      showToast(validation.error || 'Error al validar el archivo.', 'error');
       return;
     }
     const url = URL.createObjectURL(file);
     onImageSelected(url, file);
+    setResult(null); // Resetear resultado previo
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -43,7 +42,6 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
     setIsDragOver(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       processNewFile(e.dataTransfer.files[0]);
-      e.dataTransfer.clearData();
     }
   };
 
@@ -55,14 +53,18 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
       setResult(optimized);
     } catch (err) {
       console.error(err);
+      showToast('Hubo un error al optimizar la imagen.', 'error');
     } finally {
       setIsProcessing(false);
     }
   }, [originalFile, selectedPreset, preserveResolution, useWebP]);
 
+  // Ejecutar optimización automáticamente al cambiar parámetros
   useEffect(() => {
-    handleOptimize();
-  }, [handleOptimize]);
+    if (originalFile) {
+      handleOptimize();
+    }
+  }, [handleOptimize, originalFile]);
 
   const handleDownload = () => {
     if (!result) return;
@@ -70,6 +72,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
     a.href = result.url;
     a.download = result.file.name;
     a.click();
+    showToast('Imagen descargada correctamente.', 'success');
   };
 
   if (!originalUrl) {
@@ -77,19 +80,21 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
   }
 
   return (
-    <div className="optimizer-stage">
-      
-      {/* Zona de Vista Previa */}
-      <div 
-        className="optimizer-hero" 
-        style={{
-          border: isDragOver ? '3px dashed var(--color-accent)' : undefined,
-          position: 'relative'
-        }}
-        onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
-        onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
-        onDrop={handleDrop}
-      >
+    <div className="optimizer-container fade-in">
+      {/* Barra superior de acciones */}
+      <div className="opt-top-bar">
+        <button 
+          className="btn-text-action" 
+          onClick={() => fileInputRef.current?.click()} 
+          disabled={isProcessing}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Subir otra foto
+        </button>
         <input 
           type="file" 
           accept="image/*" 
@@ -101,95 +106,134 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             }
           }}
         />
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', marginBottom: '12px' }}>
-          <button 
-            className="btn-secondary" 
-            onClick={() => fileInputRef.current?.click()} 
-            disabled={isProcessing}
-          >
-            Cambiar Imagen
-          </button>
-        </div>
-        <div className="optimizer-preview-container">
-          <img 
-            src={result ? result.url : originalUrl} 
-            alt="Preview" 
-            className={`optimizer-preview-img ${isProcessing ? 'is-processing' : ''}`} 
-          />
-          {isProcessing && (
-            <div className="processing-spinner-overlay">
-              <div className="spinner"></div>
-              <span className="processing-text">Comprimiendo de forma segura...</span>
-            </div>
-          )}
-        </div>
-        <div className="optimizer-stats-panel">
-          <div className="stat-group">
-            <span className="stat-label">Original</span>
-            <span className="stat-value">{formatBytes(originalFile!.size)}</span>
-          </div>
-          
-          {result && (
-            <>
-              <div className="stat-arrow">→</div>
-              <div className="stat-group success">
-                <span className="stat-label">Optimizado</span>
-                <span className="stat-value">{formatBytes(result.newSize)}</span>
-              </div>
-              <div className="stat-badge">
-                -{result.reductionPercentage.toFixed(1)}%
-              </div>
-            </>
-          )}
-        </div>
       </div>
 
-      {/* Controles de Configuración */}
-      <div className="optimizer-controls">
-        <h3 className="section-title">Nivel de Compresión</h3>
-        <PresetSelector 
-          selectedId={selectedPreset.id} 
-          disabled={!originalUrl}
-          onSelect={(preset) => setSelectedPreset(preset)} 
-        />
-
-        {/* Opciones Avanzadas */}
-        <div className="advanced-toggles">
-          <label className="toggle-label">
-            <input 
-              type="checkbox" 
-              checked={preserveResolution} 
-              onChange={(e) => setPreserveResolution(e.target.checked)} 
-            />
-            <div className="toggle-text">
-              <strong>Mantener resolución original</strong>
-              <span>Evita que tu foto pierda calidad al mantener intactas sus dimensiones de ancho y alto.</span>
-            </div>
-          </label>
-
-          <label className="toggle-label">
-            <input 
-              type="checkbox" 
-              checked={useWebP} 
-              onChange={(e) => setUseWebP(e.target.checked)} 
-            />
-            <div className="toggle-text">
-              <strong>Convertir a formato WebP</strong>
-              <span>El formato recomendado por Google para mejorar el rendimiento de tu página web y tu SEO.</span>
-            </div>
-          </label>
-        </div>
-
-        {/* Acciones */}
-        <div className="optimizer-actions">
-          <button 
-            className="btn-success" 
-            onClick={handleDownload}
-            disabled={isProcessing || !result}
+      <div className="opt-main-layout">
+        {/* Lado Izquierdo: El Visor de Imagen */}
+        <div className="opt-workspace">
+          <div 
+            className="opt-preview-card"
+            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+            onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
+            onDrop={handleDrop}
           >
-            {isProcessing ? 'Optimizando...' : `Descargar Imagen Optimizada (${formatBytes(result?.newSize || 0)})`}
-          </button>
+            <ImagePreviewCanvas 
+              imageUrl={result ? result.url : originalUrl} 
+              maxHeight="60vh"
+              className={`opt-preview-img ${isProcessing ? 'is-processing' : ''} ${isDragOver ? 'cropper-drag-over' : ''}`}
+              alt="Vista previa de optimización"
+            />
+            
+            {isProcessing && (
+              <div className="opt-processing-overlay">
+                <div className="opt-spinner"></div>
+                <span className="opt-processing-text">Optimizando...</span>
+              </div>
+            )}
+          </div>
+
+          {/* Barra de Resultados (Dock horizontal) */}
+          <div className="opt-results-bar">
+            <div className="opt-res-group">
+              <span className="opt-res-label">Original</span>
+              <span className="opt-res-value">{formatBytes(originalFile!.size)}</span>
+            </div>
+            
+            <div className="opt-res-arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </div>
+
+            <div className="opt-res-group success">
+              <span className="opt-res-label">Optimizado</span>
+              <span className="opt-res-value">{result ? formatBytes(result.newSize) : '---'}</span>
+            </div>
+
+            {result && (
+              <div className="opt-res-badge">
+                -{result.reductionPercentage.toFixed(1)}%
+              </div>
+            )}
+          </div>
+
+          {/* Hint informativo */}
+          <p className="optimizer-hint">Tus imágenes se procesan localmente. Nunca se envían a ningún servidor.</p>
         </div>
+
+        {/* Lado Derecho: Controles y Estadísticas */}
+        <aside className="opt-sidebar">
+          {/* Configuración */}
+          <div className="opt-section">
+            <h4 className="opt-section-title">Compresión</h4>
+            <p className="opt-section-desc">
+              A menor calidad, menor peso. El nivel <strong>Normal</strong> es ideal para la mayoría de casos.
+            </p>
+            <PresetSelector 
+              selectedId={selectedPreset.id} 
+              disabled={isProcessing}
+              onSelect={(preset) => setSelectedPreset(preset)} 
+            />
+          </div>
+
+          {/* Opciones Avanzadas */}
+          <div className="opt-section">
+            <h4 className="opt-section-title">Opciones</h4>
+            <div className="opt-advanced">
+              <label className="opt-toggle">
+                <input 
+                  type="checkbox" 
+                  checked={preserveResolution} 
+                  onChange={(e) => setPreserveResolution(e.target.checked)} 
+                  disabled={isProcessing}
+                />
+                <div className="opt-toggle-content">
+                  <span className="opt-toggle-title">Mantener dimensiones</span>
+                  <span className="opt-toggle-desc">No redimensionar el ancho y alto.</span>
+                </div>
+              </label>
+
+              <label className="opt-toggle">
+                <input 
+                  type="checkbox" 
+                  checked={useWebP} 
+                  onChange={(e) => setUseWebP(e.target.checked)} 
+                  disabled={isProcessing}
+                />
+                <div className="opt-toggle-content">
+                  <span className="opt-toggle-title">Formato WebP</span>
+                  <span className="opt-toggle-desc">Máxima compresión recomendada por Google.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Botón de Acción Principal */}
+          <div className="opt-actions">
+            <button 
+              className="btn-download-primary" 
+              onClick={handleDownload}
+              disabled={isProcessing || !result}
+            >
+              {isProcessing ? (
+                <>
+                  <div className="btn-spinner"></div>
+                  Optimizando...
+                </>
+              ) : (
+                <>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '10px' }}>
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  Descargar Imagen
+                </>
+              )}
+            </button>
+          </div>
+        </aside>
       </div>
     </div>
   );

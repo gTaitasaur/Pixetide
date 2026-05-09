@@ -1,35 +1,25 @@
 .comparison-container {
   position: relative;
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  border: 3px solid var(--color-text-primary);
+  height: 100%;
   user-select: none;
   touch-action: none;
 }
 
+/* El fondo checkerboard ahora lo provee ImagePreviewCanvas, 
+   pero mantenemos esta clase vacía temporalmente por si hay referencias */
 .comparison-checkerboard {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 0;
-  background-image:
-    linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
-    linear-gradient(-45deg, #e5e5e5 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #e5e5e5 75%),
-    linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-  background-color: #f8f9fa;
+  display: none;
 }
 
 .comparison-img-base {
   display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  position: relative;
+  height: 100%;
+  object-fit: contain;
   z-index: 1;
 }
 

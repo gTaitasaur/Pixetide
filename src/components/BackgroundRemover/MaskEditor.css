@@ -1,191 +1,97 @@
-/* ══════════════════════════════════════════════════
-   Mask Editor Styles — Pincel Restaurar/Borrar
-   ══════════════════════════════════════════════════ */
+/* ==========================================================================
+   MASK EDITOR STYLES - Estética Senior UI
+   ========================================================================== */
 
-.bgrm-editor-mode {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
-}
-
-.bgrm-editor-header {
-  text-align: center;
-}
-
-.bgrm-editor-header h3 {
-  font-family: var(--font-handwriting);
-  font-size: 1.8rem;
-  color: var(--color-accent);
-  margin-bottom: 5px;
-}
-
-.bgrm-editor-header p {
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-}
-
-.bgrm-editor-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: var(--spacing-lg);
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 12px;
-  border: 2px solid var(--color-text-primary);
-}
-
-.bgrm-tools-group {
-  display: flex;
+.bgrm-editor-toolbar-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-bottom: var(--spacing-lg);
 }
 
 .bgrm-tool-btn {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
-  border-radius: 8px;
   background-color: white;
-  border: 2px solid #e5e5e5;
-  font-family: var(--font-handwriting);
-  font-size: 1.2rem;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 12px 8px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--color-text-primary);
 }
 
-.bgrm-tool-btn:hover {
-  background-color: #f0f0f0;
+.bgrm-tool-btn .tool-icon {
+  font-size: 1.5rem;
+  transition: transform 0.2s;
 }
 
-.bgrm-tool-btn.active {
-  background-color: var(--color-accent);
+.bgrm-tool-btn span:last-child {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.bgrm-tool-btn:hover {
   border-color: var(--color-accent);
-  color: white;
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3);
+  background-color: rgba(37, 99, 235, 0.02);
+  transform: translateY(-2px);
+}
+
+.bgrm-tool-btn:hover .tool-icon {
+  transform: scale(1.1);
+}
+
+.bgrm-tool-btn.is-active {
+  background-color: rgba(37, 99, 235, 0.05);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
 
 .bgrm-brush-size {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
+  font-family: var(--font-handwriting);
+  font-size: 1.1rem;
   color: var(--color-text-primary);
+  padding-top: var(--spacing-md);
+  border-top: 1px dashed #e5e5e5;
 }
 
 .bgrm-brush-size input[type="range"] {
   accent-color: var(--color-accent);
-  width: 150px;
+  width: 100%;
 }
 
 /* Lienzo de trabajo */
 .bgrm-editor-workspace {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
-  border: 3px solid var(--color-text-primary);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-  background-image:
-    linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
-    linear-gradient(-45deg, #e5e5e5 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #e5e5e5 75%),
-    linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
-  background-size: 20px 20px;
-  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-  background-color: #f8f9fa;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* Importante para no hacer scroll al dibujar en móvil */
   touch-action: none;
 }
 
 .bgrm-paint-canvas {
   display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
   /* Prevenir selección accidental */
   user-select: none;
   -webkit-user-select: none;
 }
 
 /* Cursors customizados */
-.cursor-restore {
-  cursor: crosshair;
-}
-
-.cursor-erase {
-  cursor: cell;
-}
-
-.cursor-pan {
-  cursor: grab;
-}
-
-.cursor-pan:active {
-  cursor: grabbing;
-}
-
-.bgrm-editor-hints {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
-  pointer-events: none;
-}
-
-/* Botones de acción */
-.bgrm-editor-actions {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-md);
-}
-
-.bgrm-btn-secondary {
-  background-color: #f5f5f7;
-  color: var(--color-text-primary);
-  border: 2px solid #e5e5e5;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-family: var(--font-handwriting);
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.bgrm-btn-secondary:hover {
-  background-color: #e5e5e5;
-}
-
-.bgrm-btn-save {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #2ecc71;
-  color: white;
-  border: none;
-  padding: 10px 24px;
-  border-radius: 12px 4px 10px 4px / 4px 12px 4px 10px;
-  font-family: var(--font-handwriting);
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-}
-
-.bgrm-btn-save:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
-}
+.cursor-restore { cursor: crosshair; }
+.cursor-erase { cursor: cell; }
+.cursor-pan { cursor: grab; }
+.cursor-pan:active { cursor: grabbing; }

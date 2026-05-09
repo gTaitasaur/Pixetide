@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, TouchEvent as ReactTouchEvent } from 'react';
+import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import './MaskEditor.css';
 
 interface MaskEditorProps {
@@ -350,98 +351,104 @@ export const MaskEditor: React.FC<MaskEditorProps> = ({ originalSrc, resultSrc, 
   };
 
   return (
-    <div className="bgrm-editor-mode fade-in">
-      <div className="bgrm-editor-header">
-        <h3>🖌️ Perfeccionar Recorte</h3>
-        <p>Usa el pincel para restaurar partes borradas por error (como el bastón) o borrar restos del fondo.</p>
+    <>
+      <div className="bgrm-workspace fade-in">
+        <ImagePreviewCanvas imageUrl={originalSrc} maxHeight="60vh" className="bgrm-editor-canvas-wrapper">
+          <div 
+            className="bgrm-editor-workspace" 
+            ref={containerRef}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            style={{ cursor: getCursor() }}
+          >
+            {!isReady && (
+              <div className="spinner" style={{ margin: '40px auto', borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }}></div>
+            )}
+            
+            <canvas
+              ref={displayCanvasRef}
+              className="bgrm-paint-canvas"
+              style={{ 
+                display: isReady ? 'block' : 'none',
+                transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                transformOrigin: 'center center',
+                transition: (mode === 'pan' || isMiddlePan.current) ? 'none' : 'transform 0.1s ease-out'
+              }}
+            />
+          </div>
+        </ImagePreviewCanvas>
       </div>
 
-      <div className="bgrm-editor-toolbar">
-        <div className="bgrm-tools-group">
-          <button 
-            className={`bgrm-tool-btn ${mode === 'restore' ? 'active' : ''}`}
-            onClick={() => setMode('restore')}
-          >
-            <span className="tool-icon">✨</span> Restaurar
-          </button>
-          <button 
-            className={`bgrm-tool-btn ${mode === 'erase' ? 'active' : ''}`}
-            onClick={() => setMode('erase')}
-          >
-            <span className="tool-icon">🧹</span> Borrar
-          </button>
-          <button 
-            className={`bgrm-tool-btn ${mode === 'pan' ? 'active' : ''}`}
-            onClick={() => setMode('pan')}
-          >
-            <span className="tool-icon">🖐️</span> Mover
-          </button>
-          
-          <div style={{ width: '2px', height: '30px', backgroundColor: '#e5e5e5', margin: '0 5px' }}></div>
+      <aside className="bgrm-sidebar fade-in">
+        <div className="bgrm-controls-section">
+          <h4 className="bgrm-control-title">🖌️ Perfeccionar</h4>
+          <p className="bgrm-loading-desc" style={{ marginBottom: '10px' }}>
+            Usa el pincel para restaurar partes borradas por error o borrar restos de fondo.
+          </p>
 
-          <button 
-            className="bgrm-tool-btn"
-            onClick={handleUndo}
-            disabled={!canUndo}
-            style={{ opacity: canUndo ? 1 : 0.5, cursor: canUndo ? 'pointer' : 'not-allowed' }}
-            title="Deshacer (Ctrl+Z)"
-          >
-            <span className="tool-icon">↩️</span> Deshacer
-          </button>
+          <div className="bgrm-editor-toolbar-grid">
+            <button 
+              className={`bgrm-tool-btn ${mode === 'restore' ? 'is-active' : ''}`}
+              onClick={() => setMode('restore')}
+            >
+              <span className="tool-icon">✨</span>
+              <span>Restaurar</span>
+            </button>
+            <button 
+              className={`bgrm-tool-btn ${mode === 'erase' ? 'is-active' : ''}`}
+              onClick={() => setMode('erase')}
+            >
+              <span className="tool-icon">🧹</span>
+              <span>Borrar</span>
+            </button>
+            <button 
+              className={`bgrm-tool-btn ${mode === 'pan' ? 'is-active' : ''}`}
+              onClick={() => setMode('pan')}
+            >
+              <span className="tool-icon">🖐️</span>
+              <span>Mover</span>
+            </button>
+            <button 
+              className="bgrm-tool-btn"
+              onClick={handleUndo}
+              disabled={!canUndo}
+              style={{ opacity: canUndo ? 1 : 0.5, cursor: canUndo ? 'pointer' : 'not-allowed' }}
+              title="Deshacer (Ctrl+Z)"
+            >
+              <span className="tool-icon">↩️</span>
+              <span>Deshacer</span>
+            </button>
+          </div>
+
+          <div className="bgrm-brush-size">
+            <label>Grosor: {brushSize}px</label>
+            <input 
+              type="range" 
+              min="5" 
+              max="120" 
+              value={brushSize} 
+              onChange={(e) => setBrushSize(parseInt(e.target.value))} 
+            />
+          </div>
         </div>
 
-        <div className="bgrm-brush-size">
-          <label>Grosor del pincel: {brushSize}px</label>
-          <input 
-            type="range" 
-            min="5" 
-            max="120" 
-            value={brushSize} 
-            onChange={(e) => setBrushSize(parseInt(e.target.value))} 
-          />
+        <div className="bgrm-actions-panel" style={{ marginTop: 'auto' }}>
+          <button className="btn-download-primary" onClick={handleSave}>
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style={{ marginRight: '8px' }}>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Guardar Cambios
+          </button>
+          <button className="btn-text-action" onClick={onCancel} style={{ justifyContent: 'center', marginTop: '10px' }}>
+            Cancelar edición
+          </button>
         </div>
-      </div>
-
-      <div 
-        className="bgrm-editor-workspace" 
-        ref={containerRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        style={{ cursor: getCursor() }}
-      >
-        {!isReady && (
-          <div className="spinner" style={{ margin: '40px auto', borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }}></div>
-        )}
-        
-        <canvas
-          ref={displayCanvasRef}
-          className="bgrm-paint-canvas"
-          style={{ 
-            display: isReady ? 'block' : 'none',
-            transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-            transformOrigin: 'center center',
-            transition: (mode === 'pan' || isMiddlePan.current) ? 'none' : 'transform 0.1s ease-out'
-          }}
-        />
-        <div className="bgrm-editor-hints">
-          Fondo a cuadros para notar la transparencia.
-        </div>
-      </div>
-
-      <div className="bgrm-editor-actions">
-        <button className="bgrm-btn-secondary" onClick={onCancel}>Cancelar</button>
-        <button className="bgrm-btn-save" onClick={handleSave}>
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-          Guardar Cambios
-        </button>
-      </div>
-    </div>
+      </aside>
+    </>
   );
 };

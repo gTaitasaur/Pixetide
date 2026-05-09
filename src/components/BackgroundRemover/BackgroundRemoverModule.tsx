@@ -5,6 +5,7 @@ import { ImageComparisonSlider } from './ImageComparisonSlider';
 import BgWorker from '../../workers/bgRemoval.worker?worker';
 import { MaskEditor } from './MaskEditor';
 import { ToolError } from '../Errors/ToolError';
+import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import './BackgroundRemoverModule.css';
 
 type ProcessingState = 'idle' | 'ready_to_process' | 'downloading_model' | 'processing' | 'done' | 'editing_mask' | 'error';
@@ -123,94 +124,133 @@ export const BackgroundRemoverModule: React.FC = () => {
   }
 
   return (
-    <div className="bgrm-stage bgrm-active fade-in">
-      <div className="bgrm-top-bar">
-        <input 
-          type="file" 
-          accept="image/*" 
-          ref={fileInputRef} 
-          style={{ display: 'none' }} 
-          onChange={handleFileInputChange} 
-        />
-        <button className="bgrm-btn-change" onClick={() => fileInputRef.current?.click()}>
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          Cambiar Foto
-        </button>
-      </div>
-
-      <div className="bgrm-workspace">
-        {status === 'ready_to_process' && originalUrl && (
-          <div className="bgrm-ready-state fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-            <div className="bgrm-preview-container" style={{ maxWidth: '400px', borderRadius: '12px', overflow: 'hidden', border: '2px solid #e5e5e5' }}>
-              <img src={originalUrl} alt="Preview" style={{ width: '100%', display: 'block' }} />
-            </div>
-            <button className="bgrm-btn-primary" onClick={startProcessing} style={{ fontSize: '1.4rem', padding: '15px 30px', backgroundColor: 'var(--color-accent)' }}>
-              ✨ Quitar Fondo Ahora
-            </button>
-          </div>
-        )}
-
-        {status === 'downloading_model' && (
-          <div className="bgrm-loading-state fade-in">
-            <div className="spinner" style={{ width: '50px', height: '50px', margin: '0 auto 20px', borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }}></div>
-            <h3 className="bgrm-loading-title">Preparando la herramienta por primera vez...</h3>
-            <p className="bgrm-loading-desc">Descargando modelo de Inteligencia Artificial de alta calidad. Espere un momento.</p>
-          </div>
-        )}
-
-        {status === 'processing' && (
-          <div className="bgrm-loading-state fade-in">
-            <div className="spinner" style={{ width: '50px', height: '50px', margin: '0 auto 20px', borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }}></div>
-            <h3 className="bgrm-loading-title">Quitando fondo...</h3>
-            <p className="bgrm-loading-desc">La IA está analizando los bordes de tu imagen localmente, no cierres esta ventana.</p>
-          </div>
-        )}
-
-        {status === 'error' && (
-          <div style={{ width: '100%', maxWidth: '500px' }}>
-            <ToolError 
-              title="Error de la IA"
-              message={errorMessage} 
-              onRetry={() => setStatus('ready_to_process')} 
-            />
-          </div>
-        )}
-
-        {status === 'done' && originalUrl && resultUrl && (
-          <div className="bgrm-result-state fade-in">
-            <div className="bgrm-slider-wrapper">
-              <ImageComparisonSlider originalSrc={originalUrl} resultSrc={resultUrl} />
-              <div className="bgrm-slider-hints">
-                <span className="bgrm-hint-left">Antes</span>
-                <span className="bgrm-hint-right">Después</span>
+    <div className="bgrm-main-layout fade-in">
+      
+      {status !== 'editing_mask' && (
+        <>
+          {/* Lado Izquierdo: Workspace Visual */}
+          <div className="bgrm-workspace">
+            {status === 'ready_to_process' && originalUrl && (
+              <div className="bgrm-preview-card fade-in">
+                <ImagePreviewCanvas 
+                  imageUrl={originalUrl} 
+                  maxHeight="60vh"
+                />
               </div>
+            )}
+
+            {(status === 'downloading_model' || status === 'processing') && originalUrl && (
+              <div className="bgrm-preview-card bgrm-loading-preview fade-in">
+                <ImagePreviewCanvas 
+                  imageUrl={originalUrl} 
+                  maxHeight="60vh"
+                  className="blur-effect"
+                />
+              </div>
+            )}
+
+            {status === 'error' && (
+              <div style={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}>
+                <ToolError 
+                  title="Error de la IA"
+                  message={errorMessage} 
+                  onRetry={() => setStatus('ready_to_process')} 
+                />
+              </div>
+            )}
+
+            {status === 'done' && originalUrl && resultUrl && (
+              <div className="bgrm-result-state fade-in">
+                <div className="bgrm-preview-card">
+                  <ImageComparisonSlider originalSrc={originalUrl} resultSrc={resultUrl} />
+                </div>
+                <div className="bgrm-slider-hints">
+                  <span className="bgrm-hint-left">Antes</span>
+                  <span className="bgrm-hint-right">Después</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Lado Derecho: Controles Sidebar */}
+          <aside className="bgrm-sidebar">
+            <input 
+              type="file" 
+              accept="image/*" 
+              ref={fileInputRef} 
+              style={{ display: 'none' }} 
+              onChange={handleFileInputChange} 
+            />
+
+            <div className="bgrm-controls-section">
+              <h4 className="bgrm-control-title">Gestión de Fondo</h4>
+              
+              {status === 'ready_to_process' && (
+                <div className="bgrm-actions-panel fade-in">
+                  <button className="btn-download-primary" onClick={startProcessing}>
+                    ✨ Quitar Fondo Ahora
+                  </button>
+                  
+                  <button className="btn-text-action" onClick={() => fileInputRef.current?.click()} style={{ justifyContent: 'center' }}>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
+                    </svg>
+                    Elegir otra foto
+                  </button>
+                </div>
+              )}
+
+              {(status === 'downloading_model' || status === 'processing') && (
+                <div className="bgrm-sidebar-loading fade-in">
+                  <div className="spinner" style={{ borderColor: 'var(--color-accent)', borderTopColor: 'transparent', margin: '0 auto 20px', width: '40px', height: '40px' }}></div>
+                  <h3 className="bgrm-loading-title">
+                    {status === 'downloading_model' ? 'Descargando IA...' : 'Quitando fondo...'}
+                  </h3>
+                  <p className="bgrm-loading-desc">
+                    {status === 'downloading_model' 
+                      ? 'Preparando motor inteligente localmente por primera vez.' 
+                      : 'La IA está procesando los bordes de tu imagen en tu navegador.'}
+                  </p>
+                </div>
+              )}
+
+              {status === 'done' && (
+                <div className="bgrm-actions-panel fade-in">
+                  <button className="btn-download-primary" onClick={handleDownload}>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
+                    </svg>
+                    Descargar PNG
+                  </button>
+                  
+                  <button className="btn-text-action" onClick={() => setStatus('editing_mask')} style={{ justifyContent: 'center', marginTop: '10px' }}>
+                    🖌️ Perfeccionar Recorte
+                  </button>
+                  
+                  <button className="btn-text-action" onClick={() => fileInputRef.current?.click()} style={{ justifyContent: 'center' }}>
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
+                    </svg>
+                    Subir nueva foto
+                  </button>
+                </div>
+              )}
             </div>
             
-            <div className="bgrm-actions" style={{ gap: '15px' }}>
-              <button className="bgrm-btn-change" onClick={() => setStatus('editing_mask')} style={{ padding: '12px 20px', borderRadius: '8px' }}>
-                🖌️ Perfeccionar Recorte
-              </button>
-              <button className="bgrm-btn-download" onClick={handleDownload}>
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
-                </svg>
-                Descargar PNG
-              </button>
-            </div>
-          </div>
-        )}
+            <p className="bgrm-legal-hint">100% procesado localmente. Privacidad total garantizada.</p>
+          </aside>
+        </>
+      )}
 
-        {status === 'editing_mask' && originalUrl && resultUrl && (
-          <MaskEditor 
-            originalSrc={originalUrl} 
-            resultSrc={resultUrl} 
-            onSave={handleSaveMask} 
-            onCancel={() => setStatus('done')} 
-          />
-        )}
-      </div>
+      {/* Editor Interactivo (Comparte el Layout Principal internamente) */}
+      {status === 'editing_mask' && originalUrl && resultUrl && (
+        <MaskEditor 
+          originalSrc={originalUrl} 
+          resultSrc={resultUrl} 
+          onSave={handleSaveMask} 
+          onCancel={() => setStatus('done')} 
+        />
+      )}
     </div>
   );
 };

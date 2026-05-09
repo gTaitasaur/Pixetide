@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, TouchEvent, MouseEvent } from 'react';
+import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import './ImageComparisonSlider.css';
 
 interface ImageComparisonSliderProps {
@@ -48,40 +49,39 @@ export const ImageComparisonSlider: React.FC<ImageComparisonSliderProps> = ({ or
   }, [isDragging]);
 
   return (
-    <div 
-      className="comparison-container"
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
-      onTouchMove={handleTouchMove}
-      onMouseLeave={handleMouseUp}
-    >
-      {/* Fondo de tablero de ajedrez para ver la transparencia claramente */}
-      <div className="comparison-checkerboard"></div>
-      
-      {/* Imagen RESULTADO (sin fondo) que está por debajo de todo */}
-      <img src={resultSrc} alt="Resultado sin fondo" className="comparison-img-base" />
-      
-      {/* Imagen ORIGINAL (con fondo) que se recorta con clip-path */}
+    <ImagePreviewCanvas imageUrl={resultSrc} maxHeight="60vh" className="comparison-wrapper">
       <div 
-        className="comparison-overlay"
-        style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+        className="comparison-container"
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onTouchMove={handleTouchMove}
+        onMouseLeave={handleMouseUp}
       >
-        <img src={originalSrc} alt="Original con fondo" className="comparison-img-overlay" />
-      </div>
-      
-      {/* Línea del slider interactivo */}
-      <div 
-        className="comparison-slider-line"
-        style={{ left: `${sliderPosition}%` }}
-        onMouseDown={() => setIsDragging(true)}
-        onTouchStart={() => setIsDragging(true)}
-      >
-        <div className="comparison-slider-handle">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" transform="rotate(90 12 12)" />
-          </svg>
+        {/* Imagen RESULTADO (sin fondo) que está por debajo de todo */}
+        <img src={resultSrc} alt="Resultado sin fondo" className="comparison-img-base" draggable={false} />
+        
+        {/* Imagen ORIGINAL (con fondo) que se recorta con clip-path */}
+        <div 
+          className="comparison-overlay"
+          style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
+        >
+          <img src={originalSrc} alt="Original con fondo" className="comparison-img-overlay" draggable={false} />
+        </div>
+        
+        {/* Línea del slider interactivo */}
+        <div 
+          className="comparison-slider-line"
+          style={{ left: `${sliderPosition}%` }}
+          onMouseDown={() => setIsDragging(true)}
+          onTouchStart={() => setIsDragging(true)}
+        >
+          <div className="comparison-slider-handle">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" transform="rotate(90 12 12)" />
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
+    </ImagePreviewCanvas>
   );
 };

@@ -32,7 +32,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
     const addNewFiles = async () => {
       // Filtrar usando la ref (siempre actualizada) en lugar del state (potencialmente stale)
       const newFiles = files.filter(f => !processedFilesRef.current.has(f));
-      
+
       if (newFiles.length === 0) return;
 
       // Marcar como procesados INMEDIATAMENTE para evitar duplicados
@@ -55,15 +55,15 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
       // Calculamos transparencia asíncronamente en background
       for (const entry of newEntries) {
         const hasTransp = await detectTransparency(entry.previewUrl);
-        setConversionList(prev => 
+        setConversionList(prev =>
           prev.map(item => item.id === entry.id ? { ...item, hasTransparency: hasTransp } : item)
         );
       }
     };
 
     addNewFiles();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   // Limpieza de URLs si un archivo es borrado
   const handleRemoveItem = (id: string) => {
@@ -93,7 +93,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
 
   const handleProcessBatch = async () => {
     setIsProcessing(true);
-    
+
     /**
      * FIX CRÍTICO: Solo procesamos items con status === 'idle'.
      * Los que ya están 'done' no se tocan. Esto soluciona el bug
@@ -111,17 +111,17 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
     for (const item of itemsToProcess) {
       // Marcar como procesando usando functional update (nunca sobreescribe items nuevos)
       setConversionList(prev => prev.map(p => p.id === item.id ? { ...p, status: 'processing' as const } : p));
-      
+
       try {
         const resultBlob = await convertImage(item.file, item.targetFormat, item.fallbackColor);
-        
+
         // Construir nuevo nombre
         const ext = FORMAT_LABELS[item.targetFormat].toLowerCase();
         const baseName = item.file.name.replace(/\.[^/.]+$/, "");
         const newName = `${baseName}_converted.${ext}`;
 
         zipPayload.push({ blob: resultBlob, filename: newName });
-        
+
         // FIX: Usamos functional update para actualizar SOLO este item sin tocar el resto del estado
         setConversionList(prev => prev.map(p => p.id === item.id ? { ...p, status: 'done' as const, resultBlob } : p));
       } catch (err) {
@@ -166,29 +166,161 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
   const showPerformanceWarning = conversionList.length >= PERFORMANCE_WARNING_THRESHOLD;
   const idleCount = conversionList.filter(i => i.status === 'idle').length;
 
+  /** Trunca un nombre de archivo preservando la extensión */
+  const truncateFileName = (name: string, maxLength: number = 30) => {
+    if (name.length <= maxLength) return name;
+    const extIndex = name.lastIndexOf('.');
+    if (extIndex === -1) return name.slice(0, maxLength) + '...';
+
+    const ext = name.slice(extIndex);
+    const base = name.slice(0, extIndex);
+    const available = maxLength - ext.length - 3;
+
+    return available > 0
+      ? base.slice(0, available) + '...' + ext
+      : base.slice(0, 10) + '...' + ext;
+  };
+
   return (
-    <div 
-      className={`converter-stage ${isDragOver ? 'drag-active' : ''}`}
-      onDragOver={(e) => { e.preventDefault(); if (!isProcessing) setIsDragOver(true); }}
-      onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
-      onDrop={(e) => {
-        e.preventDefault();
-        setIsDragOver(false);
-        if (isProcessing) return;
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-          const validFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-          if (validFiles.length > 0) onAddFiles(validFiles);
-          e.dataTransfer.clearData();
-        }
-      }}
-    >
-      <div className="converter-hero">
-        <div className="converter-header-actions">
-          {/* Selector Global de Formato */}
-          <div className="global-format-control">
-            <label className="global-format-label">Convertir todo a:</label>
-            <select 
-              className="format-select global-format-select"
+    <div className={`converter-main-layout ${isDragOver ? 'drag-active' : ''}`}>
+      {/* Lado Izquierdo: Lista de Archivos */}
+      <div
+        className="converter-workspace"
+        onDragOver={(e) => { e.preventDefault(); if (!isProcessing) setIsDragOver(true); }}
+        onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
+        onDrop={(e) => {
+          e.preventDefault();
+          setIsDragOver(false);
+          if (isProcessing) return;
+          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            const validFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+            if (validFiles.length > 0) onAddFiles(validFiles);
+            e.dataTransfer.clearData();
+          }
+        }}
+      >
+        <div className="converter-header-row">
+          <h3 className="converter-title">Archivos cargados ({conversionList.length})</h3>
+          <button
+            className="btn-text-action"
+            onClick={() => addFilesInputRef.current?.click()}
+            disabled={isProcessing}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            Subir más
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            ref={addFilesInputRef}
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                onAddFiles(Array.from(e.target.files));
+                e.target.value = '';
+              }
+            }}
+          />
+        </div>
+
+        <div className="converter-cards-list">
+          {conversionList.map(item => {
+            const targetBreaksTransparency = ['image/jpeg', 'image/bmp'].includes(item.targetFormat);
+            const showTransparencyWarning = item.hasTransparency && targetBreaksTransparency;
+
+            return (
+              <div key={item.id} className={`converter-file-card ${item.status === 'done' ? 'is-done' : ''}`}>
+                <div className="card-main">
+                  <div className="card-preview">
+                    <img src={item.previewUrl} alt="Preview" />
+                  </div>
+
+                  <div className="card-info">
+                    <span className="file-name" title={item.file.name}>
+                      {truncateFileName(item.file.name)}
+                    </span>
+                    <div className="file-meta">
+                      <span className="meta-badge">{item.file.type.split('/')[1]?.toUpperCase()}</span>
+                      <span className="meta-size">{(item.file.size / 1024).toFixed(1)} KB</span>
+                    </div>
+                  </div>
+
+                  <div className="card-actions">
+                    <div className="format-picker">
+                      <span className="format-arrow">→</span>
+                      <select
+                        className="card-format-select"
+                        value={item.targetFormat}
+                        onChange={(e) => handleUpdateFormat(item.id, e.target.value as TargetFormat)}
+                        disabled={isProcessing}
+                      >
+                        <option value="image/jpeg">JPG</option>
+                        <option value="image/png">PNG</option>
+                        <option value="image/webp">WebP</option>
+                        <option value="image/avif">AVIF</option>
+                        <option value="image/gif">GIF</option>
+                        <option value="image/bmp">BMP</option>
+                        <option value="image/tiff">TIFF</option>
+                        <option value="image/x-icon">ICO</option>
+                        <option value="image/vnd.adobe.photoshop">PSD</option>
+                        <option value="application/postscript">EPS</option>
+                      </select>
+                    </div>
+
+                    <button className="btn-card-remove" onClick={() => handleRemoveItem(item.id)} disabled={isProcessing} title="Quitar">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 6L6 18M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                {showTransparencyWarning && (
+                  <div className="card-transparency-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#f59e0b' }}>
+                      <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                    <span>{FORMAT_LABELS[item.targetFormat]} no admite transparencia. Elija fondo:</span>
+                    <div className="color-pills">
+                      <button
+                        className={`color-pill ${item.fallbackColor === '#FFFFFF' ? 'active' : ''}`}
+                        onClick={() => handleUpdateColor(item.id, '#FFFFFF')}
+                        disabled={isProcessing}
+                      > Blanco </button>
+                      <button
+                        className={`color-pill ${item.fallbackColor === '#000000' ? 'active' : ''}`}
+                        onClick={() => handleUpdateColor(item.id, '#000000')}
+                        disabled={isProcessing}
+                      > Negro </button>
+                    </div>
+                  </div>
+                )}
+
+                {item.status !== 'idle' && (
+                  <div className={`card-status-bar status-${item.status}`}>
+                    {item.status === 'processing' && <div className="status-loader"></div>}
+                    <span>{item.status === 'processing' ? 'Convirtiendo...' : item.status === 'done' ? 'Listo' : 'Error'}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Lado Derecho: Controles Globales */}
+      <aside className="converter-sidebar">
+        <div className="sidebar-section">
+          <h4 className="section-title">Ajustes Globales</h4>
+          <p className="section-desc">Cambia el formato de salida para todos los archivos a la vez.</p>
+
+          <div className="global-format-card">
+            <label>Convertir a:</label>
+            <select
+              className="global-format-select"
               value={globalFormat}
               onChange={(e) => handleGlobalFormatChange(e.target.value as TargetFormat)}
               disabled={isProcessing}
@@ -205,153 +337,47 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
               <option value="application/postscript">EPS</option>
             </select>
           </div>
-          
-          <div className="converter-header-buttons">
-            <input 
-              type="file" 
-              accept="image/*" 
-              multiple 
-              ref={addFilesInputRef} 
-              style={{ display: 'none' }} 
-              onChange={(e) => {
-                if (e.target.files && e.target.files.length > 0) {
-                  onAddFiles(Array.from(e.target.files));
-                  e.target.value = '';
-                }
-              }}
-            />
-            <button 
-              className="btn-add-more" 
-              onClick={() => addFilesInputRef.current?.click()} 
-              disabled={isProcessing}
-              title="Agregar más imágenes"
-            >
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '18px', height: '18px' }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-              </svg>
-              Agregar
-            </button>
-            <button className="btn-clear-all" onClick={handleClearInternal} disabled={isProcessing}>
-              Borrar Todo
-            </button>
-          </div>
         </div>
 
-        {/* Advertencia de rendimiento */}
         {showPerformanceWarning && (
-          <div className="performance-warning">
-            <span>⚠️</span>
-            <span>
-              Has seleccionado <strong>{conversionList.length}</strong> imágenes. 
-              Como todo el procesamiento es 100% privado en tu computadora, la conversión masiva puede tardar unos segundos.
-            </span>
+          <div className="sidebar-alert warning">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <p><strong>{conversionList.length} archivos</strong> detectados. El proceso local puede tomar unos segundos.</p>
           </div>
         )}
 
-        <div className="converter-file-list">
-          {conversionList.map(item => {
-            const targetBreaksTransparency = item.targetFormat === 'image/jpeg';
-            const showTransparencyWarning = item.hasTransparency && targetBreaksTransparency;
+        <div className="sidebar-actions">
+          <button
+            className="btn-download-primary"
+            onClick={handleProcessBatch}
+            disabled={isProcessing || idleCount === 0}
+          >
+            {isProcessing ? (
+              <>
+                <div className="btn-spinner"></div>
+                Procesando...
+              </>
+            ) : (
+              <>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '10px' }}>
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                {idleCount === conversionList.length ? 'Convertir Todo' : 'Convertir Pendientes'}
+              </>
+            )}
+          </button>
 
-            return (
-              <div key={item.id} className="converter-file-row">
-                <div className="converter-row-top">
-                  <img src={item.previewUrl} className="file-preview-thumb" alt="thumb" />
-                  
-                  <div className="file-info">
-                    <span className="file-name" title={item.file.name}>{item.file.name}</span>
-                    <span className="file-meta">
-                      Original: {item.file.type.split('/')[1]?.toUpperCase() || 'UNKNOWN'}
-                    </span>
-                  </div>
-
-                  <div className="conversion-controls">
-                    <span style={{ fontSize: '1.2rem', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-handwriting)' }}>→</span>
-                    <select 
-                      className="format-select"
-                      value={item.targetFormat}
-                      onChange={(e) => handleUpdateFormat(item.id, e.target.value as TargetFormat)}
-                      disabled={isProcessing}
-                    >
-                      <option value="image/jpeg">JPG</option>
-                      <option value="image/png">PNG</option>
-                      <option value="image/webp">WebP</option>
-                      <option value="image/avif">AVIF</option>
-                      <option value="image/gif">GIF</option>
-                      <option value="image/bmp">BMP</option>
-                      <option value="image/tiff">TIFF</option>
-                      <option value="image/x-icon">ICO</option>
-                      <option value="image/vnd.adobe.photoshop">PSD</option>
-                      <option value="application/postscript">EPS</option>
-                    </select>
-
-                    <button className="btn-remove-row" onClick={() => handleRemoveItem(item.id)} disabled={isProcessing} title="Quitar">
-                      <svg className="remove-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-
-                    {item.status !== 'idle' && (
-                      <span className={`row-status-badge status-${item.status}`}>
-                        {item.status === 'processing' ? 'Procesando' : item.status === 'done' ? 'Listo' : 'Error'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Zona Condicional de Transparencia */}
-                {showTransparencyWarning && (
-                  <div className="transparency-options">
-                    <strong>⚠️ Transparencia detectada:</strong>
-                    <span>Rellenar fondo con:</span>
-                    <div className="color-radio-group">
-                      <label className="color-radio">
-                        <input 
-                          type="radio" 
-                          name={`color-${item.id}`} 
-                          checked={item.fallbackColor === '#FFFFFF'}
-                          onChange={() => handleUpdateColor(item.id, '#FFFFFF')}
-                          disabled={isProcessing}
-                        />
-                        Blanco
-                      </label>
-                      <label className="color-radio">
-                        <input 
-                          type="radio" 
-                          name={`color-${item.id}`} 
-                          checked={item.fallbackColor === '#000000'}
-                          onChange={() => handleUpdateColor(item.id, '#000000')}
-                          disabled={isProcessing}
-                        />
-                        Negro
-                      </label>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          <button className="btn-clear-all" onClick={handleClearInternal} disabled={isProcessing}>
+            Borrar Todo
+          </button>
         </div>
 
-
-      </div>
-
-      <div className="converter-actions">
-        <button 
-          className="btn-convert-action" 
-          onClick={handleProcessBatch}
-          disabled={isProcessing || idleCount === 0}
-        >
-          {isProcessing 
-            ? 'Procesando formatos...' 
-            : idleCount === conversionList.length
-              ? `Convertir ${conversionList.length} Foto${conversionList.length > 1 ? 's' : ''}`
-              : idleCount > 0
-                ? `Convertir ${idleCount} Pendiente${idleCount > 1 ? 's' : ''}`
-                : 'Todas las conversiones completadas ✓'
-          }
-        </button>
-      </div>
+        <p className="privacy-hint">Procesamiento local: tus fotos nunca salen de este navegador.</p>
+      </aside>
     </div>
   );
 };

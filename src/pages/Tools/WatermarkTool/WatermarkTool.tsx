@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { WatermarkModule } from '../../../components/Watermark/WatermarkModule';
 import { Workspace } from '../../../components/UI/Workspace/Workspace';
 

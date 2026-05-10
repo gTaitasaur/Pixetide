@@ -1,26 +1,40 @@
 /**
- * Tipos para la herramienta de Marca de Agua.
- * 
- * Usamos coordenadas normalizadas (0–1) para la posición de la marca,
- * garantizando que la ubicación sea relativa al tamaño de cada imagen
- * y se mantenga consistente entre fotos de distintas dimensiones.
+ * Tipos para la herramienta de Marca de Agua avanzada con Fabric.js
  */
 
-/** Configuración de posición, escala, rotación y opacidad de la marca */
-export interface WatermarkConfig {
-  /** Posición X del centro de la marca (0 = izquierda, 1 = derecha) */
+export type WatermarkType = 'text' | 'image';
+
+export interface BaseWatermarkConfig {
+  id: string;
+  type: WatermarkType;
+  /** Posición X central normalizada (0-1) */
   x: number;
-  /** Posición Y del centro de la marca (0 = arriba, 1 = abajo) */
+  /** Posición Y central normalizada (0-1) */
   y: number;
   /** Escala relativa al ancho de la imagen base (ej: 0.25 = 25% del ancho) */
   scale: number;
-  /** Rotación en grados (-180 a 180) */
+  /** Ángulo en grados */
   rotation: number;
-  /** Opacidad (0 = invisible, 1 = totalmente opaco) */
+  /** Opacidad (0-1) */
   opacity: number;
 }
 
-/** Estado de procesamiento de cada imagen del lote */
+export interface TextWatermarkConfig extends BaseWatermarkConfig {
+  type: 'text';
+  text: string;
+  color: string; // HEX
+  fontFamily: string;
+  fontWeight: 'normal' | 'bold';
+}
+
+export interface ImageWatermarkConfig extends BaseWatermarkConfig {
+  type: 'image';
+  /** URL Object de la imagen subida como marca de agua */
+  url: string | null;
+}
+
+export type WatermarkConfig = TextWatermarkConfig | ImageWatermarkConfig;
+
 export interface WatermarkFile {
   id: string;
   file: File;
@@ -30,11 +44,27 @@ export interface WatermarkFile {
   resultBlob?: Blob;
 }
 
-/** Valores por defecto de la configuración de marca de agua */
-export const DEFAULT_WATERMARK_CONFIG: WatermarkConfig = {
+export const DEFAULT_TEXT_CONFIG: TextWatermarkConfig = {
+  id: '',
+  type: 'text',
+  text: 'Pixetide',
+  color: '#ffffff',
+  fontFamily: 'Inter',
+  fontWeight: 'bold',
+  x: 0.5,
+  y: 0.5,
+  scale: 0.3,
+  rotation: 0,
+  opacity: 0.8,
+};
+
+export const DEFAULT_IMAGE_CONFIG: ImageWatermarkConfig = {
+  id: '',
+  type: 'image',
+  url: null,
   x: 0.5,
   y: 0.5,
   scale: 0.25,
   rotation: 0,
-  opacity: 0.7,
+  opacity: 0.8,
 };

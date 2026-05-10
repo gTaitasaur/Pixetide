@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body>
+  <canvas id="c" width="400" height="400"></canvas>
+  <script>
+    const canvas = new fabric.Canvas('c');
+    const text = new fabric.Text('Hello', { left: 100, top: 100 });
+    canvas.add(text);
+    canvas.on('object:modified', function(e) {
+      console.log('Action:', e.action);
+      console.log('Transform Action:', e.transform ? e.transform.action : 'none');
+    });
+  </script>
+</body>
+</html>

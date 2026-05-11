@@ -1,51 +1,26 @@
 import JSZip from 'jszip';
 import { TargetFormat, FallbackColor } from '../types/converter';
-import { ImageMagick, MagickFormat, MagickColor, AlphaAction } from '@imagemagick/magick-wasm';
-import { initMagickEngine } from './magickEngine';
-
-const mimeToMagickFormat = (mime: TargetFormat): MagickFormat => {
-  switch(mime) {
-    case 'image/jpeg': return MagickFormat.Jpeg;
-    case 'image/png': return MagickFormat.Png;
-    case 'image/webp': return MagickFormat.WebP;
-    case 'image/avif': return MagickFormat.Avif;
-    case 'image/bmp': return MagickFormat.Bmp;
-    case 'image/tiff': return MagickFormat.Tiff;
-    case 'image/vnd.adobe.photoshop': return MagickFormat.Psd;
-    case 'application/postscript': return MagickFormat.Eps;
-    case 'image/x-icon': return MagickFormat.Ico;
-    case 'image/gif': return MagickFormat.Gif;
-    default: return MagickFormat.Png;
-  }
-};
+import { runMagickTask } from './magickEngine';
 
 /**
- * Escanea la imagen usando ImageMagick para determinar si
+ * Escanea la imagen usando el Worker de ImageMagick para determinar si
  * existe canal Alpha.
  */
 export const detectTransparency = async (imageUrl: string): Promise<boolean> => {
   try {
-    await initMagickEngine();
-    
     const response = await fetch(imageUrl);
-    const buffer = new Uint8Array(await response.arrayBuffer());
+    const buffer = await response.arrayBuffer();
     
-    return new Promise((resolve) => {
-      try {
-        ImageMagick.read(buffer, (img) => {
-          resolve(img.hasAlpha);
-        });
-      } catch {
-        resolve(false);
-      }
-    });
+    // Transferimos el buffer al worker sin bloquear el hilo principal
+    const hasAlpha = await runMagickTask('DETECT_TRANSPARENCY', { buffer }, [buffer]);
+    return hasAlpha;
   } catch {
     return false;
   }
 };
 
 /**
- * Convierte un File a un Blob del formato destino usando el potente motor de ImageMagick.
+ * Convierte un File a un Blob del formato destino usando el worker de ImageMagick.
  * Si se solicita un fallbackColor y hay transparencia, hace compositing nativo de alta calidad.
  */
 export const convertImage = async (
@@ -53,32 +28,19 @@ export const convertImage = async (
   targetFormat: TargetFormat, 
   fallbackColor: FallbackColor
 ): Promise<Blob> => {
-  await initMagickEngine();
-  const buffer = new Uint8Array(await file.arrayBuffer());
+  const buffer = await file.arrayBuffer();
   
-  return new Promise((resolve, reject) => {
-    try {
-      ImageMagick.read(buffer, (img) => {
-        // Si tiene transparencia y se definió un color para rellenarla
-        if (img.hasAlpha && fallbackColor !== 'transparent') {
-          img.backgroundColor = new MagickColor(fallbackColor);
-          img.alpha(AlphaAction.Remove); // Elimina el canal Alpha y hace compositing sobre el fondo
-        }
+  try {
+    const outBuffer = await runMagickTask('CONVERT_IMAGE', {
+      buffer,
+      targetFormat,
+      fallbackColor
+    }, [buffer]);
 
-        // Heredar calidad original o tope seguro de 92% para evitar inflar el peso de manera artificial.
-        img.quality = img.quality && img.quality > 0 ? img.quality : 92;
-        
-        const outFormat = mimeToMagickFormat(targetFormat);
-        
-        img.write(outFormat, (outBuffer) => {
-          // El buffer resultante lo convertimos en Blob con su tipo MIME correcto
-          resolve(new Blob([new Uint8Array(outBuffer)], { type: targetFormat }));
-        });
-      });
-    } catch (e) {
-      reject(e instanceof Error ? e : new Error("Fallo en la conversión con ImageMagick"));
-    }
-  });
+    return new Blob([new Uint8Array(outBuffer)], { type: targetFormat });
+  } catch (e) {
+    throw e instanceof Error ? e : new Error("Fallo en la conversión con el Worker de ImageMagick");
+  }
 };
 
 /**

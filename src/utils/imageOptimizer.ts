@@ -1,5 +1,4 @@
-import { ImageMagick, MagickFormat, MagickGeometry } from '@imagemagick/magick-wasm';
-import { initMagickEngine } from './magickEngine';
+import { runMagickTask } from './magickEngine';
 import { OptimizationPreset } from '../types/optimizer';
 
 export interface OptimizationResult {
@@ -11,18 +10,7 @@ export interface OptimizationResult {
 }
 
 /**
- * Determina si un formato es "sin pérdida" por naturaleza.
- * PNG, BMP, TIFF no usan calidad visual como JPG/WebP.
- */
-const isLosslessFormat = (format: MagickFormat): boolean => {
-  return format === MagickFormat.Png 
-    || format === MagickFormat.Bmp 
-    || format === MagickFormat.Tiff 
-    || format === MagickFormat.Gif;
-};
-
-/**
- * Optimiza una imagen usando ImageMagick WASM.
+ * Optimiza una imagen usando el Worker de ImageMagick WASM.
  * 
  * Casos de uso cubiertos:
  * 1. Lossless + preservar resolución + formato nativo → Solo strip metadata
@@ -40,97 +28,50 @@ export async function rawOptimizeImage(
   preserveResolution: boolean,
   useWebP: boolean
 ): Promise<OptimizationResult> {
-  await initMagickEngine();
-  const buffer = new Uint8Array(await originalFile.arrayBuffer());
+  const buffer = await originalFile.arrayBuffer();
 
-  return new Promise((resolve, reject) => {
-    try {
-      ImageMagick.read(buffer, (img) => {
-        const originalFormat = img.format;
-        const targetFormat = useWebP ? MagickFormat.WebP : originalFormat;
+  try {
+    const outBuffer = await runMagickTask('OPTIMIZE_IMAGE', {
+      buffer,
+      preset,
+      preserveResolution,
+      useWebP
+    }, [buffer]);
 
-        // ── Paso 1: Redimensionado condicional ──
-        if (!preserveResolution) {
-          const geom = new MagickGeometry(`${preset.maxWidthOrHeight}x${preset.maxWidthOrHeight}>`);
-          img.resize(geom);
-        }
-        
-        // ── Paso 2: Strip metadata (siempre, para bajar peso) ──
-        img.strip();
+    const mimeType = useWebP ? 'image/webp' : originalFile.type;
+    const newFileName = useWebP 
+      ? originalFile.name.replace(/\.[^/.]+$/, "") + ".webp"
+      : originalFile.name;
+      
+    const compressedFile = new File([new Uint8Array(outBuffer)], newFileName, {
+      type: mimeType,
+    });
 
-        // ── Paso 3: Configurar compresión según el formato y el preset ──
-        if (preset.id === 'lossless') {
-          if (useWebP) {
-            // WebP Lossless: compresión sin pérdida visual
-            img.settings.setDefine(MagickFormat.WebP, 'lossless', 'true');
-            img.quality = 100;
-          } else if (isLosslessFormat(originalFormat)) {
-            // PNG/BMP/TIFF/GIF: No tocamos la calidad.
-            // Para PNG, quality controla zlib, no calidad visual.
-            // Dejamos que Magick use su default interno para no inflar.
-          } else {
-            // JPG u otros formatos con pérdida: mantener calidad original
-            // Si ImageMagick no puede leerla (devuelve 0), usamos 92 como tope seguro.
-            const originalQuality = img.quality;
-            img.quality = originalQuality > 0 ? originalQuality : 92;
-          }
-        } else {
-          // Presets con compresión (Normal, Agresiva, Máxima)
-          const targetQuality = Math.round(preset.quality * 100);
+    const originalSize = originalFile.size;
+    const newSize = compressedFile.size;
+    
+    let finalFile = compressedFile;
+    let finalSize = newSize;
 
-          if (useWebP) {
-            img.settings.setDefine(MagickFormat.WebP, 'lossless', 'false');
-            img.quality = targetQuality;
-          } else if (isLosslessFormat(originalFormat)) {
-            // Para PNG: no tiene sentido bajar "calidad visual" porque PNG es lossless.
-            // Lo que sí podemos hacer es redimensionar (ya hecho arriba) y strip (ya hecho).
-            // La compresión real viene del redimensionado, no de una variable quality.
-          } else {
-            // JPG: aplicar calidad del preset directamente
-            img.quality = targetQuality;
-          }
-        }
-        
-        img.write(targetFormat, (outBuffer) => {
-          const mimeType = useWebP ? 'image/webp' : originalFile.type;
-          const newFileName = useWebP 
-            ? originalFile.name.replace(/\.[^/.]+$/, "") + ".webp"
-            : originalFile.name;
-            
-          const compressedFile = new File([new Uint8Array(outBuffer)], newFileName, {
-            type: mimeType,
-          });
-
-          const originalSize = originalFile.size;
-          const newSize = compressedFile.size;
-          
-          let finalFile = compressedFile;
-          let finalSize = newSize;
-
-          // ── Mecanismo de Defensa Universal ──
-          // Si el resultado pesa más que el original, devolvemos el original.
-          // Esto cubre TODOS los edge cases (PNG lossless, JPG ya muy comprimido, etc.)
-          if (newSize > originalSize) {
-            finalFile = originalFile;
-            finalSize = originalSize;
-          }
-
-          const reductionPercentage = Math.max(0, ((originalSize - finalSize) / originalSize) * 100);
-
-          resolve({
-            file: finalFile,
-            url: URL.createObjectURL(finalFile),
-            originalSize,
-            newSize: finalSize,
-            reductionPercentage,
-          });
-        });
-      });
-    } catch (error) {
-      console.error("Error optimizando imagen:", error);
-      reject(new Error('Fallo al comprimir la imagen con ImageMagick.'));
+    // ── Mecanismo de Defensa Universal ──
+    if (newSize > originalSize) {
+      finalFile = originalFile;
+      finalSize = originalSize;
     }
-  });
+
+    const reductionPercentage = Math.max(0, ((originalSize - finalSize) / originalSize) * 100);
+
+    return {
+      file: finalFile,
+      url: URL.createObjectURL(finalFile),
+      originalSize,
+      newSize: finalSize,
+      reductionPercentage,
+    };
+  } catch (error) {
+    console.error("Error optimizando imagen:", error);
+    throw new Error('Fallo al comprimir la imagen con el Worker de ImageMagick.');
+  }
 }
 
 /**

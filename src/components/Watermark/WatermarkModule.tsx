@@ -119,14 +119,15 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
       fabricCanvasRef.current.on('selection:cleared', handleSelectionCleared);
     }
     
-    const fCanvas = fabricCanvasRef.current;
+
     const activePhoto = photoList.find(p => p.id === activePhotoId);
     if (!activePhoto) return;
 
     // Cargar imagen base
     fabric.Image.fromURL(activePhoto.previewUrl, (img) => {
-      if (!viewerWrapperRef.current || !fCanvas) return;
+      if (!viewerWrapperRef.current || !fabricCanvasRef.current) return;
       
+      const currentCanvas = fabricCanvasRef.current;
       const wrapperW = viewerWrapperRef.current.clientWidth;
       const wrapperH = viewerWrapperRef.current.clientHeight;
       
@@ -137,8 +138,8 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
       const renderW = (img.width || 1) * scale;
       const renderH = (img.height || 1) * scale;
 
-      fCanvas.setWidth(renderW);
-      fCanvas.setHeight(renderH);
+      currentCanvas.setWidth(renderW);
+      currentCanvas.setHeight(renderH);
 
       img.set({
         originX: 'left',
@@ -149,7 +150,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
         evented: false,
       });
 
-      fCanvas.setBackgroundImage(img, fCanvas.renderAll.bind(fCanvas));
+      currentCanvas.setBackgroundImage(img, currentCanvas.renderAll.bind(currentCanvas));
       
       // Re-renderizar marcas
       renderWatermarks();

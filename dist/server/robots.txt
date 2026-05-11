@@ -1,0 +1,9 @@
+# Pixetide — robots.txt
+# Permite a todos los crawlers acceder al sitio completo.
+# El sitemap les indica exactamente qué páginas indexar.
+
+User-agent: *
+Allow: /
+
+# Sitemap con todas las URLs EN + ES y sus relaciones hreflang
+Sitemap: https://www.pixetide.com/sitemap.xml

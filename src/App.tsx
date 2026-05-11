@@ -1,47 +1,29 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { MainLayout } from './components/Layout/MainLayout';
-import { Home } from './pages/Home/Home';
-import { AspectRatioTool } from './pages/Tools/AspectRatioTool/AspectRatioTool';
-import { OptimizerTool } from './pages/Tools/OptimizerTool/OptimizerTool';
-import { ConverterTool } from './pages/Tools/ConverterTool/ConverterTool';
-import { RotateFlipTool } from './pages/Tools/RotateFlipTool/RotateFlipTool';
-import { WatermarkTool } from './pages/Tools/WatermarkTool/WatermarkTool';
-import { ColorPaletteTool } from './pages/Tools/ColorPaletteTool/ColorPaletteTool';
-import { Base64Tool } from './pages/Tools/Base64Tool/Base64Tool';
-import { BackgroundRemoverTool } from './pages/Tools/BackgroundRemoverTool/BackgroundRemoverTool';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './AppRoutes';
 import { ErrorBoundary } from './components/Errors/ErrorBoundary';
-import { NotFound } from './components/Errors/NotFound';
 import { ToastProvider } from './components/Errors/ToastContext';
-import './App.css'; // Mantenemos variables de envoltura si quedan
-
 import { ToastContainer } from './components/UI/Toast/ToastContainer';
+import { SeoHead } from './seo/SeoHead';
+import { SchemaMarkup } from './seo/SchemaMarkup';
+import './App.css';
 
+/**
+ * App.tsx — Punto de entrada del CLIENTE.
+ *
+ * Envuelve AppRoutes con BrowserRouter (necesita window.history).
+ * SeoHead solo se monta aquí (cliente) porque manipula document.head.
+ * El servidor inyecta los meta tags directamente en el HTML.
+ */
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <ToastProvider>
         <ErrorBoundary>
+          <SeoHead />
+          <SchemaMarkup />
           <ToastContainer />
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              {/* Index Route es el Home Page */}
-              <Route index element={<Home />} />
-
-              {/* Rutas de las Herramientas */}
-              <Route path="herramientas/recorte-aspect-ratio" element={<AspectRatioTool />} />
-              <Route path="herramientas/optimizar-peso" element={<OptimizerTool />} />
-              <Route path="herramientas/cambiar-formato" element={<ConverterTool />} />
-              <Route path="herramientas/girar-voltear" element={<RotateFlipTool />} />
-              <Route path="herramientas/marca-de-agua" element={<WatermarkTool />} />
-              <Route path="herramientas/paleta-colores" element={<ColorPaletteTool />} />
-              <Route path="herramientas/base64" element={<Base64Tool />} />
-              <Route path="herramientas/quitar-fondo" element={<BackgroundRemoverTool />} />
-
-              {/* Ruta Comodín 404 */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
+          <AppRoutes />
         </ErrorBoundary>
       </ToastProvider>
     </BrowserRouter>

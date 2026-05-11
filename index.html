@@ -1,15 +1,28 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pixetide — Procesador de Imágenes Web</title>
+
+    <!-- Fallback title (SeoHead lo sobreescribe dinámicamente por ruta) -->
+    <title>Pixetide — Free Online Image Tools | 100% Private, No Upload</title>
+    <meta name="description" content="Free browser-based image tools. Compress, convert, crop, remove backgrounds & more. Your files never leave your device. No signup required." />
+
+    <!-- Favicon (generado desde el logo Pixetide) -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Gochi+Hand&display=swap" rel="stylesheet">
+
+    <!-- El script de prerendering reemplaza este placeholder con
+         title, meta description, canonical, hreflang, OG y Twitter Cards
+         específicos para cada ruta. En desarrollo, SeoHead lo hace dinámicamente. -->
+    <!--head-tags-->
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

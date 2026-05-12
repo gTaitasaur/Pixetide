@@ -5,6 +5,7 @@ import { validateImageFile } from '../../utils/fileUpload';
 import { extractColorsFromImage, generateHarmonies } from '../../utils/colorExtractor';
 import { ExtractedSwatch, ColorFormat, HarmonicColor } from '../../types/color';
 import { showToast } from '../UI/Toast/toastManager';
+import { useLocale } from '../../i18n/useLocale';
 import './ColorPaletteModule.css';
 
 export const ColorPaletteModule: React.FC = () => {
@@ -12,16 +13,34 @@ export const ColorPaletteModule: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [swatches, setSwatches] = useState<ExtractedSwatch[] | null>(null);
   const [harmonies, setHarmonies] = useState<HarmonicColor[] | null>(null);
+  const { t, locale } = useLocale();
   
   // Controles
   const [format, setFormat] = useState<ColorFormat>('HEX');
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Mapeo de traducciones para nombres de colores y armonías
+  const translateName = (name: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      'Vibrante': { en: 'Vibrant', es: 'Vibrante' },
+      'Vibrante Claro': { en: 'Light Vibrant', es: 'Vibrante Claro' },
+      'Vibrante Oscuro': { en: 'Dark Vibrant', es: 'Vibrante Oscuro' },
+      'Apagado': { en: 'Muted', es: 'Apagado' },
+      'Apagado Claro': { en: 'Light Muted', es: 'Apagado Claro' },
+      'Apagado Oscuro': { en: 'Dark Muted', es: 'Apagado Oscuro' },
+      'Monocromático': { en: 'Monochromatic', es: 'Monocromático' },
+      'Análogo': { en: 'Analogous', es: 'Análogo' },
+      'Complementario': { en: 'Complementary', es: 'Complementario' },
+      'Triada': { en: 'Triadic', es: 'Triada' },
+    };
+    return translations[name]?.[locale] || name;
+  };
+
   const processNewFile = async (file: File) => {
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      showToast(validation.error || 'Error al validar el archivo.', 'error');
+      showToast(t('shared.errorValidation') + ': ' + (validation.error || ''), 'error');
       return;
     }
     
@@ -52,9 +71,9 @@ export const ColorPaletteModule: React.FC = () => {
       const isNetworkError = error.name === 'ChunkLoadError' || error.message?.includes('Loading chunk');
       
       if (isNetworkError) {
-        showToast('Error de conexión: No se pudieron descargar los motores de color. Reintenta o recarga la página.', 'error', 6000);
+        showToast(t('cp.networkError'), 'error', 6000);
       } else {
-        showToast('No se pudieron extraer los colores de esta imagen.', 'error');
+        showToast(t('cp.extractError'), 'error');
       }
       
       setSwatches(null);
@@ -75,9 +94,9 @@ export const ColorPaletteModule: React.FC = () => {
 
   const handleCopyColor = (colorCode: string) => {
     navigator.clipboard.writeText(colorCode).then(() => {
-      showToast(`¡Copiado! ${colorCode}`, 'success', 2500);
+      showToast(`${t('cp.copied')} ${colorCode}`, 'success', 2500);
     }).catch(() => {
-      showToast('Error al copiar', 'error');
+      showToast(t('cp.copyError'), 'error');
     });
   };
 
@@ -104,7 +123,7 @@ export const ColorPaletteModule: React.FC = () => {
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          Subir otra foto
+          {t('shared.uploadAnother')}
         </button>
         <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={(e) => {
           if (e.target.files && e.target.files.length > 0) {
@@ -121,7 +140,7 @@ export const ColorPaletteModule: React.FC = () => {
           {isProcessing && (
             <div className="cp-processing-overlay">
               <div className="cp-spinner"></div>
-              <span className="cp-processing-text">Analizando colores...</span>
+              <span className="cp-processing-text">{t('cp.analyzing')}</span>
             </div>
           )}
         </div>
@@ -129,7 +148,7 @@ export const ColorPaletteModule: React.FC = () => {
         {/* Sidebar: Controles */}
         <aside className="cp-sidebar">
           <div className="cp-section">
-            <h4 className="cp-section-title">Formato de Color</h4>
+            <h4 className="cp-section-title">{t('cp.colorFormat')}</h4>
             <div className="cp-format-grid">
               {(['HEX', 'RGB', 'HSL', 'OKLCH'] as ColorFormat[]).map(fmt => (
                 <button key={fmt} type="button" className={`cp-format-btn ${format === fmt ? 'is-active' : ''}`} onClick={() => setFormat(fmt)}>
@@ -139,9 +158,9 @@ export const ColorPaletteModule: React.FC = () => {
             </div>
           </div>
           <div className="cp-section">
-             <h4 className="cp-section-title">Ayuda</h4>
+             <h4 className="cp-section-title">{t('cp.help')}</h4>
              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', lineHeight: '1.4' }}>
-                Haz clic en cualquier bloque de color para copiar su código.
+                {t('cp.helpText')}
              </div>
           </div>
         </aside>
@@ -151,13 +170,14 @@ export const ColorPaletteModule: React.FC = () => {
           <div className="cp-palette-dock">
             {swatches.map((swatch, idx) => {
               const code = getFormatCode(swatch);
+              const name = translateName(swatch.name);
               return (
-                <div key={idx} className="cp-swatch-item" onClick={() => handleCopyColor(code)} title={`Copiar ${swatch.name}`}>
+                <div key={idx} className="cp-swatch-item" onClick={() => handleCopyColor(code)} title={`${t('cp.copy')} ${name}`}>
                   <div className="cp-swatch-color" style={{ backgroundColor: swatch.hex }}>
-                    <span className="cp-swatch-label-overlay" style={{ color: swatch.textColor }}>Copiar</span>
+                    <span className="cp-swatch-label-overlay" style={{ color: swatch.textColor }}>{t('cp.copy')}</span>
                   </div>
                   <div className="cp-swatch-info">
-                    <span className="cp-swatch-name">{swatch.name}</span>
+                    <span className="cp-swatch-name">{name}</span>
                     <span className="cp-swatch-code">{code}</span>
                   </div>
                 </div>
@@ -169,11 +189,11 @@ export const ColorPaletteModule: React.FC = () => {
         {/* SECCIÓN: Paleta Armónica */}
         {harmonies && !isProcessing && (
           <div className="cp-harmonies-wrapper">
-             <h3 className="cp-section-title" style={{ marginBottom: '16px', fontSize: '1.5rem' }}>Paleta Armónica</h3>
+             <h3 className="cp-section-title" style={{ marginBottom: '16px', fontSize: '1.5rem' }}>{t('cp.harmonicPalette')}</h3>
              <div className="cp-harmonies-list">
                 {harmonies.map((harmony, idx) => (
                   <div key={idx} className="cp-harmony-row">
-                    <h4 className="cp-harmony-type-title">{harmony.type}</h4>
+                    <h4 className="cp-harmony-type-title">{translateName(harmony.type)}</h4>
                     <div className="cp-harmony-scale">
                       {harmony.colors.map((color, colorIdx) => {
                         const code = getFormatCode(color);
@@ -182,10 +202,10 @@ export const ColorPaletteModule: React.FC = () => {
                             key={colorIdx} 
                             className="cp-harmony-scale-item"
                             onClick={() => handleCopyColor(code)}
-                            title={`Copiar ${code}`}
+                            title={`${t('cp.copy')} ${code}`}
                           >
                             <div className="cp-harmony-scale-color" style={{ backgroundColor: color.hex }}>
-                              <span className="cp-harmony-copy-text" style={{ color: color.textColor }}>Copiar</span>
+                              <span className="cp-harmony-copy-text" style={{ color: color.textColor }}>{t('cp.copy')}</span>
                             </div>
                             <span className="cp-harmony-scale-hex">{code}</span>
                           </div>
@@ -198,7 +218,7 @@ export const ColorPaletteModule: React.FC = () => {
           </div>
         )}
 
-        <p className="cp-legal-hint">Tus colores se extraen localmente. Privacidad total garantizada.</p>
+        <p className="cp-legal-hint">{t('shared.privacyColors')}</p>
       </div>
     </div>
   );

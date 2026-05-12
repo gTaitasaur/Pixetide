@@ -6,6 +6,7 @@ import BgWorker from '../../workers/bgRemoval.worker?worker';
 import { MaskEditor } from './MaskEditor';
 import { ToolError } from '../Errors/ToolError';
 import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
+import { useLocale } from '../../i18n/useLocale';
 import './BackgroundRemoverModule.css';
 
 type ProcessingState = 'idle' | 'ready_to_process' | 'downloading_model' | 'processing' | 'done' | 'editing_mask' | 'error';
@@ -16,6 +17,7 @@ export const BackgroundRemoverModule: React.FC = () => {
   const [resultUrl, setResultUrl] = useState<string | null>(null);
   const [status, setStatus] = useState<ProcessingState>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const { t } = useLocale();
 
   const isModelPreloaded = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -54,7 +56,7 @@ export const BackgroundRemoverModule: React.FC = () => {
       }
       else if (type === 'error') {
         console.error("Error desde el worker:", message);
-        setErrorMessage(message || 'Ocurrió un error inesperado al procesar la imagen.');
+        setErrorMessage(message || t('shared.errorProcessing'));
         setStatus('error');
       }
     };
@@ -65,7 +67,7 @@ export const BackgroundRemoverModule: React.FC = () => {
     return () => { 
       workerRef.current?.terminate(); 
     };
-  }, []);
+  }, [t]);
 
   // ── PROCESAMIENTO INVOCADO POR EL USUARIO ──
   const startProcessing = () => {
@@ -152,7 +154,7 @@ export const BackgroundRemoverModule: React.FC = () => {
             {status === 'error' && (
               <div style={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}>
                 <ToolError 
-                  title="Error de la IA"
+                  title={t('bgrm.errorTitle')}
                   message={errorMessage} 
                   onRetry={() => setStatus('ready_to_process')} 
                 />
@@ -165,8 +167,8 @@ export const BackgroundRemoverModule: React.FC = () => {
                   <ImageComparisonSlider originalSrc={originalUrl} resultSrc={resultUrl} />
                 </div>
                 <div className="bgrm-slider-hints">
-                  <span className="bgrm-hint-left">Antes</span>
-                  <span className="bgrm-hint-right">Después</span>
+                  <span className="bgrm-hint-left">{t('bgrm.before')}</span>
+                  <span className="bgrm-hint-right">{t('bgrm.after')}</span>
                 </div>
               </div>
             )}
@@ -183,19 +185,19 @@ export const BackgroundRemoverModule: React.FC = () => {
             />
 
             <div className="bgrm-controls-section">
-              <h4 className="bgrm-control-title">Gestión de Fondo</h4>
+              <h4 className="bgrm-control-title">{t('bgrm.title')}</h4>
               
               {status === 'ready_to_process' && (
                 <div className="bgrm-actions-panel fade-in">
                   <button className="btn-download-primary" onClick={startProcessing}>
-                    ✨ Quitar Fondo Ahora
+                    {t('bgrm.removeNow')}
                   </button>
                   
                   <button className="btn-text-action" onClick={() => fileInputRef.current?.click()} style={{ justifyContent: 'center' }}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                     </svg>
-                    Elegir otra foto
+                    {t('shared.chooseAnother')}
                   </button>
                 </div>
               )}
@@ -204,12 +206,12 @@ export const BackgroundRemoverModule: React.FC = () => {
                 <div className="bgrm-sidebar-loading fade-in">
                   <div className="spinner" style={{ borderColor: 'var(--color-accent)', borderTopColor: 'transparent', margin: '0 auto 20px', width: '40px', height: '40px' }}></div>
                   <h3 className="bgrm-loading-title">
-                    {status === 'downloading_model' ? 'Descargando IA...' : 'Quitando fondo...'}
+                    {status === 'downloading_model' ? t('bgrm.downloadingAI') : t('bgrm.removingBg')}
                   </h3>
                   <p className="bgrm-loading-desc">
                     {status === 'downloading_model' 
-                      ? 'Preparando motor inteligente localmente por primera vez.' 
-                      : 'La IA está procesando los bordes de tu imagen en tu navegador.'}
+                      ? t('bgrm.downloadingDesc') 
+                      : t('bgrm.removingDesc')}
                   </p>
                 </div>
               )}
@@ -220,24 +222,24 @@ export const BackgroundRemoverModule: React.FC = () => {
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24" style={{ marginRight: '8px' }}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                     </svg>
-                    Descargar PNG
+                    {t('shared.downloadPng')}
                   </button>
                   
                   <button className="btn-text-action" onClick={() => setStatus('editing_mask')} style={{ justifyContent: 'center', marginTop: '10px' }}>
-                    🖌️ Perfeccionar Recorte
+                    {t('bgrm.refineCut')}
                   </button>
                   
                   <button className="btn-text-action" onClick={() => fileInputRef.current?.click()} style={{ justifyContent: 'center' }}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                     </svg>
-                    Subir nueva foto
+                    {t('shared.uploadAnother')}
                   </button>
                 </div>
               )}
             </div>
             
-            <p className="bgrm-legal-hint">100% procesado localmente. Privacidad total garantizada.</p>
+            <p className="bgrm-legal-hint">{t('shared.privacyLocal')}</p>
           </aside>
         </>
       )}

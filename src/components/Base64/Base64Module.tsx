@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
 import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
+import { useLocale } from '../../i18n/useLocale';
 import './Base64Module.css';
 
 type TabMode = 'encode' | 'decode';
@@ -8,6 +9,7 @@ type CopyFormat = 'raw' | 'html' | 'css';
 
 export const Base64Module: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabMode>('encode');
+  const { t } = useLocale();
 
   // ── Estado para CODIFICAR ──
   const [base64String, setBase64String] = useState<string | null>(null);
@@ -72,9 +74,9 @@ export const Base64Module: React.FC = () => {
     const text = getFormattedCode(format);
     navigator.clipboard.writeText(text).then(() => {
       const labels: Record<CopyFormat, string> = {
-        raw: 'Base64 copiado',
-        html: 'HTML copiado',
-        css: 'CSS copiado',
+        raw: t('b64.copiedBase64'),
+        html: t('b64.copiedHtml'),
+        css: t('b64.copiedCss'),
       };
       setCopiedLabel(labels[format]);
       if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
@@ -119,7 +121,7 @@ export const Base64Module: React.FC = () => {
     // Extraer formato del encabezado (data:image/png;base64,...)
     const formatMatch = fullString.match(/^data:image\/(\w+);base64,/);
     if (!formatMatch) {
-      setDecodeError('El texto no parece ser una imagen en Base64 válida. Asegúrate de que comience con "data:image/..." o sea una cadena Base64 pura.');
+      setDecodeError(t('b64.decodeError'));
       return;
     }
 
@@ -132,7 +134,7 @@ export const Base64Module: React.FC = () => {
       setDecodeError(null);
     };
     img.onerror = () => {
-      setDecodeError('No se pudo decodificar la imagen. Verifica que el código Base64 esté completo y sea válido.');
+      setDecodeError(t('b64.decodeImageError'));
       setDecodePreview(null);
     };
     img.src = fullString;
@@ -171,7 +173,7 @@ export const Base64Module: React.FC = () => {
                   readOnly
                   value={base64String}
                   onClick={(e) => (e.target as HTMLTextAreaElement).select()}
-                  title="Código Base64 generado"
+                  title="Código Base64"
                 />
               </>
             )}
@@ -181,7 +183,7 @@ export const Base64Module: React.FC = () => {
         {activeTab === 'decode' && (
           <div className="b64-output-area fade-in">
             <label className="b64-decode-label">
-              Pega tu código Base64 aquí:
+              {t('b64.pasteLabel')}
             </label>
             <textarea
               className="b64-textarea b64-decode-input"
@@ -219,7 +221,7 @@ export const Base64Module: React.FC = () => {
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            Codificar
+            {t('b64.encode')}
           </button>
           <button
             className={`b64-tab ${activeTab === 'decode' ? 'active' : ''}`}
@@ -228,7 +230,7 @@ export const Base64Module: React.FC = () => {
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l4 4m0 0l4-4m-4 4V4" />
             </svg>
-            Decodificar
+            {t('b64.decode')}
           </button>
         </div>
 
@@ -238,7 +240,7 @@ export const Base64Module: React.FC = () => {
             <div className="b64-file-info">
               <span className="b64-filename">{fileName}</span>
               <div className="b64-filesize">
-                <span>Original:</span>
+                <span>{t('opt.original')}:</span>
                 <strong>{formatBytes(fileSize)}</strong>
               </div>
               <div className="b64-filesize">
@@ -249,20 +251,20 @@ export const Base64Module: React.FC = () => {
 
             <div className="b64-controls-section" style={{ marginTop: '10px' }}>
               <button className="btn-text-action" onClick={() => handleCopy('raw')} style={{ justifyContent: 'center' }}>
-                📋 Copiar Texto Base64
+                📋 {t('b64.copyBase64')}
               </button>
               <button className="btn-text-action" onClick={() => handleCopy('html')} style={{ justifyContent: 'center' }}>
-                {'</>'} Copiar tag HTML
+                {'</>'} {t('b64.copyHtml')}
               </button>
               <button className="btn-text-action" onClick={() => handleCopy('css')} style={{ justifyContent: 'center' }}>
-                🎨 Copiar como CSS
+                🎨 {t('b64.copyCss')}
               </button>
               
               <button className="btn-download-primary" onClick={handleDownloadTxt} style={{ marginTop: '10px' }}>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style={{ marginRight: '8px' }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                 </svg>
-                Descargar .txt
+                {t('shared.downloadTxt')}
               </button>
               
               <input
@@ -276,12 +278,12 @@ export const Base64Module: React.FC = () => {
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="18" height="18">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                 </svg>
-                Elegir otra foto
+                {t('shared.chooseAnother')}
               </button>
 
               {copiedLabel && (
                 <div className="b64-copied-toast">
-                  ✅ ¡{copiedLabel}!
+                  ✅ {copiedLabel}
                 </div>
               )}
             </div>
@@ -291,7 +293,7 @@ export const Base64Module: React.FC = () => {
         {activeTab === 'encode' && !base64String && (
           <div className="b64-controls-section fade-in">
             <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', fontSize: '0.95rem' }}>
-              Sube una imagen para ver sus opciones de codificación.
+              {t('b64.uploadHint')}
             </p>
           </div>
         )}
@@ -301,12 +303,12 @@ export const Base64Module: React.FC = () => {
           <div className="b64-controls-section fade-in">
             {!decodePreview ? (
               <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', fontSize: '0.95rem' }}>
-                Pega un código válido en el área de texto para revelar la imagen.
+                {t('b64.pasteHint')}
               </p>
             ) : (
               <>
                 <div className="b64-file-info">
-                  <span className="b64-filename">Formato detectado:</span>
+                  <span className="b64-filename">{t('b64.formatDetected')}</span>
                   <span className="b64-filesize" style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#16a34a' }}>
                     {decodedFormat.toUpperCase()}
                   </span>
@@ -315,7 +317,7 @@ export const Base64Module: React.FC = () => {
                   <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style={{ marginRight: '8px' }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l4-4m-4 4V4" />
                   </svg>
-                  Descargar Imagen
+                  {t('shared.download')}
                 </button>
               </>
             )}

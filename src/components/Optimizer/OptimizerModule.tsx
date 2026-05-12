@@ -6,6 +6,7 @@ import { validateImageFile } from '../../utils/fileUpload';
 import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
 import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import { showToast } from '../UI/Toast/toastManager';
+import { useLocale } from '../../i18n/useLocale';
 import './OptimizerModule.css';
 
 interface OptimizerModuleProps {
@@ -19,6 +20,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
   const [selectedPreset, setSelectedPreset] = useState<OptimizationPreset>(OPTIMIZATION_PRESETS[1]);
   const [preserveResolution, setPreserveResolution] = useState<boolean>(false);
   const [useWebP, setUseWebP] = useState<boolean>(true);
+  const { t } = useLocale();
 
   // Estados de procesamiento
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -29,7 +31,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
   const processNewFile = (file: File) => {
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      showToast(validation.error || 'Error al validar el archivo.', 'error');
+      showToast(t('shared.errorValidation') + ': ' + (validation.error || ''), 'error');
       return;
     }
     const url = URL.createObjectURL(file);
@@ -53,11 +55,11 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
       setResult(optimized);
     } catch (err) {
       console.error(err);
-      showToast('Hubo un error al optimizar la imagen.', 'error');
+      showToast(t('opt.errorOptimize'), 'error');
     } finally {
       setIsProcessing(false);
     }
-  }, [originalFile, selectedPreset, preserveResolution, useWebP]);
+  }, [originalFile, selectedPreset, preserveResolution, useWebP, t]);
 
   // Ejecutar optimización automáticamente al cambiar parámetros
   useEffect(() => {
@@ -72,7 +74,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
     a.href = result.url;
     a.download = result.file.name;
     a.click();
-    showToast('Imagen descargada correctamente.', 'success');
+    showToast(t('opt.downloadSuccess'), 'success');
   };
 
   if (!originalUrl) {
@@ -93,7 +95,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          Subir otra foto
+          {t('shared.uploadAnother')}
         </button>
         <input 
           type="file" 
@@ -121,13 +123,13 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
               imageUrl={result ? result.url : originalUrl} 
               maxHeight="60vh"
               className={`opt-preview-img ${isProcessing ? 'is-processing' : ''} ${isDragOver ? 'cropper-drag-over' : ''}`}
-              alt="Vista previa de optimización"
+              alt="Vista previa"
             />
             
             {isProcessing && (
               <div className="opt-processing-overlay">
                 <div className="opt-spinner"></div>
-                <span className="opt-processing-text">Optimizando...</span>
+                <span className="opt-processing-text">{t('opt.optimizing')}</span>
               </div>
             )}
           </div>
@@ -135,7 +137,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
           {/* Barra de Resultados (Dock horizontal) */}
           <div className="opt-results-bar">
             <div className="opt-res-group">
-              <span className="opt-res-label">Original</span>
+              <span className="opt-res-label">{t('opt.original')}</span>
               <span className="opt-res-value">{formatBytes(originalFile!.size)}</span>
             </div>
             
@@ -147,7 +149,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
             </div>
 
             <div className="opt-res-group success">
-              <span className="opt-res-label">Optimizado</span>
+              <span className="opt-res-label">{t('opt.optimized')}</span>
               <span className="opt-res-value">{result ? formatBytes(result.newSize) : '---'}</span>
             </div>
 
@@ -159,16 +161,16 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
           </div>
 
           {/* Hint informativo */}
-          <p className="optimizer-hint">Tus imágenes se procesan localmente. Nunca se envían a ningún servidor.</p>
+          <p className="optimizer-hint">{t('shared.privacyLocal')}</p>
         </div>
 
         {/* Lado Derecho: Controles y Estadísticas */}
         <aside className="opt-sidebar">
           {/* Configuración */}
           <div className="opt-section">
-            <h4 className="opt-section-title">Compresión</h4>
+            <h4 className="opt-section-title">{t('opt.compression')}</h4>
             <p className="opt-section-desc">
-              A menor calidad, menor peso. El nivel <strong>Normal</strong> es ideal para la mayoría de casos.
+              {t('opt.compressionDesc')}
             </p>
             <PresetSelector 
               selectedId={selectedPreset.id} 
@@ -179,7 +181,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
 
           {/* Opciones Avanzadas */}
           <div className="opt-section">
-            <h4 className="opt-section-title">Opciones</h4>
+            <h4 className="opt-section-title">{t('opt.options')}</h4>
             <div className="opt-advanced">
               <label className="opt-toggle">
                 <input 
@@ -189,8 +191,8 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
                   disabled={isProcessing}
                 />
                 <div className="opt-toggle-content">
-                  <span className="opt-toggle-title">Mantener dimensiones</span>
-                  <span className="opt-toggle-desc">No redimensionar el ancho y alto.</span>
+                  <span className="opt-toggle-title">{t('opt.keepDimensions')}</span>
+                  <span className="opt-toggle-desc">{t('opt.keepDimensionsDesc')}</span>
                 </div>
               </label>
 
@@ -202,8 +204,8 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
                   disabled={isProcessing}
                 />
                 <div className="opt-toggle-content">
-                  <span className="opt-toggle-title">Formato WebP</span>
-                  <span className="opt-toggle-desc">Máxima compresión recomendada por Google.</span>
+                  <span className="opt-toggle-title">{t('opt.webpFormat')}</span>
+                  <span className="opt-toggle-desc">{t('opt.webpFormatDesc')}</span>
                 </div>
               </label>
             </div>
@@ -219,7 +221,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
               {isProcessing ? (
                 <>
                   <div className="btn-spinner"></div>
-                  Optimizando...
+                  {t('shared.processing')}
                 </>
               ) : (
                 <>
@@ -228,7 +230,7 @@ export const OptimizerModule: React.FC<OptimizerModuleProps> = ({ originalUrl, o
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  Descargar Imagen
+                  {t('shared.download')}
                 </>
               )}
             </button>

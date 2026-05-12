@@ -1,16 +1,21 @@
 import React from 'react';
 import { Base64Module } from '../../../components/Base64/Base64Module';
 import { Workspace } from '../../../components/UI/Workspace/Workspace';
+import { useLocale } from '../../../i18n/useLocale';
+import { getSeoById } from '../../../seo/seoConfig';
 
 export const Base64Tool: React.FC = () => {
+  const { locale, t } = useLocale();
+  const seo = getSeoById('base64');
+
   return (
     <div className="home-container" style={{ paddingBottom: '80px' }}>
       <header className="tool-header">
-        <h1 className="tool-title">Convertidor <span>Base64.</span></h1>
+        <h1 className="tool-title">
+          {seo?.h1[locale].split('—')[0]} <span>{seo?.h1[locale].split('—')[1] || ''}</span>
+        </h1>
         <p className="tool-subtitle">
-          Codifica tus imágenes a Base64 para incrustarlas en HTML o CSS, 
-          o decodifica un código Base64 a imagen descargable. 
-          Todo el procesamiento es 100% local y privado.
+          {t('tool.base64.subtitle')}
         </p>
       </header>
 

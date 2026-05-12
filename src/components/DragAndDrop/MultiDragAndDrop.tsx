@@ -1,6 +1,7 @@
 import React, { useState, DragEvent, ChangeEvent } from 'react';
 import './DragAndDrop.css'; // Reutilizamos estilos base
 import { validateImageFile } from '../../utils/fileUpload';
+import { useLocale } from '../../i18n/useLocale';
 
 interface MultiDragAndDropProps {
   onFilesSelected: (files: File[]) => void;
@@ -10,6 +11,7 @@ interface MultiDragAndDropProps {
 export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelected, maxFiles }) => {
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { t } = useLocale();
 
   const processFiles = (fileList: FileList | File[]) => {
     setError(null);
@@ -21,21 +23,18 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
       if (validation.isValid) {
         validFiles.push(file);
       } else {
-        setError(`El archivo ${file.name} no es válido: ${validation.error}`);
-        // Si hay un error con uno, podríamos rechazarlo o saltarlo. 
-        // Para UX, si saltamos, el usuario no sabe por qué no subió. Mejor mostramos error y paramos si es crítico, 
-        // o mejor solo ignoramos los malos y mostramos error general.
-        // Aquí añadiremos solo los válidos y mostraremos el error del último archivo inválido.
+        // Localizamos el error de validación dinámico
+        setError(t('conv.invalidFile').replace('{name}', file.name).replace('{error}', validation.error || ''));
       }
     }
 
     if (maxFiles && validFiles.length > maxFiles) {
-      setError(`Solo puedes subir un máximo de ${maxFiles} imágenes a la vez.`);
+      setError(t('conv.maxFilesError').replace('{max}', maxFiles.toString()));
       onFilesSelected(validFiles.slice(0, maxFiles));
     } else if (validFiles.length > 0) {
       onFilesSelected(validFiles);
     } else if (!error) {
-      setError("No se encontraron imágenes válidas.");
+      setError(t('conv.noValidImages'));
     }
   };
 
@@ -83,14 +82,14 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
           multiple
           className="file-input" 
           onChange={handleChange}
-          aria-label="Subir imágenes"
+          aria-label={t('dragdrop.multiAriaLabel')}
         />
         <div className="drop-zone-content">
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
           </svg>
-          <span className="text-primary">Sube varias fotos a la vez</span>
-          <span className="text-secondary">Haz clic o arrastra tus archivos aquí</span>
+          <span className="text-primary">{t('dragdrop.multiPrompt')}</span>
+          <span className="text-secondary">{t('dragdrop.multiHint')}</span>
         </div>
       </div>
     </div>

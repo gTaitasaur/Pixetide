@@ -13,6 +13,7 @@ import {
   ImageWatermarkConfig
 } from '../../types/watermark';
 import { showToast } from '../UI/Toast/toastManager';
+import { useLocale } from '../../i18n/useLocale';
 import './WatermarkModule.css';
 
 interface WatermarkModuleProps {
@@ -33,6 +34,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
   const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [mode, setMode] = useState<WatermarkType>('text');
+  const { t } = useLocale();
 
   // ── Estado de Configuración (Normalizado) ──
   const [watermarks, setWatermarks] = useState<AnyWatermarkConfig[]>([]);
@@ -631,10 +633,10 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
             }
           }} />
          <button className="btn-text-action" onClick={() => addPhotosInputRef.current?.click()} disabled={isProcessing}>
-            + Agregar fotos
+            + {t('wm.addPhotos')}
          </button>
          <button className="btn-text-action danger" onClick={handleClearAllInternal} disabled={isProcessing}>
-            Borrar todo
+            {t('conv.clearAll')}
          </button>
       </div>
 
@@ -660,7 +662,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 <button 
                   className="wm-thumb-remove" 
                   onClick={(e) => { e.stopPropagation(); handleRemovePhoto(item.id); }}
-                  title="Eliminar foto"
+                  title={t('wm.removePhoto')}
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -675,7 +677,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
         <aside className="wm-sidebar">
           
           <div className="wm-layers">
-            <h4>Capas</h4>
+            <h4>{t('wm.layers')}</h4>
             <div className="wm-layers-list">
               {watermarks.map(wm => (
                 <div 
@@ -685,7 +687,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 >
                   <span className="wm-layer-icon">{wm.type === 'text' ? 'T' : '🖼️'}</span>
                   <span className="wm-layer-name">
-                    {wm.type === 'text' ? (wm as TextWatermarkConfig).text || 'Texto' : 'Imagen'}
+                    {wm.type === 'text' ? (wm as TextWatermarkConfig).text || t('shared.text') : t('shared.image')}
                   </span>
                   <button 
                     className="wm-layer-remove" 
@@ -702,30 +704,30 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
             </div>
             
             <div className="wm-action-buttons">
-              <button className="btn-action-brutal duplicate" onClick={handleDuplicate} title="Duplicar marca seleccionada">
+              <button className="btn-action-brutal duplicate" onClick={handleDuplicate} title={t('wm.duplicate')}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                Duplicar
+                {t('wm.duplicate')}
               </button>
-              <button className="btn-action-brutal delete" onClick={() => handleDelete()} title="Eliminar marca seleccionada">
+              <button className="btn-action-brutal delete" onClick={() => handleDelete()} title={t('wm.delete')}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                Eliminar
+                {t('wm.delete')}
               </button>
             </div>
           </div>
 
           <div className="wm-tabs">
             <button className={`wm-tab ${mode === 'text' ? 'active' : ''}`} onClick={handleTextTabClick}>
-              Texto
+              {t('shared.text')}
             </button>
             <button className={`wm-tab ${mode === 'image' ? 'active' : ''}`} onClick={handleImageTabClick}>
-              Imagen
+              {t('shared.image')}
             </button>
           </div>
 
           <div className="wm-panel">
             {mode === 'text' && (
               <button className="wm-btn-outline" onClick={handleAddText} style={{ marginBottom: '5px' }}>
-                + Agregar otro texto
+                + {t('wm.addOtherText')}
               </button>
             )}
             
@@ -739,21 +741,21 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                   uploadActionRef.current = 'add';
                   logoInputRef.current?.click();
                 }}>
-                  + Agregar otra imagen
+                  + {t('wm.addOtherImage')}
                 </button>
               </div>
             )}
 
             {!currentConfig || currentConfig.type !== mode ? (
               <div style={{ textAlign: 'center', color: '#666', padding: '20px' }}>
-                {mode === 'text' ? 'Agrega un texto para comenzar' : 'Sube una imagen para comenzar'}
+                {mode === 'text' ? t('wm.placeholderText') : t('wm.placeholderImage')}
               </div>
             ) : (
               <>
                 {currentConfig.type === 'text' ? (
                   <>
                     <div className="wm-control-group">
-                      <label>Texto de la Marca</label>
+                      <label>{t('wm.textLabel')}</label>
                       <input 
                         type="text" 
                         className="wm-input" 
@@ -763,7 +765,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                     </div>
                     <div className="wm-control-group split">
                       <div>
-                        <label>Color</label>
+                        <label>{t('shared.color')}</label>
                         <input 
                           type="color" 
                           className="wm-color-picker" 
@@ -772,7 +774,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                         />
                       </div>
                       <div>
-                        <label>Peso</label>
+                        <label>{t('wm.fontWeight')}</label>
                         <select className="wm-select" value={(currentConfig as TextWatermarkConfig).fontWeight} onChange={e => updateActiveConfig({ fontWeight: e.target.value as any })}>
                           <option value="normal">Normal</option>
                           <option value="bold">Negrita</option>
@@ -780,7 +782,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                       </div>
                     </div>
                     <div className="wm-control-group">
-                      <label>Tipografía</label>
+                      <label>{t('wm.fontFamily')}</label>
                       <select className="wm-select" value={(currentConfig as TextWatermarkConfig).fontFamily} onChange={e => updateActiveConfig({ fontFamily: e.target.value })}>
                         <option value="Inter">Inter</option>
                         <option value="Arial">Arial</option>
@@ -792,12 +794,12 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 ) : (
                   <>
                     <div className="wm-control-group">
-                      <label>Logo o Firma (PNG/SVG)</label>
+                      <label>{t('wm.logoLabel')} (PNG/SVG)</label>
                       <button className="btn-text-action" onClick={() => {
                         uploadActionRef.current = 'change';
                         logoInputRef.current?.click();
                       }}>
-                        {(currentConfig as ImageWatermarkConfig).url ? 'Cambiar Imagen' : 'Subir Imagen'}
+                        {(currentConfig as ImageWatermarkConfig).url ? t('wm.changeImage') : t('wm.uploadImage')}
                       </button>
                       {(currentConfig as ImageWatermarkConfig).url && (
                          <img src={(currentConfig as ImageWatermarkConfig).url!} alt="Logo" style={{ maxHeight: '40px', marginTop: '10px', objectFit: 'contain' }} />
@@ -809,7 +811,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 <hr className="wm-divider" />
 
                 <div className="wm-control-group">
-                  <label>Tamaño ({Math.round(currentConfig.scale * 100)}%)</label>
+                  <label>{t('shared.size')} ({Math.round(currentConfig.scale * 100)}%)</label>
                   <input 
                     type="range" 
                     min="5" max="100" 
@@ -819,7 +821,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 </div>
 
                 <div className="wm-control-group">
-                  <label>Rotación ({Math.round(currentConfig.rotation)}°)</label>
+                  <label>{t('rf.rotation')} ({Math.round(currentConfig.rotation)}°)</label>
                   <div className="wm-slider-with-input">
                     <input 
                       type="range" 
@@ -838,7 +840,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 </div>
 
                 <div className="wm-control-group">
-                  <label>Opacidad ({Math.round(currentConfig.opacity * 100)}%)</label>
+                  <label>{t('shared.opacity')} ({Math.round(currentConfig.opacity * 100)}%)</label>
                   <input 
                     type="range" 
                     min="10" max="100" 
@@ -848,7 +850,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
                 </div>
 
                 <div className="wm-control-group">
-                  <label>Posición Rápida</label>
+                  <label>{t('shared.position')}</label>
                   <div className="wm-grid-positioner">
                     <button onClick={() => updateActiveConfig({ x: 0.1, y: 0.1, rotation: 0 })}></button>
                     <button onClick={() => updateActiveConfig({ x: 0.5, y: 0.1, rotation: 0 })}></button>
@@ -865,7 +867,7 @@ export const WatermarkModule: React.FC<WatermarkModuleProps> = ({
             )}
 
             <button className="btn-download-primary" onClick={handleProcessAndDownload} disabled={isProcessing || watermarks.length === 0}>
-              {isProcessing ? 'Procesando...' : 'Aplicar y Descargar'}
+              {isProcessing ? t('shared.processing') : t('shared.download')}
             </button>
 
           </div>

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { OptimizerModule } from '../../../components/Optimizer/OptimizerModule';
 import { Workspace } from '../../../components/UI/Workspace/Workspace';
+import { useLocale } from '../../../i18n/useLocale';
+import { getSeoById } from '../../../seo/seoConfig';
 
 export const OptimizerTool: React.FC = () => {
   const [currentUrl, setCurrentUrl] = useState<string | null>(null);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const { locale, t } = useLocale();
+  const seo = getSeoById('compress');
 
   const handleImageSelected = (url: string, file: File) => {
     setCurrentUrl(url);
@@ -14,10 +18,11 @@ export const OptimizerTool: React.FC = () => {
   return (
     <div className="home-container" style={{ paddingBottom: '80px' }}>
       <header className="tool-header">
-        <h1 className="tool-title">Comprimir Imágenes <span>sin Perder Calidad.</span></h1>
+        <h1 className="tool-title">
+          {seo?.h1[locale].split('—')[0]} <span>{seo?.h1[locale].split('—')[1] || ''}</span>
+        </h1>
         <p className="tool-subtitle">
-          Reduce drásticamente el peso de tus fotos JPG, PNG o WebP. 
-          Mejora la velocidad de tu web y tu SEO con nuestra compresión local segura.
+          {t('tool.compress.subtitle')}
         </p>
       </header>
 

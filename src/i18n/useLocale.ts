@@ -13,6 +13,7 @@
  * Google indexe cada versión por su URL, no por el estado del cliente.
  */
 
+import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { getLocaleFromPath, type SupportedLocale } from '../seo/seoConfig';
 import { translations, type TranslationKey } from './translations';
@@ -32,23 +33,25 @@ export function useLocale(): UseLocaleReturn {
   const { pathname } = useLocation();
   const locale = getLocaleFromPath(pathname);
 
-  const t = (key: TranslationKey): string => {
+  const t = useCallback((key: TranslationKey): string => {
     const localeTranslations = translations[locale];
     if (localeTranslations[key]) return localeTranslations[key];
-    // Fallback al inglés si una key no existe en el locale actual
     return translations['en'][key];
-  };
+  }, [locale]);
 
-  const pathPrefix = locale === 'es' ? '/es' : '';
+  const pathPrefix = useMemo(() => locale === 'es' ? '/es' : '', [locale]);
 
-  const getAlternateUrl = (currentPath: string): string => {
+  const getAlternateUrl = useCallback((currentPath: string): string => {
     if (locale === 'en') {
-      // Estamos en EN → generar ruta ES
       return `/es${currentPath}`;
     }
-    // Estamos en ES → generar ruta EN (quitar /es del inicio)
     return currentPath.replace(/^\/es/, '') || '/';
-  };
+  }, [locale]);
 
-  return { locale, t, pathPrefix, getAlternateUrl };
+  return useMemo(() => ({ 
+    locale, 
+    t, 
+    pathPrefix, 
+    getAlternateUrl 
+  }), [locale, t, pathPrefix, getAlternateUrl]);
 }

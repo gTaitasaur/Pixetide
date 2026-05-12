@@ -3,6 +3,7 @@ import { DragAndDrop } from '../DragAndDrop/DragAndDrop';
 import { processRotationAndFlip, RotateFlipParams } from '../../utils/rotateFlip';
 import { validateImageFile } from '../../utils/fileUpload';
 import { ImagePreviewCanvas } from '../UI/ImagePreviewCanvas/ImagePreviewCanvas';
+import { useLocale } from '../../i18n/useLocale';
 import './RotateFlipModule.css';
 
 interface RotateFlipModuleProps {
@@ -24,6 +25,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
   });
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLocale();
 
   // Resetear parámetros al cambiar de imagen
   useEffect(() => {
@@ -37,14 +39,12 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
   const processNewFile = (file: File) => {
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-      alert(validation.error);
+      alert(t('shared.errorValidation') + ': ' + validation.error);
       return;
     }
     const url = URL.createObjectURL(file);
     onImageSelected(url, file);
   };
-
-
 
   const handleFlipHorizontal = () => {
     setParams(prev => ({ ...prev, flipHorizontal: !prev.flipHorizontal }));
@@ -81,7 +81,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
       // Limpiar blob URL después de un rato
       setTimeout(() => URL.revokeObjectURL(result.url), 5000);
     } catch (error) {
-      alert('Hubo un error al procesar la imagen.');
+      alert(t('shared.errorProcessing'));
     } finally {
       setIsProcessing(false);
     }
@@ -116,7 +116,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
           </svg>
-          Subir otra foto
+          {t('shared.uploadAnother')}
         </button>
         <input 
           type="file" 
@@ -140,7 +140,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
               maxHeight="60vh"
               imageStyle={previewStyle}
               rotate={params.rotation}
-              alt="Vista previa de rotación"
+              alt="Vista previa"
             />
           </div>
         </div>
@@ -150,13 +150,13 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
           <div className="rf-controls-section">
             <div className="rf-control-group">
               <div className="rf-control-header">
-                <h4 className="rf-control-title">Rotación</h4>
+                <h4 className="rf-control-title">{t('rf.rotation')}</h4>
                 <button 
                   className="rf-reset-btn" 
                   onClick={() => setParams(prev => ({ ...prev, rotation: 0 }))}
-                  title="Resetear rotación"
+                  title={t('rf.resetRotation')}
                 >
-                  Reiniciar
+                  {t('rf.reset')}
                 </button>
               </div>
               <div className="rf-slider-container">
@@ -192,19 +192,19 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
             </div>
 
             <div className="rf-control-group">
-              <h4 className="rf-control-title">Efecto Espejo</h4>
+              <h4 className="rf-control-title">{t('rf.mirror')}</h4>
               <div className="rf-button-grid">
                 <button className={`rf-tool-btn ${params.flipHorizontal ? 'is-active' : ''}`} onClick={handleFlipHorizontal} disabled={isProcessing}>
                   <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
-                  <span>Horizontal</span>
+                  <span>{t('rf.horizontal')}</span>
                 </button>
                 <button className={`rf-tool-btn ${params.flipVertical ? 'is-active' : ''}`} onClick={handleFlipVertical} disabled={isProcessing}>
                   <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ transform: 'rotate(90deg)' }}>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
-                  <span>Vertical</span>
+                  <span>{t('rf.vertical')}</span>
                 </button>
               </div>
             </div>
@@ -219,7 +219,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
               {isProcessing ? (
                 <>
                   <div className="btn-spinner"></div>
-                  Procesando...
+                  {t('shared.processing')}
                 </>
               ) : (
                 <>
@@ -228,11 +228,11 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                   </svg>
-                  {!hasChanges ? 'Descargar Original' : 'Descargar Imagen'}
+                  {!hasChanges ? t('shared.downloadOriginal') : t('shared.download')}
                 </>
               )}
             </button>
-            <p className="rf-legal-hint">Procesamiento local: tus datos están seguros.</p>
+            <p className="rf-legal-hint">{t('shared.privacyLocal')}</p>
           </div>
         </aside>
       </div>

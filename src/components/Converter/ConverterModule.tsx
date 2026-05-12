@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ConverterFile, TargetFormat, FallbackColor, FORMAT_LABELS } from '../../types/converter';
 import { MultiDragAndDrop } from '../DragAndDrop/MultiDragAndDrop';
 import { detectTransparency, convertImage, packageZip } from '../../utils/formatConverter';
+import { useLocale } from '../../i18n/useLocale';
 import './ConverterModule.css';
 
 interface ConverterModuleProps {
@@ -19,6 +20,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
   const [globalFormat, setGlobalFormat] = useState<TargetFormat>('image/jpeg');
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const addFilesInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useLocale();
 
   /**
    * FIX CRÍTICO: Usamos un Set de refs para rastrear qué objetos File
@@ -200,7 +202,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
         }}
       >
         <div className="converter-header-row">
-          <h3 className="converter-title">Archivos cargados ({conversionList.length})</h3>
+          <h3 className="converter-title">{t('conv.filesLoaded')} ({conversionList.length})</h3>
           <button
             className="btn-text-action"
             onClick={() => addFilesInputRef.current?.click()}
@@ -209,7 +211,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
               <path d="M12 5v14M5 12h14" />
             </svg>
-            Subir más
+            {t('shared.uploadMore')}
           </button>
           <input
             type="file"
@@ -270,7 +272,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
                       </select>
                     </div>
 
-                    <button className="btn-card-remove" onClick={() => handleRemoveItem(item.id)} disabled={isProcessing} title="Quitar">
+                    <button className="btn-card-remove" onClick={() => handleRemoveItem(item.id)} disabled={isProcessing} title={t('conv.remove')}>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M18 6L6 18M6 6l12 12" />
                       </svg>
@@ -283,18 +285,18 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#f59e0b' }}>
                       <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
-                    <span>{FORMAT_LABELS[item.targetFormat]} no admite transparencia. Elija fondo:</span>
+                    <span>{FORMAT_LABELS[item.targetFormat]} {t('conv.noTransparency')}</span>
                     <div className="color-pills">
                       <button
                         className={`color-pill ${item.fallbackColor === '#FFFFFF' ? 'active' : ''}`}
                         onClick={() => handleUpdateColor(item.id, '#FFFFFF')}
                         disabled={isProcessing}
-                      > Blanco </button>
+                      > {t('conv.white')} </button>
                       <button
                         className={`color-pill ${item.fallbackColor === '#000000' ? 'active' : ''}`}
                         onClick={() => handleUpdateColor(item.id, '#000000')}
                         disabled={isProcessing}
-                      > Negro </button>
+                      > {t('conv.black')} </button>
                     </div>
                   </div>
                 )}
@@ -302,7 +304,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
                 {item.status !== 'idle' && (
                   <div className={`card-status-bar status-${item.status}`}>
                     {item.status === 'processing' && <div className="status-loader"></div>}
-                    <span>{item.status === 'processing' ? 'Convirtiendo...' : item.status === 'done' ? 'Listo' : 'Error'}</span>
+                    <span>{item.status === 'processing' ? t('conv.converting') : item.status === 'done' ? t('conv.done') : t('conv.error')}</span>
                   </div>
                 )}
               </div>
@@ -314,11 +316,11 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
       {/* Lado Derecho: Controles Globales */}
       <aside className="converter-sidebar">
         <div className="sidebar-section">
-          <h4 className="section-title">Ajustes Globales</h4>
-          <p className="section-desc">Cambia el formato de salida para todos los archivos a la vez.</p>
+          <h4 className="section-title">{t('conv.globalSettings')}</h4>
+          <p className="section-desc">{t('conv.globalDesc')}</p>
 
           <div className="global-format-card">
-            <label>Convertir a:</label>
+            <label>{t('conv.convertTo')}</label>
             <select
               className="global-format-select"
               value={globalFormat}
@@ -344,7 +346,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
-            <p><strong>{conversionList.length} archivos</strong> detectados. El proceso local puede tomar unos segundos.</p>
+            <p>{t('conv.performanceWarning').replace('{count}', conversionList.length.toString())}</p>
           </div>
         )}
 
@@ -357,7 +359,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
             {isProcessing ? (
               <>
                 <div className="btn-spinner"></div>
-                Procesando...
+                {t('shared.processing')}
               </>
             ) : (
               <>
@@ -366,17 +368,17 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
                   <polyline points="7 10 12 15 17 10"></polyline>
                   <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                {idleCount === conversionList.length ? 'Convertir Todo' : 'Convertir Pendientes'}
+                {idleCount === conversionList.length ? t('conv.convertAll') : t('conv.convertPending')}
               </>
             )}
           </button>
 
           <button className="btn-clear-all" onClick={handleClearInternal} disabled={isProcessing}>
-            Borrar Todo
+            {t('conv.clearAll')}
           </button>
         </div>
 
-        <p className="privacy-hint">Procesamiento local: tus fotos nunca salen de este navegador.</p>
+        <p className="privacy-hint">{t('conv.privacyHint')}</p>
       </aside>
     </div>
   );

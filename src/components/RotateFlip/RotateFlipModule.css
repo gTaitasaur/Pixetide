@@ -16,7 +16,6 @@
   margin-bottom: var(--spacing-sm);
 }
 
-/* Reutilizamos .btn-text-action definido en estilos globales o similares */
 .btn-text-action {
   display: flex;
   align-items: center;
@@ -44,12 +43,12 @@
   grid-template-columns: 1fr 320px;
   gap: var(--spacing-xl);
   align-items: start;
-  min-width: 0; /* Evita desbordamiento en grid */
+  min-width: 0;
 }
 
 .rf-workspace {
   width: 100%;
-  min-width: 0; /* Crítico para que el contenido no empuje el grid */
+  min-width: 0;
 }
 
 .rf-preview-card {
@@ -86,15 +85,154 @@
   gap: var(--spacing-sm);
 }
 
+.rf-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #e5e5e5;
+  padding-bottom: 4px;
+}
+
 .rf-control-title {
   font-family: var(--font-handwriting);
   font-size: 1.4rem;
   color: var(--color-text-primary);
   margin: 0;
-  border-bottom: 1px dashed #e5e5e5;
-  padding-bottom: 4px;
 }
 
+.rf-reset-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-accent);
+  font-family: var(--font-handwriting);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.rf-reset-btn:hover {
+  background-color: rgba(37, 99, 235, 0.05);
+}
+
+/* Slider de Rotación */
+.rf-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  margin-top: 10px;
+}
+
+.rf-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rf-range-input {
+  flex: 1;
+  height: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #f0f0f0;
+  border: 1.5px solid var(--color-text-primary);
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.rf-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  background: var(--color-accent);
+  border: 2px solid var(--color-text-primary);
+  border-radius: 50%;
+  box-shadow: 2px 2px 0px var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  margin-top: -1px;
+}
+
+.rf-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.rf-range-input::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--color-accent);
+  border: 2px solid var(--color-text-primary);
+  border-radius: 50%;
+  box-shadow: 2px 2px 0px var(--color-text-primary);
+  cursor: pointer;
+}
+
+/* Input Numérico */
+.rf-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rf-number-input {
+  width: 65px;
+  padding: 6px 20px 6px 8px;
+  border: 2px solid var(--color-text-primary);
+  border-radius: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.rf-number-input::-webkit-outer-spin-button,
+.rf-number-input::-webkit-inner-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.rf-unit {
+  position: absolute;
+  right: 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+  pointer-events: none;
+}
+
+/* Botones Rápidos */
+.rf-quick-rotations {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.rf-quick-rotations button {
+  background: white;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text-secondary);
+}
+
+.rf-quick-rotations button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(37, 99, 235, 0.02);
+}
+
+/* Espejo / Flip */
 .rf-button-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -219,5 +357,17 @@
   .btn-download-primary {
     font-size: 1.2rem;
     padding: 12px;
+  }
+
+  .rf-quick-rotations button {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    border-width: 2px;
+  }
+
+  .rf-reset-btn {
+    padding: 8px 12px;
+    font-size: 1rem;
+    background-color: rgba(37, 99, 235, 0.05);
   }
 }

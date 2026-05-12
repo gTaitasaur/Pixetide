@@ -44,13 +44,7 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
     onImageSelected(url, file);
   };
 
-  const handleRotateLeft = () => {
-    setParams(prev => ({ ...prev, rotation: prev.rotation - 90 }));
-  };
 
-  const handleRotateRight = () => {
-    setParams(prev => ({ ...prev, rotation: prev.rotation + 90 }));
-  };
 
   const handleFlipHorizontal = () => {
     setParams(prev => ({ ...prev, flipHorizontal: !prev.flipHorizontal }));
@@ -155,20 +149,45 @@ export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({
         <aside className="rf-sidebar">
           <div className="rf-controls-section">
             <div className="rf-control-group">
-              <h4 className="rf-control-title">Orientación</h4>
-              <div className="rf-button-grid">
-                <button className="rf-tool-btn" onClick={handleRotateLeft} disabled={isProcessing} title="Rotar 90° izquierda">
-                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                  </svg>
-                  <span>Rotar -90°</span>
+              <div className="rf-control-header">
+                <h4 className="rf-control-title">Rotación</h4>
+                <button 
+                  className="rf-reset-btn" 
+                  onClick={() => setParams(prev => ({ ...prev, rotation: 0 }))}
+                  title="Resetear rotación"
+                >
+                  Reiniciar
                 </button>
-                <button className="rf-tool-btn" onClick={handleRotateRight} disabled={isProcessing} title="Rotar 90° derecha">
-                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" />
-                  </svg>
-                  <span>Rotar +90°</span>
-                </button>
+              </div>
+              <div className="rf-slider-container">
+                <div className="rf-slider-row">
+                  <input 
+                    type="range" 
+                    min="-180" 
+                    max="180" 
+                    step="1"
+                    value={params.rotation} 
+                    onChange={(e) => setParams(prev => ({ ...prev, rotation: Number(e.target.value) }))}
+                    className="rf-range-input"
+                  />
+                  <div className="rf-input-wrapper">
+                    <input 
+                      type="number" 
+                      min="-180" 
+                      max="180"
+                      value={Math.round(params.rotation)}
+                      onChange={(e) => setParams(prev => ({ ...prev, rotation: Number(e.target.value) }))}
+                      className="rf-number-input"
+                    />
+                    <span className="rf-unit">°</span>
+                  </div>
+                </div>
+                <div className="rf-quick-rotations">
+                  <button onClick={() => setParams(prev => ({ ...prev, rotation: -90 }))}>-90°</button>
+                  <button onClick={() => setParams(prev => ({ ...prev, rotation: 0 }))}>0°</button>
+                  <button onClick={() => setParams(prev => ({ ...prev, rotation: 90 }))}>90°</button>
+                  <button onClick={() => setParams(prev => ({ ...prev, rotation: 180 }))}>180°</button>
+                </div>
               </div>
             </div>
 

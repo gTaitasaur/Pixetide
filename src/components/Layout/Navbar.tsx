@@ -131,7 +131,7 @@ export const Navbar: React.FC = () => {
           <div className="mobile-support-wrapper">
             <span className="mobile-support-microcopy">{t('nav.supportMicrocopy')}</span>
             <a
-              href="https://ko-fi.com/taitasaur"
+              href="https://ko-fi.com/pixetide"
               target="_blank"
               rel="noopener noreferrer"
               className="overlay-link support-btn"

@@ -67,7 +67,7 @@ export const Footer: React.FC = () => {
               </li>
               <li>
                 <a
-                  href="https://ko-fi.com/taitasaur"
+                  href="https://ko-fi.com/pixetide"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="footer-link"

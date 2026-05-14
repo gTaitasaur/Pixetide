@@ -6,4 +6,4 @@ User-agent: *
 Allow: /
 
 # Sitemap con todas las URLs EN + ES y sus relaciones hreflang
-Sitemap: https://www.pixetide.com/sitemap.xml
+Sitemap: https://pixetide.com/sitemap.xml

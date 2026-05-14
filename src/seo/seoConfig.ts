@@ -38,7 +38,7 @@ export interface PageSeoEntry {
 
 export const SITE_CONFIG = {
   /** Dominio canónico con protocolo. SIN trailing slash. */
-  canonicalOrigin: 'https://www.pixetide.com',
+  canonicalOrigin: 'https://pixetide.com',
   /** Nombre de la marca */
   siteName: 'Pixetide',
   /** Idioma por defecto (x-default) */
@@ -81,7 +81,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Compress / Optimizar ───
   {
     id: 'compress',
-    path: { en: '/tools/compress-image', es: '/es/herramientas/comprimir-imagen' },
+    path: { en: '/tools/compress-image/', es: '/es/herramientas/comprimir-imagen/' },
     title: {
       en: 'Compress Images Online Free — No Upload Required | Pixetide',
       es: 'Comprimir Imágenes Online Gratis — Sin Subir Archivos | Pixetide',
@@ -103,7 +103,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Convert / Convertir ───
   {
     id: 'convert',
-    path: { en: '/tools/convert-image', es: '/es/herramientas/convertir-imagen' },
+    path: { en: '/tools/convert-image/', es: '/es/herramientas/convertir-imagen/' },
     title: {
       en: 'Convert Images Online Free — JPG, PNG, WebP, AVIF | Pixetide',
       es: 'Convertir Imágenes Online Gratis — JPG, PNG, WebP, AVIF | Pixetide',
@@ -125,7 +125,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Crop / Recortar ───
   {
     id: 'crop',
-    path: { en: '/tools/crop-image', es: '/es/herramientas/recortar-imagen' },
+    path: { en: '/tools/crop-image/', es: '/es/herramientas/recortar-imagen/' },
     title: {
       en: 'Crop Images Online Free — Social Media Presets | Pixetide',
       es: 'Recortar Imágenes Online Gratis — Presets Redes Sociales | Pixetide',
@@ -147,7 +147,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Rotate & Flip / Girar y Voltear ───
   {
     id: 'rotate-flip',
-    path: { en: '/tools/rotate-flip-image', es: '/es/herramientas/girar-voltear-imagen' },
+    path: { en: '/tools/rotate-flip-image/', es: '/es/herramientas/girar-voltear-imagen/' },
     title: {
       en: 'Rotate & Flip Images Online Free | Pixetide',
       es: 'Girar y Voltear Imágenes Online Gratis | Pixetide',
@@ -169,7 +169,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Watermark / Marca de Agua ───
   {
     id: 'watermark',
-    path: { en: '/tools/watermark-image', es: '/es/herramientas/marca-de-agua' },
+    path: { en: '/tools/watermark-image/', es: '/es/herramientas/marca-de-agua/' },
     title: {
       en: 'Add Watermark to Images Free — Logo & Text | Pixetide',
       es: 'Poner Marca de Agua a Imágenes Gratis — Logo y Texto | Pixetide',
@@ -191,7 +191,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Remove Background / Quitar Fondo ───
   {
     id: 'remove-bg',
-    path: { en: '/tools/remove-background', es: '/es/herramientas/quitar-fondo' },
+    path: { en: '/tools/remove-background/', es: '/es/herramientas/quitar-fondo/' },
     title: {
       en: 'Remove Background from Image Free — AI Powered | Pixetide',
       es: 'Quitar Fondo de Imagen Gratis — Con IA | Pixetide',
@@ -213,7 +213,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Color Palette / Paleta de Colores ───
   {
     id: 'color-palette',
-    path: { en: '/tools/color-palette', es: '/es/herramientas/paleta-colores' },
+    path: { en: '/tools/color-palette/', es: '/es/herramientas/paleta-colores/' },
     title: {
       en: 'Extract Color Palette from Image Free | Pixetide',
       es: 'Extraer Paleta de Colores de Imagen Gratis | Pixetide',
@@ -235,7 +235,7 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
   // ─── Base64 Converter / Convertidor Base64 ───
   {
     id: 'base64',
-    path: { en: '/tools/base64-converter', es: '/es/herramientas/convertidor-base64' },
+    path: { en: '/tools/base64-converter/', es: '/es/herramientas/convertidor-base64/' },
     title: {
       en: 'Image to Base64 Converter Free — Encode & Decode | Pixetide',
       es: 'Convertidor de Imagen a Base64 Gratis — Codificar y Decodificar | Pixetide',

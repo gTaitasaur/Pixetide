@@ -34,17 +34,7 @@ export const Home: React.FC = () => {
         </section>
 
         <div className="tools-grid">
-          <Card
-            to={getToolPath('crop', locale)}
-            icon={(
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-              </svg>
-            )}
-            title={t('card.crop.title')}
-            description={t('card.crop.desc')}
-          />
-
+          {/* 1. Comprimir */}
           <Card
             to={getToolPath('compress', locale)}
             icon={(
@@ -56,6 +46,7 @@ export const Home: React.FC = () => {
             description={t('card.compress.desc')}
           />
 
+          {/* 2. Convertir */}
           <Card
             to={getToolPath('convert', locale)}
             icon={(
@@ -67,17 +58,19 @@ export const Home: React.FC = () => {
             description={t('card.convert.desc')}
           />
 
+          {/* 3. Recortar */}
           <Card
-            to={getToolPath('rotate-flip', locale)}
+            to={getToolPath('crop', locale)}
             icon={(
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
               </svg>
             )}
-            title={t('card.rotateFlip.title')}
-            description={t('card.rotateFlip.desc')}
+            title={t('card.crop.title')}
+            description={t('card.crop.desc')}
           />
 
+          {/* 4. Marca de agua */}
           <Card
             to={getToolPath('watermark', locale)}
             icon={(
@@ -89,6 +82,55 @@ export const Home: React.FC = () => {
             description={t('card.watermark.desc')}
           />
 
+          {/* 5. Quitar fondo */}
+          <Card
+            to={getToolPath('remove-bg', locale)}
+            icon={(
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+              </svg>
+            )}
+            title={t('card.removeBg.title')}
+            description={t('card.removeBg.desc')}
+          />
+
+          {/* 6. Girar y Voltear */}
+          <Card
+            to={getToolPath('rotate-flip', locale)}
+            icon={(
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+            title={t('card.rotateFlip.title')}
+            description={t('card.rotateFlip.desc')}
+          />
+
+          {/* 7. Paleta de Colores */}
+          <Card
+            to={getToolPath('color-palette', locale)}
+            icon={(
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+            )}
+            title={t('card.colorPalette.title')}
+            description={t('card.colorPalette.desc')}
+          />
+
+          {/* 8. Base64 */}
+          <Card
+            to={getToolPath('base64', locale)}
+            icon={(
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+              </svg>
+            )}
+            title={t('card.base64.title')}
+            description={t('card.base64.desc')}
+          />
+
+          {/* 9. Próximamente */}
           <Card
             disabled
             icon={(
@@ -101,28 +143,6 @@ export const Home: React.FC = () => {
           />
 
           <Card
-            to={getToolPath('remove-bg', locale)}
-            icon={(
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-              </svg>
-            )}
-            title={t('card.removeBg.title')}
-            description={t('card.removeBg.desc')}
-          />
-
-          <Card
-            to={getToolPath('color-palette', locale)}
-            icon={(
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-              </svg>
-            )}
-            title={t('card.colorPalette.title')}
-            description={t('card.colorPalette.desc')}
-          />
-
-          <Card
             disabled
             icon={(
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -131,17 +151,6 @@ export const Home: React.FC = () => {
             )}
             title={t('card.photoEditor.title')}
             description={t('card.photoEditor.desc')}
-          />
-
-          <Card
-            to={getToolPath('base64', locale)}
-            icon={(
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
-            )}
-            title={t('card.base64.title')}
-            description={t('card.base64.desc')}
           />
 
           <Card

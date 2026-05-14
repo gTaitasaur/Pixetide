@@ -58,7 +58,8 @@ export const SeoHead: React.FC = () => {
     setMetaTag('name', 'description', description);
 
     // ── 4. Canonical ──
-    setLinkTag('canonical', getCanonicalUrl(pathname));
+    const canonicalPath = seoEntry ? seoEntry.path[locale] : pathname;
+    setLinkTag('canonical', getCanonicalUrl(canonicalPath));
 
     // ── 5. Hreflang ──
     const hreflangTags = createHreflangTags(seoEntry, locale);
@@ -67,7 +68,7 @@ export const SeoHead: React.FC = () => {
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
     setMetaTag('property', 'og:type', 'website');
-    setMetaTag('property', 'og:url', getCanonicalUrl(pathname));
+    setMetaTag('property', 'og:url', getCanonicalUrl(canonicalPath));
     setMetaTag('property', 'og:site_name', SITE_CONFIG.siteName);
     setMetaTag('property', 'og:locale', locale === 'es' ? 'es_ES' : 'en_US');
     setMetaTag(

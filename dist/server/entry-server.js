@@ -2,7 +2,7 @@ var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import { jsxs, jsx, Fragment } from "react/jsx-runtime";
-import React, { useState, Suspense, Component, createContext, useCallback } from "react";
+import React, { useCallback, useMemo, useState, Suspense, Component, createContext } from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
 import { useLocation, useNavigate, Link, Outlet, Routes, Route, Navigate } from "react-router-dom";
@@ -27,7 +27,7 @@ const Logo = ({ size = 32, className = "" }) => {
 };
 const SITE_CONFIG = {
   /** Dominio canónico con protocolo. SIN trailing slash. */
-  canonicalOrigin: "https://www.pixetide.com",
+  canonicalOrigin: "https://pixetide.com",
   /** Nombre de la marca */
   siteName: "Pixetide",
   /** Todos los idiomas soportados */
@@ -60,7 +60,7 @@ const SEO_PAGES = [
   // ─── Compress / Optimizar ───
   {
     id: "compress",
-    path: { en: "/tools/compress-image", es: "/es/herramientas/comprimir-imagen" },
+    path: { en: "/tools/compress-image/", es: "/es/herramientas/comprimir-imagen/" },
     title: {
       en: "Compress Images Online Free — No Upload Required | Pixetide",
       es: "Comprimir Imágenes Online Gratis — Sin Subir Archivos | Pixetide"
@@ -81,7 +81,7 @@ const SEO_PAGES = [
   // ─── Convert / Convertir ───
   {
     id: "convert",
-    path: { en: "/tools/convert-image", es: "/es/herramientas/convertir-imagen" },
+    path: { en: "/tools/convert-image/", es: "/es/herramientas/convertir-imagen/" },
     title: {
       en: "Convert Images Online Free — JPG, PNG, WebP, AVIF | Pixetide",
       es: "Convertir Imágenes Online Gratis — JPG, PNG, WebP, AVIF | Pixetide"
@@ -102,7 +102,7 @@ const SEO_PAGES = [
   // ─── Crop / Recortar ───
   {
     id: "crop",
-    path: { en: "/tools/crop-image", es: "/es/herramientas/recortar-imagen" },
+    path: { en: "/tools/crop-image/", es: "/es/herramientas/recortar-imagen/" },
     title: {
       en: "Crop Images Online Free — Social Media Presets | Pixetide",
       es: "Recortar Imágenes Online Gratis — Presets Redes Sociales | Pixetide"
@@ -123,7 +123,7 @@ const SEO_PAGES = [
   // ─── Rotate & Flip / Girar y Voltear ───
   {
     id: "rotate-flip",
-    path: { en: "/tools/rotate-flip-image", es: "/es/herramientas/girar-voltear-imagen" },
+    path: { en: "/tools/rotate-flip-image/", es: "/es/herramientas/girar-voltear-imagen/" },
     title: {
       en: "Rotate & Flip Images Online Free | Pixetide",
       es: "Girar y Voltear Imágenes Online Gratis | Pixetide"
@@ -144,7 +144,7 @@ const SEO_PAGES = [
   // ─── Watermark / Marca de Agua ───
   {
     id: "watermark",
-    path: { en: "/tools/watermark-image", es: "/es/herramientas/marca-de-agua" },
+    path: { en: "/tools/watermark-image/", es: "/es/herramientas/marca-de-agua/" },
     title: {
       en: "Add Watermark to Images Free — Logo & Text | Pixetide",
       es: "Poner Marca de Agua a Imágenes Gratis — Logo y Texto | Pixetide"
@@ -165,7 +165,7 @@ const SEO_PAGES = [
   // ─── Remove Background / Quitar Fondo ───
   {
     id: "remove-bg",
-    path: { en: "/tools/remove-background", es: "/es/herramientas/quitar-fondo" },
+    path: { en: "/tools/remove-background/", es: "/es/herramientas/quitar-fondo/" },
     title: {
       en: "Remove Background from Image Free — AI Powered | Pixetide",
       es: "Quitar Fondo de Imagen Gratis — Con IA | Pixetide"
@@ -186,7 +186,7 @@ const SEO_PAGES = [
   // ─── Color Palette / Paleta de Colores ───
   {
     id: "color-palette",
-    path: { en: "/tools/color-palette", es: "/es/herramientas/paleta-colores" },
+    path: { en: "/tools/color-palette/", es: "/es/herramientas/paleta-colores/" },
     title: {
       en: "Extract Color Palette from Image Free | Pixetide",
       es: "Extraer Paleta de Colores de Imagen Gratis | Pixetide"
@@ -207,7 +207,7 @@ const SEO_PAGES = [
   // ─── Base64 Converter / Convertidor Base64 ───
   {
     id: "base64",
-    path: { en: "/tools/base64-converter", es: "/es/herramientas/convertidor-base64" },
+    path: { en: "/tools/base64-converter/", es: "/es/herramientas/convertidor-base64/" },
     title: {
       en: "Image to Base64 Converter Free — Encode & Decode | Pixetide",
       es: "Convertidor de Imagen a Base64 Gratis — Codificar y Decodificar | Pixetide"
@@ -226,6 +226,9 @@ const SEO_PAGES = [
     }
   }
 ];
+function getSeoById(id) {
+  return SEO_PAGES.find((p) => p.id === id);
+}
 function getSeoByPath(pathname) {
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
   return SEO_PAGES.find((page) => {
@@ -287,10 +290,165 @@ const en = {
   "card.base64.desc": "Encode your images to Base64 for embedding in HTML or CSS, or decode Base64 back to an image. Bidirectional, instant, and 100% private.",
   "card.favicon.title": "Favicon ICO Generator",
   "card.favicon.desc": "Create the perfect icon for your website. Upload your logo and convert it to .ico and other standardized formats ready to use. (Coming Soon)",
+  // ─── Shared: DragAndDrop ───
+  "dragdrop.prompt": "Choose an image to get started",
+  "dragdrop.hint": "Click or drag your file here (Max. 20MB)",
+  "dragdrop.ariaLabel": "Upload image",
+  "dragdrop.multiPrompt": "Upload multiple photos at once",
+  "dragdrop.multiHint": "Click or drag your files here",
+  "dragdrop.multiAriaLabel": "Upload images",
+  // ─── Shared: Buttons & Labels ───
+  "shared.uploadAnother": "Upload another photo",
+  "shared.uploadNew": "Upload new photo",
+  "shared.chooseAnother": "Choose another photo",
+  "shared.uploadMore": "Upload more",
+  "shared.addMore": "Add more",
+  "shared.text": "Text",
+  "shared.image": "Image",
+  "shared.color": "Color",
+  "shared.opacity": "Opacity",
+  "shared.size": "Size",
+  "shared.position": "Position",
+  "shared.processing": "Processing...",
+  "shared.downloading": "Downloading...",
+  "shared.download": "Download Image",
+  "shared.downloadOriginal": "Download Original",
+  "shared.downloadPng": "Download PNG",
+  "shared.downloadTxt": "Download .txt",
+  "shared.downloadCrop": "Download Crop",
+  "shared.privacyHint": "Your images are processed locally. They never leave your device.",
+  "shared.privacyShort": "Full quality. 100% private.",
+  "shared.privacyLocal": "Local processing: your data is safe.",
+  "shared.privacyColors": "Colors are extracted locally. Total privacy guaranteed.",
+  "shared.privacyBg": "100% processed locally. Total privacy guaranteed.",
+  "shared.errorProcessing": "There was an error processing the image.",
+  "shared.errorValidation": "Error validating the file.",
+  "shared.errorExport": "Could not process the image. Make sure the file is still accessible.",
+  // ─── Tool Page Headers ───
+  "tool.crop.h1": "Crop & Resize Images.",
+  "tool.crop.subtitle": "Resize your photos to the ideal format for Instagram, TikTok, or the web. All processing is local and private in your browser.",
+  "tool.compress.h1": "Compress Images Without Losing Quality.",
+  "tool.compress.subtitle": "Drastically reduce the file size of your JPG, PNG, or WebP photos. Boost your website speed and SEO with secure local compression.",
+  "tool.convert.h1": "Image Format Converter.",
+  "tool.convert.subtitle": "Convert your photos to WebP, AVIF, JPG, or PNG in bulk. Everything is processed in your browser to protect your original files.",
+  "tool.rotate.h1": "Rotate & Flip Images.",
+  "tool.rotate.subtitle": "Rotate and apply mirror effects to your photos easily and quickly — 100% private from your browser.",
+  "tool.watermark.h1": "Add Watermark to Photos.",
+  "tool.watermark.subtitle": "Protect your photos by adding your logo or signature as a watermark. Everything is processed locally in your browser for maximum privacy.",
+  "tool.palette.h1": "Extract Color Palette.",
+  "tool.palette.subtitle": "Get the dominant, vibrant, and muted colors from any image. Ideal for web designers and creatives. Instant and 100% private processing.",
+  "tool.base64.h1": "Base64 Converter.",
+  "tool.base64.subtitle": "Encode your images to Base64 for embedding in HTML or CSS, or decode a Base64 string back to a downloadable image. 100% local and private.",
+  "tool.removeBg.h1": "Remove Background with AI.",
+  "tool.removeBg.subtitle": "Magically remove the background from any image using Artificial Intelligence directly in your browser. Private, fast, and professional.",
+  // ─── Optimizer Module ───
+  "opt.compression": "Compression",
+  "opt.compressionDesc": "Lower quality means smaller file size. The <strong>Normal</strong> level works best for most use cases.",
+  "opt.options": "Options",
+  "opt.keepDimensions": "Keep dimensions",
+  "opt.keepDimensionsDesc": "Do not resize width and height.",
+  "opt.webpFormat": "WebP format",
+  "opt.webpFormatDesc": "Maximum compression recommended by Google.",
+  "opt.optimizing": "Optimizing...",
+  "opt.original": "Original",
+  "opt.optimized": "Optimized",
+  "opt.errorOptimize": "There was an error optimizing the image.",
+  "opt.downloadSuccess": "Image downloaded successfully.",
+  "opt.presetLossless": "Lossless",
+  "opt.presetLosslessDesc": "Original",
+  "opt.presetNormal": "Normal",
+  "opt.presetNormalDesc": "Balanced",
+  "opt.presetAggressive": "Aggressive",
+  "opt.presetAggressiveDesc": "For Web",
+  "opt.presetMax": "Maximum",
+  "opt.presetMaxDesc": "Smallest size",
+  // ─── Cropper Module ───
+  "crop.selectFormat": "Select a format",
+  "crop.formatHint": "Adjust your image to the ideal dimensions",
+  // ─── Rotate & Flip Module ───
+  "rf.rotation": "Rotation",
+  "rf.reset": "Reset",
+  "rf.resetRotation": "Reset rotation",
+  "rf.mirror": "Mirror Effect",
+  "rf.horizontal": "Horizontal",
+  "rf.vertical": "Vertical",
+  // ─── Color Palette Module ───
+  "cp.colorFormat": "Color Format",
+  "cp.help": "Help",
+  "cp.helpText": "Click any color block to copy its code.",
+  "cp.analyzing": "Analyzing colors...",
+  "cp.copied": "Copied!",
+  "cp.copyError": "Error copying",
+  "cp.copy": "Copy",
+  "cp.harmonicPalette": "Harmonic Palette",
+  "cp.networkError": "Connection error: Could not download the color engines. Retry or reload the page.",
+  "cp.extractError": "Could not extract colors from this image.",
+  // ─── Base64 Module ───
+  "b64.encode": "Encode",
+  "b64.decode": "Decode",
+  "b64.pasteLabel": "Paste your Base64 code here:",
+  "b64.pasteHint": "Paste a valid code in the text area to reveal the image.",
+  "b64.uploadHint": "Upload an image to see encoding options.",
+  "b64.copyBase64": "Copy Base64 Text",
+  "b64.copyHtml": "Copy HTML tag",
+  "b64.copyCss": "Copy as CSS",
+  "b64.copiedBase64": "Base64 copied",
+  "b64.copiedHtml": "HTML copied",
+  "b64.copiedCss": "CSS copied",
+  "b64.formatDetected": "Format detected:",
+  "b64.decodeError": 'The text does not appear to be a valid Base64 image. Make sure it starts with "data:image/..." or is a pure Base64 string.',
+  "b64.decodeImageError": "Could not decode the image. Verify that the Base64 code is complete and valid.",
+  // ─── Background Remover Module ───
+  "bgrm.title": "Background Management",
+  "bgrm.removeNow": "✨ Remove Background Now",
+  "bgrm.downloadingAI": "Downloading AI...",
+  "bgrm.removingBg": "Removing background...",
+  "bgrm.downloadingDesc": "Preparing the smart engine locally for the first time.",
+  "bgrm.removingDesc": "The AI is processing the edges of your image in your browser.",
+  "bgrm.refineCut": "🖌️ Refine Cutout",
+  "bgrm.errorTitle": "AI Error",
+  "bgrm.before": "Before",
+  "bgrm.after": "After",
+  // ─── Converter Module ───
+  "conv.filesLoaded": "Files loaded",
+  "conv.globalSettings": "Global Settings",
+  "conv.globalDesc": "Change the output format for all files at once.",
+  "conv.convertTo": "Convert to:",
+  "conv.convertAll": "Convert All",
+  "conv.convertPending": "Convert Pending",
+  "conv.clearAll": "Clear All",
+  "conv.converting": "Converting...",
+  "conv.done": "Done",
+  "conv.error": "Error",
+  "conv.remove": "Remove",
+  "conv.noTransparency": "does not support transparency. Choose background:",
+  "conv.white": "White",
+  "conv.black": "Black",
+  "conv.performanceWarning": "files detected. Local processing may take a few seconds.",
+  "conv.privacyHint": "Local processing: your photos never leave this browser.",
+  "conv.noValidImages": "No valid images found.",
+  "conv.maxFilesError": "You can upload a maximum of {max} images at once.",
+  "conv.invalidFile": "The file {name} is not valid: {error}",
   // ─── 404 ───
   "notFound.title": "Oops! 404",
   "notFound.message": "This photo got lost in development. The page you're looking for doesn't exist or has been moved.",
-  "notFound.backHome": "Back to Home"
+  "notFound.backHome": "Back to Home",
+  // ─── Watermark Module ───
+  "wm.addPhotos": "Add photos",
+  "wm.layers": "Layers",
+  "wm.removePhoto": "Remove photo",
+  "wm.duplicate": "Duplicate",
+  "wm.delete": "Delete",
+  "wm.textLabel": "Watermark text",
+  "wm.fontWeight": "Weight",
+  "wm.fontFamily": "Typography",
+  "wm.logoLabel": "Logo or Signature",
+  "wm.changeImage": "Change image",
+  "wm.uploadImage": "Upload image",
+  "wm.addOtherText": "Add another text",
+  "wm.addOtherImage": "Add another image",
+  "wm.placeholderText": "Add a text to start",
+  "wm.placeholderImage": "Upload an image to start"
 };
 const es = {
   // ─── Navbar ───
@@ -336,10 +494,165 @@ const es = {
   "card.base64.desc": "Codifica tus imágenes a Base64 para incrustarlas en HTML o CSS, o decodifica un código Base64 a imagen. Bidireccional, instantáneo y 100% privado.",
   "card.favicon.title": "Generador de Favicon ICO",
   "card.favicon.desc": "Crea el icono perfecto para tu página web. Sube tu logo y conviértelo a .ico y otros formatos estandarizados listos para usar. (Próximamente)",
+  // ─── Shared: DragAndDrop ───
+  "dragdrop.prompt": "Elige una imagen para empezar",
+  "dragdrop.hint": "Haz clic o arrastra tu archivo aquí (Máx. 20MB)",
+  "dragdrop.ariaLabel": "Subir imagen",
+  "dragdrop.multiPrompt": "Sube varias fotos a la vez",
+  "dragdrop.multiHint": "Haz clic o arrastra tus archivos aquí",
+  "dragdrop.multiAriaLabel": "Subir imágenes",
+  // ─── Shared: Buttons & Labels ───
+  "shared.uploadAnother": "Subir otra foto",
+  "shared.uploadNew": "Subir nueva foto",
+  "shared.chooseAnother": "Elegir otra foto",
+  "shared.uploadMore": "Subir más",
+  "shared.addMore": "Subir más",
+  "shared.text": "Texto",
+  "shared.image": "Imagen",
+  "shared.color": "Color",
+  "shared.opacity": "Opacidad",
+  "shared.size": "Tamaño",
+  "shared.position": "Posición",
+  "shared.processing": "Procesando...",
+  "shared.downloading": "Descargando...",
+  "shared.download": "Descargar Imagen",
+  "shared.downloadOriginal": "Descargar Original",
+  "shared.downloadPng": "Descargar PNG",
+  "shared.downloadTxt": "Descargar .txt",
+  "shared.downloadCrop": "Descargar Recorte",
+  "shared.privacyHint": "Tus imágenes se procesan localmente. Nunca se envían a ningún servidor.",
+  "shared.privacyShort": "Máxima calidad. 100% privado.",
+  "shared.privacyLocal": "Procesamiento local: tus datos están seguros.",
+  "shared.privacyColors": "Tus colores se extraen localmente. Privacidad total garantizada.",
+  "shared.privacyBg": "100% procesado localmente. Privacidad total garantizada.",
+  "shared.errorProcessing": "Hubo un error al procesar la imagen.",
+  "shared.errorValidation": "Error al validar el archivo.",
+  "shared.errorExport": "No se pudo procesar la imagen. Asegúrate de que el archivo aún sea accesible.",
+  // ─── Tool Page Headers ───
+  "tool.crop.h1": "Recorte y Redimensión de Imágenes.",
+  "tool.crop.subtitle": "Ajusta tus fotos a los formatos ideales para Instagram, TikTok o Web. Todo el procesamiento es local y privado en tu navegador.",
+  "tool.compress.h1": "Comprimir Imágenes sin Perder Calidad.",
+  "tool.compress.subtitle": "Reduce drásticamente el peso de tus fotos JPG, PNG o WebP. Mejora la velocidad de tu web y tu SEO con nuestra compresión local segura.",
+  "tool.convert.h1": "Convertidor de Formatos de Imagen.",
+  "tool.convert.subtitle": "Cambia el formato de tus fotos a WebP, AVIF, JPG o PNG masivamente. Todo se procesa en tu navegador para proteger tus archivos originales.",
+  "tool.rotate.h1": "Girar y Voltear Imágenes.",
+  "tool.rotate.subtitle": "Rota y aplica efectos de espejo a tus fotos de manera fácil y rápida, 100% privado desde tu navegador.",
+  "tool.watermark.h1": "Poner Marca de Agua a Fotos.",
+  "tool.watermark.subtitle": "Protege tus fotos añadiendo tu logo o firma como marca de agua. Todo se procesa localmente en tu navegador para garantizar tu privacidad.",
+  "tool.palette.h1": "Extraer Paleta de Colores.",
+  "tool.palette.subtitle": "Obtén los colores predominantes, vibrantes y tenues de cualquier imagen. Ideal para diseñadores web y creativos. Procesamiento instantáneo y 100% privado.",
+  "tool.base64.h1": "Convertidor Base64.",
+  "tool.base64.subtitle": "Codifica tus imágenes a Base64 para incrustarlas en HTML o CSS, o decodifica un código Base64 a imagen descargable. Todo el procesamiento es 100% local y privado.",
+  "tool.removeBg.h1": "Quitar Fondo con IA.",
+  "tool.removeBg.subtitle": "Elimina el fondo de cualquier imagen mágicamente usando Inteligencia Artificial directamente en tu navegador. Privado, rápido y profesional.",
+  // ─── Optimizer Module ───
+  "opt.compression": "Compresión",
+  "opt.compressionDesc": "A menor calidad, menor peso. El nivel <strong>Normal</strong> es ideal para la mayoría de casos.",
+  "opt.options": "Opciones",
+  "opt.keepDimensions": "Mantener dimensiones",
+  "opt.keepDimensionsDesc": "No redimensionar el ancho y alto.",
+  "opt.webpFormat": "Formato WebP",
+  "opt.webpFormatDesc": "Máxima compresión recomendada por Google.",
+  "opt.optimizing": "Optimizando...",
+  "opt.original": "Original",
+  "opt.optimized": "Optimizado",
+  "opt.errorOptimize": "Hubo un error al optimizar la imagen.",
+  "opt.downloadSuccess": "Imagen descargada correctamente.",
+  "opt.presetLossless": "Sin pérdida",
+  "opt.presetLosslessDesc": "Original",
+  "opt.presetNormal": "Normal",
+  "opt.presetNormalDesc": "Equilibrado",
+  "opt.presetAggressive": "Agresivo",
+  "opt.presetAggressiveDesc": "Para Web",
+  "opt.presetMax": "Máximo",
+  "opt.presetMaxDesc": "Mínimo peso",
+  // ─── Cropper Module ───
+  "crop.selectFormat": "Selecciona un formato",
+  "crop.formatHint": "Ajusta tu imagen a las medidas ideales",
+  // ─── Rotate & Flip Module ───
+  "rf.rotation": "Rotación",
+  "rf.reset": "Reiniciar",
+  "rf.resetRotation": "Resetear rotación",
+  "rf.mirror": "Efecto Espejo",
+  "rf.horizontal": "Horizontal",
+  "rf.vertical": "Vertical",
+  // ─── Color Palette Module ───
+  "cp.colorFormat": "Formato de Color",
+  "cp.help": "Ayuda",
+  "cp.helpText": "Haz clic en cualquier bloque de color para copiar su código.",
+  "cp.analyzing": "Analizando colores...",
+  "cp.copied": "¡Copiado!",
+  "cp.copyError": "Error al copiar",
+  "cp.copy": "Copiar",
+  "cp.harmonicPalette": "Paleta Armónica",
+  "cp.networkError": "Error de conexión: No se pudieron descargar los motores de color. Reintenta o recarga la página.",
+  "cp.extractError": "No se pudieron extraer los colores de esta imagen.",
+  // ─── Base64 Module ───
+  "b64.encode": "Codificar",
+  "b64.decode": "Decodificar",
+  "b64.pasteLabel": "Pega tu código Base64 aquí:",
+  "b64.pasteHint": "Pega un código válido en el área de texto para revelar la imagen.",
+  "b64.uploadHint": "Sube una imagen para ver sus opciones de codificación.",
+  "b64.copyBase64": "Copiar Texto Base64",
+  "b64.copyHtml": "Copiar tag HTML",
+  "b64.copyCss": "Copiar como CSS",
+  "b64.copiedBase64": "Base64 copiado",
+  "b64.copiedHtml": "HTML copiado",
+  "b64.copiedCss": "CSS copiado",
+  "b64.formatDetected": "Formato detectado:",
+  "b64.decodeError": 'El texto no parece ser una imagen en Base64 válida. Asegúrate de que comience con "data:image/..." o sea una cadena Base64 pura.',
+  "b64.decodeImageError": "No se pudo decodificar la imagen. Verifica que el código Base64 esté completo y sea válido.",
+  // ─── Background Remover Module ───
+  "bgrm.title": "Gestión de Fondo",
+  "bgrm.removeNow": "✨ Quitar Fondo Ahora",
+  "bgrm.downloadingAI": "Descargando IA...",
+  "bgrm.removingBg": "Quitando fondo...",
+  "bgrm.downloadingDesc": "Preparando motor inteligente localmente por primera vez.",
+  "bgrm.removingDesc": "La IA está procesando los bordes de tu imagen en tu navegador.",
+  "bgrm.refineCut": "🖌️ Perfeccionar Recorte",
+  "bgrm.errorTitle": "Error de la IA",
+  "bgrm.before": "Antes",
+  "bgrm.after": "Después",
+  // ─── Converter Module ───
+  "conv.filesLoaded": "Archivos cargados",
+  "conv.globalSettings": "Ajustes Globales",
+  "conv.globalDesc": "Cambia el formato de salida para todos los archivos a la vez.",
+  "conv.convertTo": "Convertir a:",
+  "conv.convertAll": "Convertir Todo",
+  "conv.convertPending": "Convertir Pendientes",
+  "conv.clearAll": "Borrar Todo",
+  "conv.converting": "Convirtiendo...",
+  "conv.done": "Listo",
+  "conv.error": "Error",
+  "conv.remove": "Quitar",
+  "conv.noTransparency": "no admite transparencia. Elija fondo:",
+  "conv.white": "Blanco",
+  "conv.black": "Negro",
+  "conv.performanceWarning": "archivos detectados. El proceso local puede tomar unos segundos.",
+  "conv.privacyHint": "Procesamiento local: tus fotos nunca salen de este navegador.",
+  "conv.noValidImages": "No se encontraron imágenes válidas.",
+  "conv.maxFilesError": "Solo puedes subir un máximo de {max} imágenes a la vez.",
+  "conv.invalidFile": "El archivo {name} no es válido: {error}",
   // ─── 404 ───
   "notFound.title": "¡Ups! 404",
   "notFound.message": "Esta foto se nos ha perdido en el revelado. La página que buscas no existe o ha sido movida a otro álbum.",
-  "notFound.backHome": "Volver al Inicio"
+  "notFound.backHome": "Volver al Inicio",
+  // ─── Watermark Module ───
+  "wm.addPhotos": "Agregar fotos",
+  "wm.layers": "Capas",
+  "wm.removePhoto": "Eliminar foto",
+  "wm.duplicate": "Duplicar",
+  "wm.delete": "Eliminar",
+  "wm.textLabel": "Texto de la marca",
+  "wm.fontWeight": "Peso",
+  "wm.fontFamily": "Tipografía",
+  "wm.logoLabel": "Logo o Firma",
+  "wm.changeImage": "Cambiar imagen",
+  "wm.uploadImage": "Subir imagen",
+  "wm.addOtherText": "Agregar otro texto",
+  "wm.addOtherImage": "Agregar otra imagen",
+  "wm.placeholderText": "Agrega un texto para comenzar",
+  "wm.placeholderImage": "Sube una imagen para comenzar"
 };
 const translations = {
   en,
@@ -348,19 +661,24 @@ const translations = {
 function useLocale() {
   const { pathname } = useLocation();
   const locale = getLocaleFromPath(pathname);
-  const t = (key) => {
+  const t = useCallback((key) => {
     const localeTranslations = translations[locale];
     if (localeTranslations[key]) return localeTranslations[key];
     return translations["en"][key];
-  };
-  const pathPrefix = locale === "es" ? "/es" : "";
-  const getAlternateUrl = (currentPath) => {
+  }, [locale]);
+  const pathPrefix = useMemo(() => locale === "es" ? "/es" : "", [locale]);
+  const getAlternateUrl = useCallback((currentPath) => {
     if (locale === "en") {
       return `/es${currentPath}`;
     }
     return currentPath.replace(/^\/es/, "") || "/";
-  };
-  return { locale, t, pathPrefix, getAlternateUrl };
+  }, [locale]);
+  return useMemo(() => ({
+    locale,
+    t,
+    pathPrefix,
+    getAlternateUrl
+  }), [locale, t, pathPrefix, getAlternateUrl]);
 }
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -414,7 +732,7 @@ const Navbar = () => {
         /* @__PURE__ */ jsx(
           "a",
           {
-            href: "https://ko-fi.com/taitasaur",
+            href: "https://ko-fi.com/pixetide",
             target: "_blank",
             rel: "noopener noreferrer",
             className: "nav-btn-support",
@@ -457,7 +775,7 @@ const Navbar = () => {
           /* @__PURE__ */ jsx(
             "a",
             {
-              href: "https://ko-fi.com/taitasaur",
+              href: "https://ko-fi.com/pixetide",
               target: "_blank",
               rel: "noopener noreferrer",
               className: "overlay-link support-btn",
@@ -481,7 +799,7 @@ const Footer = () => {
         /* @__PURE__ */ jsx(
           "a",
           {
-            href: "https://ko-fi.com/taitasaur",
+            href: "https://ko-fi.com/pixetide",
             target: "_blank",
             rel: "noopener noreferrer",
             className: "footer-kofi",
@@ -500,7 +818,7 @@ const Footer = () => {
           /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsx(
             "a",
             {
-              href: "https://ko-fi.com/taitasaur",
+              href: "https://ko-fi.com/pixetide",
               target: "_blank",
               rel: "noopener noreferrer",
               className: "footer-link",
@@ -687,39 +1005,39 @@ const NotFound = () => {
   ] }) });
 };
 const AspectRatioTool = React.lazy(
-  () => import("./assets/AspectRatioTool-DPMVfdkd.js").then((m) => ({ default: m.AspectRatioTool }))
+  () => import("./assets/AspectRatioTool-CV15-LCj.js").then((m) => ({ default: m.AspectRatioTool }))
 );
 const OptimizerTool = React.lazy(
-  () => import("./assets/OptimizerTool-DjPIBY3J.js").then((m) => ({ default: m.OptimizerTool }))
+  () => import("./assets/OptimizerTool-DH4UWlvb.js").then((m) => ({ default: m.OptimizerTool }))
 );
 const ConverterTool = React.lazy(
-  () => import("./assets/ConverterTool-DW87CxyH.js").then((m) => ({ default: m.ConverterTool }))
+  () => import("./assets/ConverterTool-B4YoP9pz.js").then((m) => ({ default: m.ConverterTool }))
 );
 const RotateFlipTool = React.lazy(
-  () => import("./assets/RotateFlipTool-Ds8SXAiq.js").then((m) => ({ default: m.RotateFlipTool }))
+  () => import("./assets/RotateFlipTool-BduY1Q5J.js").then((m) => ({ default: m.RotateFlipTool }))
 );
 const WatermarkTool = React.lazy(
-  () => import("./assets/WatermarkTool-BjFjop71.js").then((m) => ({ default: m.WatermarkTool }))
+  () => import("./assets/WatermarkTool-DsR_inQU.js").then((m) => ({ default: m.WatermarkTool }))
 );
 const ColorPaletteTool = React.lazy(
-  () => import("./assets/ColorPaletteTool-DZ2xw084.js").then((m) => ({ default: m.ColorPaletteTool }))
+  () => import("./assets/ColorPaletteTool-DBapQcxT.js").then((m) => ({ default: m.ColorPaletteTool }))
 );
 const Base64Tool = React.lazy(
-  () => import("./assets/Base64Tool-DU3nuGrI.js").then((m) => ({ default: m.Base64Tool }))
+  () => import("./assets/Base64Tool-BfDoxTZ4.js").then((m) => ({ default: m.Base64Tool }))
 );
 const BackgroundRemoverTool = React.lazy(
-  () => import("./assets/BackgroundRemoverTool-C9EsEBaG.js").then((m) => ({ default: m.BackgroundRemoverTool }))
+  () => import("./assets/BackgroundRemoverTool-DYe5Ai4H.js").then((m) => ({ default: m.BackgroundRemoverTool }))
 );
 const LazyTool = ({ children }) => /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { style: { minHeight: "60vh" } }), children });
 const TOOL_ROUTES = [
-  { en: "tools/crop-image", es: "herramientas/recortar-imagen", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(AspectRatioTool, {}) }) },
-  { en: "tools/compress-image", es: "herramientas/comprimir-imagen", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(OptimizerTool, {}) }) },
-  { en: "tools/convert-image", es: "herramientas/convertir-imagen", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(ConverterTool, {}) }) },
-  { en: "tools/rotate-flip-image", es: "herramientas/girar-voltear-imagen", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(RotateFlipTool, {}) }) },
-  { en: "tools/watermark-image", es: "herramientas/marca-de-agua", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(WatermarkTool, {}) }) },
-  { en: "tools/color-palette", es: "herramientas/paleta-colores", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(ColorPaletteTool, {}) }) },
-  { en: "tools/base64-converter", es: "herramientas/convertidor-base64", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(Base64Tool, {}) }) },
-  { en: "tools/remove-background", es: "herramientas/quitar-fondo", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(BackgroundRemoverTool, {}) }) }
+  { en: "tools/crop-image/", es: "herramientas/recortar-imagen/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(AspectRatioTool, {}) }) },
+  { en: "tools/compress-image/", es: "herramientas/comprimir-imagen/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(OptimizerTool, {}) }) },
+  { en: "tools/convert-image/", es: "herramientas/convertir-imagen/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(ConverterTool, {}) }) },
+  { en: "tools/rotate-flip-image/", es: "herramientas/girar-voltear-imagen/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(RotateFlipTool, {}) }) },
+  { en: "tools/watermark-image/", es: "herramientas/marca-de-agua/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(WatermarkTool, {}) }) },
+  { en: "tools/color-palette/", es: "herramientas/paleta-colores/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(ColorPaletteTool, {}) }) },
+  { en: "tools/base64-converter/", es: "herramientas/convertidor-base64/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(Base64Tool, {}) }) },
+  { en: "tools/remove-background/", es: "herramientas/quitar-fondo/", element: /* @__PURE__ */ jsx(LazyTool, { children: /* @__PURE__ */ jsx(BackgroundRemoverTool, {}) }) }
 ];
 const AppRoutes = () => {
   return /* @__PURE__ */ jsxs(Routes, { children: [
@@ -885,6 +1203,8 @@ function render(url) {
   );
 }
 export {
+  getSeoById as g,
   render,
-  showToast as s
+  showToast as s,
+  useLocale as u
 };

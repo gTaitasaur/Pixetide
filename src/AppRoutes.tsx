@@ -64,14 +64,14 @@ const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 /** Definición de herramientas para evitar duplicar rutas */
 const TOOL_ROUTES = [
-  { en: 'tools/crop-image',         es: 'herramientas/recortar-imagen',      element: <LazyTool><AspectRatioTool /></LazyTool> },
-  { en: 'tools/compress-image',     es: 'herramientas/comprimir-imagen',     element: <LazyTool><OptimizerTool /></LazyTool> },
-  { en: 'tools/convert-image',      es: 'herramientas/convertir-imagen',     element: <LazyTool><ConverterTool /></LazyTool> },
-  { en: 'tools/rotate-flip-image',  es: 'herramientas/girar-voltear-imagen', element: <LazyTool><RotateFlipTool /></LazyTool> },
-  { en: 'tools/watermark-image',    es: 'herramientas/marca-de-agua',        element: <LazyTool><WatermarkTool /></LazyTool> },
-  { en: 'tools/color-palette',      es: 'herramientas/paleta-colores',       element: <LazyTool><ColorPaletteTool /></LazyTool> },
-  { en: 'tools/base64-converter',   es: 'herramientas/convertidor-base64',   element: <LazyTool><Base64Tool /></LazyTool> },
-  { en: 'tools/remove-background',  es: 'herramientas/quitar-fondo',         element: <LazyTool><BackgroundRemoverTool /></LazyTool> },
+  { en: 'tools/crop-image/',         es: 'herramientas/recortar-imagen/',      element: <LazyTool><AspectRatioTool /></LazyTool> },
+  { en: 'tools/compress-image/',     es: 'herramientas/comprimir-imagen/',     element: <LazyTool><OptimizerTool /></LazyTool> },
+  { en: 'tools/convert-image/',      es: 'herramientas/convertir-imagen/',     element: <LazyTool><ConverterTool /></LazyTool> },
+  { en: 'tools/rotate-flip-image/',  es: 'herramientas/girar-voltear-imagen/', element: <LazyTool><RotateFlipTool /></LazyTool> },
+  { en: 'tools/watermark-image/',    es: 'herramientas/marca-de-agua/',        element: <LazyTool><WatermarkTool /></LazyTool> },
+  { en: 'tools/color-palette/',      es: 'herramientas/paleta-colores/',       element: <LazyTool><ColorPaletteTool /></LazyTool> },
+  { en: 'tools/base64-converter/',   es: 'herramientas/convertidor-base64/',   element: <LazyTool><Base64Tool /></LazyTool> },
+  { en: 'tools/remove-background/',  es: 'herramientas/quitar-fondo/',         element: <LazyTool><BackgroundRemoverTool /></LazyTool> },
 ] as const;
 
 export const AppRoutes: React.FC = () => {

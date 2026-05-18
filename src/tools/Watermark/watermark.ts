@@ -33,8 +33,6 @@ export interface ImageWatermarkConfig extends BaseWatermarkConfig {
   url: string | null;
 }
 
-export type WatermarkConfig = TextWatermarkConfig | ImageWatermarkConfig;
-
 export interface WatermarkFile {
   id: string;
   file: File;

@@ -15,11 +15,6 @@ export const RotateFlipTool: React.FC = () => {
     setActiveFile(file);
   };
 
-  const handleClear = () => {
-    setActiveUrl(null);
-    setActiveFile(null);
-  };
-
   return (
     <div className="home-container" style={{ paddingBottom: '80px' }}>
       <header className="tool-header">
@@ -36,7 +31,6 @@ export const RotateFlipTool: React.FC = () => {
           originalUrl={activeUrl}
           originalFile={activeFile}
           onImageSelected={handleImageSelected}
-          onClear={handleClear}
         />
       </Workspace>
     </div>

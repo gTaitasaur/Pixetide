@@ -85,12 +85,3 @@ export const formatBytes = (bytes: number, decimals = 2) => {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
-
-/**
- * Lee la imagen del usuario para recuperar su archivo original si solo tenemos URL
- */
-export const urlToFile = async (url: string, filename: string, mimeType: string): Promise<File> => {
-  const res = await fetch(url);
-  const blob = await res.blob();
-  return new File([blob], filename, { type: mimeType });
-};

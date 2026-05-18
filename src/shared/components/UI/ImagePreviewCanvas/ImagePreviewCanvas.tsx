@@ -111,4 +111,3 @@ export const ImagePreviewCanvas: React.FC<ImagePreviewCanvasProps> = ({
   );
 };
 
-export default ImagePreviewCanvas;

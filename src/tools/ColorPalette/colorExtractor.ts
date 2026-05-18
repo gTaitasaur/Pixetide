@@ -4,9 +4,9 @@ const SWATCH_NAMES: Record<string, string> = {
   Vibrant: 'Vibrante',
   DarkVibrant: 'Vibrante Oscuro',
   LightVibrant: 'Vibrante Claro',
-  Muted: 'Tenue',
-  DarkMuted: 'Tenue Oscuro',
-  LightMuted: 'Tenue Claro',
+  Muted: 'Apagado',
+  DarkMuted: 'Apagado Oscuro',
+  LightMuted: 'Apagado Claro',
 };
 
 /**

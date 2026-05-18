@@ -12,7 +12,6 @@ interface RotateFlipModuleProps {
   originalUrl: string | null;
   originalFile: File | null;
   onImageSelected: (url: string, file: File) => void;
-  onClear: () => void;
 }
 
 export const RotateFlipModule: React.FC<RotateFlipModuleProps> = ({

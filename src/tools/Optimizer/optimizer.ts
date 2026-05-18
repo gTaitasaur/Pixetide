@@ -4,7 +4,6 @@ export interface OptimizationPreset {
   description: string;
   quality: number;
   maxWidthOrHeight: number;
-  badge?: string;
 }
 
 export const OPTIMIZATION_PRESETS: OptimizationPreset[] = [
@@ -21,7 +20,6 @@ export const OPTIMIZATION_PRESETS: OptimizationPreset[] = [
     description: 'Aplica una compresión ligera. El ahorro de peso es notable y la pérdida visual es imperceptible al ojo humano.',
     quality: 0.85,
     maxWidthOrHeight: 2400,
-    badge: 'Recomendado',
   },
   {
     id: 'aggressive',

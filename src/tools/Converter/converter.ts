@@ -21,7 +21,6 @@ export interface ConverterFile {
   fallbackColor: FallbackColor;
   status: 'idle' | 'processing' | 'done' | 'error';
   resultBlob?: Blob;
-  resultUrl?: string;
 }
 
 export const FORMAT_LABELS: Record<TargetFormat, string> = {

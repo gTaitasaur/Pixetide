@@ -294,19 +294,3 @@ export function getLocaleFromPath(pathname: string): SupportedLocale {
 export function getCanonicalUrl(path: string): string {
   return `${SITE_CONFIG.canonicalOrigin}${path}`;
 }
-
-/**
- * Obtiene todas las rutas (EN + ES) para generar el sitemap.
- * Solo retorna páginas activas (no "próximamente").
- */
-export function getAllPaths(): Array<{ locale: SupportedLocale; path: string; seoId: string }> {
-  const paths: Array<{ locale: SupportedLocale; path: string; seoId: string }> = [];
-
-  for (const page of SEO_PAGES) {
-    for (const locale of SITE_CONFIG.locales) {
-      paths.push({ locale, path: page.path[locale], seoId: page.id });
-    }
-  }
-
-  return paths;
-}

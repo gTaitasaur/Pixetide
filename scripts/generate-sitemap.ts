@@ -1,7 +1,7 @@
 /**
  * generate-sitemap.ts — Genera sitemap.xml desde seoConfig.ts
  *
- * Se ejecuta automáticamente en cada `npm run build`.
+ * Se ejecuta automáticamente en cada `pnpm run build`.
  * Lee las rutas de seoConfig.ts (fuente única de verdad) y genera
  * un sitemap XML con anotaciones hreflang para Google.
  *
@@ -9,12 +9,16 @@
  * Porque cada vez que agregas una herramienta nueva a seoConfig.ts,
  * el sitemap se regenera automáticamente sin editar nada más.
  *
- * Uso: npx tsx scripts/generate-sitemap.ts
+ * Uso: pnpm dlx tsx scripts/generate-sitemap.ts
  */
 
 import { writeFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { SEO_PAGES, SITE_CONFIG } from '../src/seo/seoConfig';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { SEO_PAGES, SITE_CONFIG } from '../src/core/seo/seoConfig.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const ORIGIN = SITE_CONFIG.canonicalOrigin;
 const TODAY = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -65,7 +69,7 @@ ${urlBlocks.join('\n')}
 
 // ── Ejecutar ──
 const sitemap = generateSitemap();
-const outputPath = resolve(import.meta.dirname, '..', 'public', 'sitemap.xml');
+const outputPath = resolve(__dirname, '..', 'public', 'sitemap.xml');
 
 writeFileSync(outputPath, sitemap, 'utf-8');
 

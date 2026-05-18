@@ -24,15 +24,18 @@
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   SEO_PAGES,
   SITE_CONFIG,
   getLocaleFromPath,
   type SupportedLocale,
   type PageSeoEntry,
-} from '../src/seo/seoConfig';
+} from '../src/core/seo/seoConfig.js';
 
-const DIST_DIR = resolve(import.meta.dirname, '..', 'dist');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const DIST_DIR = resolve(__dirname, '..', 'dist');
 
 /**
  * Genera las meta tags HTML para una página y locale específicos.

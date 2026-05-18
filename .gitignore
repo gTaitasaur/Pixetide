@@ -1,7 +1,7 @@
 node_modules
 .agents
 
-# Producción (Carpeta que genera 'npm run build')
+# Producción (Carpeta que genera 'pnpm run build')
 dist/
 
 # Logs de errores

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "vite",
     "build": "tsx scripts/generate-sitemap.ts && tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist/server && tsx scripts/prerender.ts",
@@ -21,12 +22,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-image-crop": "^11.0.10",
+    "react-router": "^7.15.1",
     "react-router-dom": "^7.14.1"
   },
   "devDependencies": {
     "@types/chroma-js": "^3.1.2",
     "@types/culori": "^4.0.1",
     "@types/fabric": "^5.3.11",
+    "@types/node": "^25.8.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.15.0",

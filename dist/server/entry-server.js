@@ -343,7 +343,7 @@ const en = {
   "tool.removeBg.subtitle": "Magically remove the background from any image using Artificial Intelligence directly in your browser. Private, fast, and professional.",
   // ─── Optimizer Module ───
   "opt.compression": "Compression",
-  "opt.compressionDesc": "Lower quality means smaller file size. The <strong>Normal</strong> level works best for most use cases.",
+  "opt.compressionDesc": "Lower quality means smaller file size. The Normal level works best for most use cases.",
   "opt.options": "Options",
   "opt.keepDimensions": "Keep dimensions",
   "opt.keepDimensionsDesc": "Do not resize width and height.",
@@ -547,7 +547,7 @@ const es = {
   "tool.removeBg.subtitle": "Elimina el fondo de cualquier imagen mágicamente usando Inteligencia Artificial directamente en tu navegador. Privado, rápido y profesional.",
   // ─── Optimizer Module ───
   "opt.compression": "Compresión",
-  "opt.compressionDesc": "A menor calidad, menor peso. El nivel <strong>Normal</strong> es ideal para la mayoría de casos.",
+  "opt.compressionDesc": "A menor calidad, menor peso. El nivel Normal es ideal para la mayoría de casos.",
   "opt.options": "Opciones",
   "opt.keepDimensions": "Mantener dimensiones",
   "opt.keepDimensionsDesc": "No redimensionar el ancho y alto.",
@@ -1005,28 +1005,28 @@ const NotFound = () => {
   ] }) });
 };
 const AspectRatioTool = React.lazy(
-  () => import("./assets/AspectRatioTool-CV15-LCj.js").then((m) => ({ default: m.AspectRatioTool }))
+  () => import("./assets/AspectRatioTool-bU0LLbVl.js").then((m) => ({ default: m.AspectRatioTool }))
 );
 const OptimizerTool = React.lazy(
-  () => import("./assets/OptimizerTool-DH4UWlvb.js").then((m) => ({ default: m.OptimizerTool }))
+  () => import("./assets/OptimizerTool-BGn1m16o.js").then((m) => ({ default: m.OptimizerTool }))
 );
 const ConverterTool = React.lazy(
-  () => import("./assets/ConverterTool-B4YoP9pz.js").then((m) => ({ default: m.ConverterTool }))
+  () => import("./assets/ConverterTool-JlTwJsJ-.js").then((m) => ({ default: m.ConverterTool }))
 );
 const RotateFlipTool = React.lazy(
-  () => import("./assets/RotateFlipTool-BduY1Q5J.js").then((m) => ({ default: m.RotateFlipTool }))
+  () => import("./assets/RotateFlipTool-BA0hjEwC.js").then((m) => ({ default: m.RotateFlipTool }))
 );
 const WatermarkTool = React.lazy(
-  () => import("./assets/WatermarkTool-DsR_inQU.js").then((m) => ({ default: m.WatermarkTool }))
+  () => import("./assets/WatermarkTool-Cme85fdH.js").then((m) => ({ default: m.WatermarkTool }))
 );
 const ColorPaletteTool = React.lazy(
-  () => import("./assets/ColorPaletteTool-DBapQcxT.js").then((m) => ({ default: m.ColorPaletteTool }))
+  () => import("./assets/ColorPaletteTool-BkTsTu-3.js").then((m) => ({ default: m.ColorPaletteTool }))
 );
 const Base64Tool = React.lazy(
-  () => import("./assets/Base64Tool-BfDoxTZ4.js").then((m) => ({ default: m.Base64Tool }))
+  () => import("./assets/Base64Tool-tM5upRlZ.js").then((m) => ({ default: m.Base64Tool }))
 );
 const BackgroundRemoverTool = React.lazy(
-  () => import("./assets/BackgroundRemoverTool-DYe5Ai4H.js").then((m) => ({ default: m.BackgroundRemoverTool }))
+  () => import("./assets/BackgroundRemoverTool-5EBouXVt.js").then((m) => ({ default: m.BackgroundRemoverTool }))
 );
 const LazyTool = ({ children }) => /* @__PURE__ */ jsx(Suspense, { fallback: /* @__PURE__ */ jsx("div", { style: { minHeight: "60vh" } }), children });
 const TOOL_ROUTES = [

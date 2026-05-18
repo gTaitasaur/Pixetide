@@ -24,3 +24,10 @@ Thumbs.db
 # Otras plataformas de despliegue
 .netlify
 .vercel
+
+# Archivos de configuración compilados
+vite.config.js
+vite.config.d.ts
+
+# Logs de pnpm
+pnpm-debug.log*

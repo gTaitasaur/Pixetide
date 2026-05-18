@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './AppRoutes';
-import { ErrorBoundary } from './components/Errors/ErrorBoundary';
-import { ToastProvider } from './components/Errors/ToastContext';
-import { ToastContainer } from './components/UI/Toast/ToastContainer';
-import { SeoHead } from './seo/SeoHead';
-import { SchemaMarkup } from './seo/SchemaMarkup';
+import { ErrorBoundary } from './shared/components/Errors/ErrorBoundary';
+import { ToastProvider } from './shared/components/Errors/ToastContext';
+import { ToastContainer } from './shared/components/UI/Toast/ToastContainer';
+import { SeoHead } from './core/seo/SeoHead';
+import { SchemaMarkup } from './core/seo/SchemaMarkup';
 import './App.css';
 
 /**

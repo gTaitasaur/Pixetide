@@ -21,9 +21,9 @@
 
 import React, { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { MainLayout } from './components/Layout/MainLayout';
+import { MainLayout } from './shared/components/Layout/MainLayout';
 import { Home } from './pages/Home/Home';
-import { NotFound } from './components/Errors/NotFound';
+import { NotFound } from './shared/components/Errors/NotFound';
 
 // ────────────────────────────────────────────────────────────────
 // Lazy imports: cada herramienta se carga bajo demanda.
@@ -31,28 +31,28 @@ import { NotFound } from './components/Errors/NotFound';
 // ────────────────────────────────────────────────────────────────
 
 const AspectRatioTool = React.lazy(() =>
-  import('./pages/Tools/AspectRatioTool/AspectRatioTool').then((m) => ({ default: m.AspectRatioTool }))
+  import('./tools/AspectRatio/AspectRatioTool').then((m) => ({ default: m.AspectRatioTool }))
 );
 const OptimizerTool = React.lazy(() =>
-  import('./pages/Tools/OptimizerTool/OptimizerTool').then((m) => ({ default: m.OptimizerTool }))
+  import('./tools/Optimizer/OptimizerTool').then((m) => ({ default: m.OptimizerTool }))
 );
 const ConverterTool = React.lazy(() =>
-  import('./pages/Tools/ConverterTool/ConverterTool').then((m) => ({ default: m.ConverterTool }))
+  import('./tools/Converter/ConverterTool').then((m) => ({ default: m.ConverterTool }))
 );
 const RotateFlipTool = React.lazy(() =>
-  import('./pages/Tools/RotateFlipTool/RotateFlipTool').then((m) => ({ default: m.RotateFlipTool }))
+  import('./tools/RotateFlip/RotateFlipTool').then((m) => ({ default: m.RotateFlipTool }))
 );
 const WatermarkTool = React.lazy(() =>
-  import('./pages/Tools/WatermarkTool/WatermarkTool').then((m) => ({ default: m.WatermarkTool }))
+  import('./tools/Watermark/WatermarkTool').then((m) => ({ default: m.WatermarkTool }))
 );
 const ColorPaletteTool = React.lazy(() =>
-  import('./pages/Tools/ColorPaletteTool/ColorPaletteTool').then((m) => ({ default: m.ColorPaletteTool }))
+  import('./tools/ColorPalette/ColorPaletteTool').then((m) => ({ default: m.ColorPaletteTool }))
 );
 const Base64Tool = React.lazy(() =>
-  import('./pages/Tools/Base64Tool/Base64Tool').then((m) => ({ default: m.Base64Tool }))
+  import('./tools/Base64/Base64Tool').then((m) => ({ default: m.Base64Tool }))
 );
 const BackgroundRemoverTool = React.lazy(() =>
-  import('./pages/Tools/BackgroundRemoverTool/BackgroundRemoverTool').then((m) => ({ default: m.BackgroundRemoverTool }))
+  import('./tools/BackgroundRemover/BackgroundRemoverTool').then((m) => ({ default: m.BackgroundRemoverTool }))
 );
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */

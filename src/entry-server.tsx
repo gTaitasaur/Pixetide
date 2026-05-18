@@ -22,9 +22,9 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { AppRoutes } from './AppRoutes';
-import { ErrorBoundary } from './components/Errors/ErrorBoundary';
-import { ToastProvider } from './components/Errors/ToastContext';
-import { SchemaMarkup } from './seo/SchemaMarkup';
+import { ErrorBoundary } from './shared/components/Errors/ErrorBoundary';
+import { ToastProvider } from './shared/components/Errors/ToastContext';
+import { SchemaMarkup } from './core/seo/SchemaMarkup';
 
 /**
  * Renderiza la app para una URL dada y retorna el HTML como string.

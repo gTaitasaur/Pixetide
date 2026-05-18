@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card } from '../../components/UI/Card';
-import { useLocale } from '../../i18n/useLocale';
-import { SEO_PAGES } from '../../seo/seoConfig';
+import { Card } from '../../shared/components/UI/Card';
+import { useLocale } from '../../core/i18n/useLocale';
+import { SEO_PAGES } from '../../core/seo/seoConfig';
 import './Home.css';
 
 /**

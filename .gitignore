@@ -1,5 +1,8 @@
 node_modules
 .agents
+.env
+MANDAMIENTOS.md
+
 
 # Producción (Carpeta que genera 'pnpm run build')
 dist/

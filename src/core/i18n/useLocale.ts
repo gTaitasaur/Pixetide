@@ -6,19 +6,20 @@
  * (i18next = ~40KB) para esto es overkill. Este hook pesa 0KB extra porque es
  * código nativo de la app.
  *
- * Estrategia: el idioma se detecta EXCLUSIVAMENTE desde la URL.
- * - /es/* → español
- * - todo lo demás → inglés (idioma por defecto)
- * No usamos cookies, localStorage ni navigator.language porque queremos que
- * Google indexe cada versión por su URL, no por el estado del cliente.
+ * Estrategia:
+ * - El idioma se persiste en localStorage para mantener la preferencia del usuario.
+ * - En primera visita, se detecta desde la URL (/es/* → español, resto → inglés).
+ * - Al cambiar de idioma se actualiza localStorage y la URL (sin crear historial).
+ * - Los componentes SEO (SeoHead, SchemaMarkup) siguen usando la URL para
+ *   canonical/hreflang, asegurando indexación correcta por Google.
  */
 
 import { useCallback, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
-import { getLocaleFromPath, type SupportedLocale } from '../seo/seoConfig';
+import { type SupportedLocale } from '../seo/seoConfig';
 import { translations, type TranslationKey } from './translations';
+import { useLocaleContext } from './LocaleProvider';
 
-interface UseLocaleReturn {
+export interface UseLocaleReturn {
   /** Locale actual: 'en' | 'es' */
   locale: SupportedLocale;
   /** Función para obtener un texto traducido por su key */
@@ -27,11 +28,12 @@ interface UseLocaleReturn {
   pathPrefix: string;
   /** Genera la ruta equivalente en el otro idioma */
   getAlternateUrl: (currentPath: string) => string;
+  /** Cambia el idioma y persiste la preferencia en localStorage */
+  setLocale: (locale: SupportedLocale) => void;
 }
 
 export function useLocale(): UseLocaleReturn {
-  const { pathname } = useLocation();
-  const locale = getLocaleFromPath(pathname);
+  const { locale, setLocale } = useLocaleContext();
 
   const t = useCallback((key: TranslationKey): string => {
     const localeTranslations = translations[locale];
@@ -52,6 +54,7 @@ export function useLocale(): UseLocaleReturn {
     locale, 
     t, 
     pathPrefix, 
-    getAlternateUrl 
-  }), [locale, t, pathPrefix, getAlternateUrl]);
+    getAlternateUrl,
+    setLocale,
+  }), [locale, t, pathPrefix, getAlternateUrl, setLocale]);
 }

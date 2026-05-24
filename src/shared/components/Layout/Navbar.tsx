@@ -18,7 +18,7 @@ import './Navbar.css';
  */
 export const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { t, locale } = useLocale();
+  const { t, locale, setLocale } = useLocale();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -41,9 +41,13 @@ export const Navbar: React.FC = () => {
   /**
    * Cambia al otro idioma manteniendo la misma herramienta.
    * Busca la página actual en seoConfig y navega a su equivalente.
+   * Usa replace:true para NO crear una entrada en el historial del navegador,
+   * así el botón de retrocede no revierte el idioma.
    */
   const switchLanguage = () => {
     const targetLocale = locale === 'en' ? 'es' : 'en';
+
+    setLocale(targetLocale);
 
     // Buscar la página actual en cualquier idioma
     const currentPage = SEO_PAGES.find((page) => {
@@ -54,10 +58,10 @@ export const Navbar: React.FC = () => {
     });
 
     if (currentPage) {
-      navigate(currentPage.path[targetLocale]);
+      navigate(currentPage.path[targetLocale], { replace: true });
     } else {
       // Fallback: ir al home del otro idioma
-      navigate(targetLocale === 'es' ? '/es/' : '/');
+      navigate(targetLocale === 'es' ? '/es/' : '/', { replace: true });
     }
 
     closeMenu();

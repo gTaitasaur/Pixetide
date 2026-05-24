@@ -25,6 +25,7 @@ import { AppRoutes } from './AppRoutes';
 import { ErrorBoundary } from './shared/components/Errors/ErrorBoundary';
 import { ToastProvider } from './shared/components/Errors/ToastContext';
 import { SchemaMarkup } from './core/seo/SchemaMarkup';
+import { LocaleProvider } from './core/i18n/LocaleProvider';
 
 /**
  * Renderiza la app para una URL dada y retorna el HTML como string.
@@ -36,12 +37,14 @@ export function render(url: string): string {
   return renderToString(
     <React.StrictMode>
       <StaticRouter location={url}>
-        <ToastProvider>
-          <ErrorBoundary>
-            <SchemaMarkup />
-            <AppRoutes />
-          </ErrorBoundary>
-        </ToastProvider>
+        <LocaleProvider>
+          <ToastProvider>
+            <ErrorBoundary>
+              <SchemaMarkup />
+              <AppRoutes />
+            </ErrorBoundary>
+          </ToastProvider>
+        </LocaleProvider>
       </StaticRouter>
     </React.StrictMode>
   );

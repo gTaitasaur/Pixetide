@@ -21,7 +21,7 @@ export type TranslationKey = keyof typeof en;
 
 const en = {
   // ─── Navbar ───
-  "nav.home": "TEST",
+  "nav.home": "Home",
   "nav.tools": "Tools",
   "nav.about": "About",
   "nav.openMenu": "Open menu",

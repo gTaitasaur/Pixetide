@@ -34,3 +34,6 @@ vite.config.d.ts
 
 # Logs de pnpm
 pnpm-debug.log*
+public/screen.png
+public/prototype.html
+public/Prototype DESIGN.md

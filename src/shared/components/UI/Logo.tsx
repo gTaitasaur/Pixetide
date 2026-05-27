@@ -28,7 +28,7 @@ export const Logo: React.FC<LogoProps> = ({ size = 32, className = '' }) => {
           <rect x="10" y="10" width="4" height="4" fill="#a855f7" />
         </svg>
       </div>
-      <span className="pixetide-logo-text">Pixetide</span>
+      <span className="pixetide-logo-text max-[420px]:hidden">Pixetide</span>
     </div>
   );
 };

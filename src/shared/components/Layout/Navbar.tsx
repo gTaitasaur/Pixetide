@@ -1,55 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Logo } from '../UI/Logo';
 import { useLocale } from '../../../core/i18n/useLocale';
 import { SEO_PAGES } from '../../../core/seo/seoConfig';
-import './Navbar.css';
+import { Sheet, SheetTrigger, SheetContent, SheetClose } from '@/shared/components/ui/sheet';
+import { Globe, Menu } from 'lucide-react';
+import { cn } from '@/shared/utils/cn';
 
 /**
- * Navbar con internacionalización y selector de idioma.
- *
- * El selector EN/ES funciona así:
- * 1. Detecta en qué página estás (ej: /tools/compress-image)
- * 2. Busca la página equivalente en el otro idioma en seoConfig
- * 3. Navega a esa URL (ej: /es/herramientas/comprimir-imagen)
- *
- * Si no encuentra equivalente (ej: estás en una página que no existe
- * en seoConfig), redirige al home del otro idioma.
+ * Navbar rediseñado por completo con Tailwind CSS v4 y shadcn/ui Sheet.
+ * 
+ * Lógica funcional conservada:
+ * - Selector de idioma con enrutamiento dinámico según la herramienta activa.
+ * - Enlace a homePath localizado.
+ * - Integración del logo oficial de Pixetide.
+ * - Soporte para SSR y prerendering estático.
  */
 export const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const { t, locale, setLocale } = useLocale();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const homePath = locale === 'es' ? '/es/' : '/';
+  const toolsPath = locale === 'es' ? '/es/herramientas/comprimir-imagen' : '/tools/compress-image';
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-  };
+  const [isSmallScreen, setIsSmallScreen] = React.useState(false);
 
-  const closeMenu = () => {
-    setIsOpen(false);
-    document.body.style.overflow = 'unset';
-  };
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 390px)');
+    setIsSmallScreen(mediaQuery.matches);
+    
+    const handler = (e: MediaQueryListEvent) => setIsSmallScreen(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
-  /**
-   * Cambia al otro idioma manteniendo la misma herramienta.
-   * Busca la página actual en seoConfig y navega a su equivalente.
-   * Usa replace:true para NO crear una entrada en el historial del navegador,
-   * así el botón de retrocede no revierte el idioma.
-   */
+  /** Cambiar idioma y navegar a la ruta equivalente de la herramienta activa */
   const switchLanguage = () => {
     const targetLocale = locale === 'en' ? 'es' : 'en';
-
     setLocale(targetLocale);
 
-    // Buscar la página actual en cualquier idioma
     const currentPage = SEO_PAGES.find((page) => {
       const enPath = page.path.en.replace(/\/$/, '') || '/';
       const esPath = page.path.es.replace(/\/$/, '') || '/es';
@@ -60,92 +50,170 @@ export const Navbar: React.FC = () => {
     if (currentPage) {
       navigate(currentPage.path[targetLocale], { replace: true });
     } else {
-      // Fallback: ir al home del otro idioma
       navigate(targetLocale === 'es' ? '/es/' : '/', { replace: true });
     }
-
-    closeMenu();
   };
 
+  // Determinar estados activos para los enlaces principales
+  const isHomeActive = pathname === homePath || pathname === (locale === 'es' ? '/es' : '');
+  const isToolsActive = pathname.includes('/tools/') || pathname.includes('/herramientas/');
+
   return (
-    <div className="navbar-wrapper">
-      <nav className="navbar">
-        <div className="navbar-container">
-          <Link to={homePath} className="brand-link" onClick={closeMenu}>
-            <Logo size={64} />
+    <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-xl z-50 transition-all duration-300 ease-in-out border-b border-border/50">
+      <div className="flex justify-between items-center h-20 px-6 md:px-12 max-w-[1600px] mx-auto">
+        
+        {/* Lado Izquierdo: Marca / Logo */}
+        <Link to={homePath} className="flex items-center gap-2 max-[390px]:hidden">
+          <Logo size={40} className="hover:opacity-90 transition-opacity" />
+        </Link>
+
+        {/* Centro: Enlaces de Navegación Desktop */}
+        <div className="hidden min-[990px]:flex items-center space-x-12">
+          <Link
+            to={homePath}
+            className={cn(
+              "text-xs font-semibold uppercase tracking-[0.2em] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[1px] after:bg-primary after:transition-transform after:duration-300",
+              isHomeActive 
+                ? "text-primary after:scale-x-100" 
+                : "text-muted-foreground hover:text-primary after:scale-x-0 hover:after:scale-x-100"
+            )}
+          >
+            {t('nav.home')}
           </Link>
-
-          {/* Desktop Links */}
-          <div className="navbar-links desktop-only">
-            <Link to={homePath} className="nav-link">{t('nav.home')}</Link>
-            <Link to={homePath} className="nav-link">{t('nav.tools')}</Link>
-
-            {/* Selector de idioma */}
-            <button
-              className="lang-switch-btn"
-              onClick={switchLanguage}
-              aria-label={t('lang.switchLabel')}
-              title={t('lang.switchLabel')}
-            >
-              {t('lang.switch')}
-            </button>
-
-            {/* Ko-fi Support */}
-            <a
-              href="https://ko-fi.com/pixetide"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="nav-btn-support"
-            >
-              {t('nav.support')}
-            </a>
-          </div>
-
-          {/* Burger Button (Mobile) */}
-          <button
-            className={`burger-menu ${isOpen ? 'open' : ''}`}
-            onClick={toggleMenu}
-            aria-label={t('nav.openMenu')}
+          <Link
+            to={toolsPath}
+            className={cn(
+              "text-xs font-semibold uppercase tracking-[0.2em] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[1px] after:bg-primary after:transition-transform after:duration-300",
+              isToolsActive 
+                ? "text-primary after:scale-x-100" 
+                : "text-muted-foreground hover:text-primary after:scale-x-0 hover:after:scale-x-100"
+            )}
           >
-            <span className="burger-line"></span>
-            <span className="burger-line"></span>
-            <span className="burger-line"></span>
-          </button>
+            {t('nav.tools')}
+          </Link>
+          
+          {/* Placeholders visuales del prototipo */}
+          <span className="text-xs font-semibold text-muted-foreground/40 cursor-not-allowed uppercase tracking-[0.2em] select-none">
+            Blogs
+          </span>
+          <span className="text-xs font-semibold text-muted-foreground/40 cursor-not-allowed uppercase tracking-[0.2em] select-none">
+            {t('nav.about')}
+          </span>
         </div>
-      </nav>
 
-      {/* Fullscreen Overlay Mobile Menu */}
-      <div className={`nav-overlay ${isOpen ? 'active' : ''}`}>
-        <button className="close-overlay" onClick={closeMenu} aria-label={t('nav.closeMenu')}>
-          ×
-        </button>
-        <div className="overlay-content">
-          <Link to={homePath} className="overlay-link" onClick={closeMenu}>{t('nav.home')}</Link>
-          <Link to={homePath} className="overlay-link" onClick={closeMenu}>{t('nav.tools')}</Link>
-
-          {/* Selector de idioma mobile */}
+        {/* Lado Derecho: Acciones Desktop */}
+        <div className="flex items-center gap-4 md:gap-8 max-[390px]:w-full max-[390px]:justify-start">
+          
+          {/* Selector de idioma */}
           <button
-            className="overlay-link lang-switch-mobile"
             onClick={switchLanguage}
+            className="flex items-center gap-1.5 text-[10px] font-bold text-foreground hover:bg-muted/50 transition-colors uppercase tracking-widest px-2.5 py-1 border border-border rounded cursor-pointer max-[390px]:hidden"
+            aria-label={t('lang.switchLabel')}
+            title={t('lang.switchLabel')}
           >
-            🌐 {locale === 'en' ? 'Español' : 'English'}
+            <Globe className="size-3.5" />
+            {t('lang.switch')}
           </button>
 
-          {/* Ko-fi Support mobile */}
-          <div className="mobile-support-wrapper">
-            <span className="mobile-support-microcopy">{t('nav.supportMicrocopy')}</span>
-            <a
-              href="https://ko-fi.com/pixetide"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="overlay-link support-btn"
-              onClick={closeMenu}
-            >
-              {t('nav.support')}
-            </a>
+          {/* Botón de Apoyo (CTA) */}
+          <a
+            href="https://ko-fi.com/pixetide"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden min-[990px]:flex items-center px-5 py-2 border-2 border-primary text-[10px] font-bold text-primary uppercase tracking-widest hover:bg-primary hover:text-white transition-all rounded-full"
+          >
+            {t('nav.support')}
+          </a>
+
+          {/* Menú Hamburguesa Móvil (shadcn/ui Sheet) */}
+          <div className="min-[990px]:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button 
+                  className="p-2 text-foreground hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"
+                  aria-label={t('nav.openMenu')}
+                >
+                  <Menu className="size-6" />
+                </button>
+              </SheetTrigger>
+               <SheetContent 
+                side={isSmallScreen ? "left" : "right"} 
+                className={cn(
+                  "w-[300px] sm:w-[350px] p-6 flex flex-col justify-between bg-white", 
+                  isSmallScreen ? "border-r border-border" : "border-l border-border"
+                )} 
+                showCloseButton={true}
+              >
+                
+                {/* Enlaces Móviles */}
+                <div className="flex flex-col space-y-8 mt-12">
+                  <div className="flex flex-col space-y-4">
+                    <SheetClose asChild>
+                      <Link 
+                        to={homePath}
+                        className={cn(
+                          "text-lg font-semibold uppercase tracking-[0.15em] transition-colors py-2 border-b border-border/30",
+                          isHomeActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                        )}
+                      >
+                        {t('nav.home')}
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link 
+                        to={toolsPath}
+                        className={cn(
+                          "text-lg font-semibold uppercase tracking-[0.15em] transition-colors py-2 border-b border-border/30",
+                          isToolsActive ? "text-primary" : "text-muted-foreground hover:text-primary"
+                        )}
+                      >
+                        {t('nav.tools')}
+                      </Link>
+                    </SheetClose>
+                    <span className="text-lg font-semibold text-muted-foreground/30 cursor-not-allowed uppercase tracking-[0.15em] py-2 border-b border-border/30 select-none">
+                      Blogs
+                    </span>
+                    <span className="text-lg font-semibold text-muted-foreground/30 cursor-not-allowed uppercase tracking-[0.15em] py-2 border-b border-border/30 select-none">
+                      {t('nav.about')}
+                    </span>
+                  </div>
+
+                  {/* Selector de idioma móvil */}
+                  <SheetClose asChild>
+                    <button
+                      onClick={switchLanguage}
+                      className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-primary transition-colors py-2 cursor-pointer text-left uppercase tracking-wider"
+                    >
+                      <Globe className="size-4" />
+                      {locale === 'en' ? 'Español' : 'English'}
+                    </button>
+                  </SheetClose>
+                </div>
+
+                {/* Soporte Móvil */}
+                <div className="flex flex-col space-y-4 mb-8">
+                  <span className="text-[11px] text-muted-foreground/80 leading-relaxed font-medium">
+                    {t('nav.supportMicrocopy')}
+                  </span>
+                  <SheetClose asChild>
+                    <a
+                      href="https://ko-fi.com/pixetide"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center py-3 border-2 border-primary text-xs font-bold text-primary uppercase tracking-widest hover:bg-primary hover:text-white transition-all rounded-full text-center"
+                    >
+                      {t('nav.support')}
+                    </a>
+                  </SheetClose>
+                </div>
+
+              </SheetContent>
+            </Sheet>
           </div>
+
         </div>
+
       </div>
-    </div>
+    </nav>
   );
 };

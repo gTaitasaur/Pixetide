@@ -1,20 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
 import { SEO_PAGES } from '../../core/seo/seoConfig';
-import './Home.css';
-
-/**
- * Home Page — Hub de herramientas con contenido localizado.
- *
- * Copy optimizado para SEO:
- * - H1 incluye keywords principales + nombre de marca
- * - Subtítulo refuerza el ángulo de privacidad (diferenciador clave)
- * - Cada card tiene copy orientado a intención de búsqueda
- *
- * Los links se generan desde seoConfig.ts, así si cambias una URL
- * allí, se actualiza automáticamente aquí.
- */
 
 /** Helper para obtener la ruta de una herramienta por su ID y locale */
 function getToolPath(id: string, locale: 'en' | 'es'): string {
@@ -22,18 +10,203 @@ function getToolPath(id: string, locale: 'en' | 'es'): string {
   return page?.path[locale] ?? '/';
 }
 
+/**
+ * Home Page — Rework completo del Hero Section con diseño editorial de alta fidelidad.
+ * 
+ * Cambios destacados:
+ * - Colocación exacta debajo del Navbar mediante pt-20 (80px) en el flujo normal del documento.
+ * - Marca de agua decorativa gigante ("PRIVACIDAD" / "PRIVACY") con opacidad del 3%.
+ * - Layout de dos columnas en desktop (Tipografía y CTAs a la izquierda, lista editorial a la derecha).
+ * - Grilla original de herramientas (.tools-grid) conservada intacta debajo.
+ */
 export const Home: React.FC = () => {
   const { t, locale } = useLocale();
 
-  return (
-    <div className="home-container">
-      <div className="hub-wrapper">
-        <section className="hero-section">
-          <h1 className="hero-title">{t('home.heroTitle')}</h1>
-          <p className="hero-subtitle">{t('home.heroSubtitle')}</p>
-        </section>
+  const scrollToTools = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const element = document.getElementById('tools-grid-section');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-        <div className="tools-grid">
+  const githubText = locale === 'es' ? "Ver en GitHub" : "View on GitHub";
+  const ctaText = locale === 'es' ? "Usar herramientas gratis" : "Use Free Tools";
+  const badgeText = locale === 'es' ? "Procesamiento Local WebAssembly" : "WebAssembly Local Processing";
+  const featuredTitle = locale === 'es' ? "Herramientas Destacadas" : "Featured Tools";
+  const watermarkText = locale === 'es' ? "PRIVACIDAD" : "PRIVACY";
+
+  // Texto del subtítulo del Hero — hardcodeado temporalmente para fidelidad con el prototipo
+  const heroSubtitle = locale === 'es'
+    ? 'Comprime, convierte, elimina fondos y añade marcas de agua sin subir tus imágenes. Todo se procesa localmente en tu navegador..'
+    : 'Compress, convert, remove backgrounds and add watermarks without uploading your images. Everything is processed locally in your browser.';
+
+  // Herramientas destacadas en la columna editorial derecha — Alineadas con el prototipo exacto
+  const featuredTools = [
+    { id: 'convert', label: locale === 'es' ? 'Convertir Imágenes (JPG, PNG, WebP, AVIF)' : 'Convert Images (JPG, PNG, WebP, AVIF)', num: '01' },
+    { id: 'remove-bg', label: locale === 'es' ? 'Eliminar Fondo de Imagen gratis' : 'Remove Image Background for Free', num: '02' },
+    { id: 'watermark', label: locale === 'es' ? 'Añadir Marca de Agua a imágenes' : 'Add Watermark to Images', num: '03' },
+    { id: 'compress', label: locale === 'es' ? 'Comprimir Imágenes Sin Perder Calidad' : 'Compress Images Without Losing Quality', num: '04' },
+  ] as const;
+
+  const moreToolsLabel = locale === 'es' ? 'Más Herramientas . . .' : 'More Tools . . .';
+
+  return (
+    <div className="w-full flex flex-col items-center bg-background min-h-screen relative pt-20 overflow-x-hidden">
+      
+      {/* Marca de agua gigante decorativa de fondo */}
+      <div className="absolute top-24 left-0 w-full overflow-hidden pointer-events-none select-none z-0 opacity-[0.03]">
+        <h1 className="text-[15vw] font-serif font-bold leading-none whitespace-nowrap tracking-tighter text-primary">
+          {watermarkText}
+        </h1>
+      </div>
+
+      {/* ─── NEW HERO SECTION ─── */}
+      <section className="relative z-10 w-full max-w-[1600px] px-6 md:px-12 pt-16 md:pt-24 lg:pt-36 pb-16 md:pb-24 flex flex-col lg:flex-row gap-16 items-start">
+        
+        {/* Columna Izquierda: Tipografía y Botones de Acción */}
+        <div className="flex-1 lg:pr-12">
+          <div className="mb-8 md:mb-12">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-start gap-4 leading-snug">
+              <span className="w-8 h-px bg-muted-foreground mt-[9px] shrink-0"></span>
+              <span>
+                {locale === 'es' ? (
+                  <>Herramientas de imágen 100% locales<br />sin registro - sin cuenta - sin subir archivos</>
+                ) : (
+                  <>100% local image tools<br />no registration - no account - no file uploads</>
+                )}
+              </span>
+            </p>
+            
+            {locale === 'es' ? (
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-primary font-bold leading-[1.05] tracking-tight mb-8">
+                Herramientas de imagen gratis y<br />
+                <span className="italic text-muted-foreground/80">privada.</span>
+              </h2>
+            ) : (
+              <h2 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-primary font-bold leading-[1.05] tracking-tight mb-8">
+                Free and<br />
+                <span className="italic text-muted-foreground/80">private tools.</span>
+              </h2>
+            )}
+
+            {/* Subtítulo — Hardcodeado temporalmente para fidelidad con el prototipo */}
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-xl leading-relaxed font-light">
+              {heroSubtitle}
+            </p>
+          </div>
+
+          {/* Botones de Acción */}
+          <div className="flex flex-col sm:flex-row gap-6 mt-12">
+            <a
+              href="#tools-grid-section"
+              onClick={scrollToTools}
+              className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-primary text-white font-medium text-sm uppercase tracking-widest hover:bg-neutral-800 transition-all border-2 border-primary hover:-translate-y-1 cursor-pointer"
+            >
+              {ctaText}
+            </a>
+            <a
+              href="https://github.com/taitasaur/MarkWaterImg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-transparent text-primary font-medium text-sm uppercase tracking-widest border-2 border-primary hover:bg-neutral-50 transition-all cursor-pointer"
+            >
+              {githubText}
+            </a>
+          </div>
+
+          {/* Badge de confianza — Icono "verified" similar al del prototipo (Material Symbols) */}
+          <p className="mt-12 text-sm text-muted-foreground flex items-center gap-2 font-mono">
+            <svg className="size-4 text-muted-foreground" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.5 15.5l-4-4 1.41-1.41L10.5 13.67l5.59-5.59L17.5 9.5l-7 7z" />
+            </svg>
+            {badgeText}
+          </p>
+        </div>
+
+        {/* Columna Derecha: Grilla/Listado Editorial */}
+        <div className="flex-1 w-full lg:mt-0 relative">
+          <div className="border-t-2 border-primary pt-8">
+            <h3 className="font-serif text-xl md:text-2xl mb-8 font-semibold text-primary">
+              {featuredTitle}
+            </h3>
+            
+            <div className="space-y-0 divide-y divide-border/60">
+              {featuredTools.map(({ id, label, num }) => (
+                <Link
+                  key={id}
+                  to={getToolPath(id, locale)}
+                  className="group flex items-center justify-between py-6 hover:pl-4 transition-all duration-300"
+                >
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-xs font-mono text-muted-foreground">{num}</span>
+                    <h4 className="text-xl font-medium text-foreground group-hover:text-primary transition-colors">
+                      {label}
+                    </h4>
+                  </div>
+                  <svg 
+                    className="size-5 text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0 duration-300"
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor" 
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              ))}
+
+              {/* Ítem final: "05 Más Herramientas . . ." — enlaza al Hub */}
+              <a
+                href="#tools-grid-section"
+                onClick={scrollToTools}
+                className="group flex items-center justify-between py-6 hover:pl-4 transition-all duration-300 cursor-pointer"
+              >
+                <div className="flex items-baseline gap-4">
+                  <span className="text-xs font-mono text-muted-foreground">05</span>
+                  <h4 className="text-xl font-medium text-foreground group-hover:text-primary transition-colors">
+                    {moreToolsLabel}
+                  </h4>
+                </div>
+                <svg 
+                  className="size-5 text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-4 group-hover:translate-x-0 duration-300"
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor" 
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      {/* ─── NEW TOOLS GRID SECTION ─── */}
+      <section id="tools-grid-section" className="relative z-10 w-full max-w-[1600px] px-6 md:px-12 pb-24 md:pb-32 mt-12 md:mt-16 scroll-mt-24">
+        
+        {/* Separador Visual / Titular de Sección */}
+        <div className="border-t border-border/80 pt-12 md:pt-16 mb-12 flex flex-col md:flex-row md:items-baseline md:justify-between gap-4">
+          <div>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold tracking-tight text-primary">
+              {locale === 'es' ? 'Todas las Herramientas' : 'All Image Tools'}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2 font-normal">
+              {locale === 'es' ? 'Herramientas 100% locales operadas en tu navegador.' : '100% local utilities running directly inside your browser.'}
+            </p>
+          </div>
+          
+          <div className="text-xs text-muted-foreground/60 font-mono flex items-center gap-1.5 uppercase tracking-wider select-none">
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            {locale === 'es' ? 'Listo para usar' : 'Ready to use'}
+          </div>
+        </div>
+
+        {/* Grilla Responsiva: 1 col en mobile, 2 en tablet (sm/md), 3 en laptops, 4 en desktop xl */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
+          
           {/* 1. Comprimir */}
           <Card
             to={getToolPath('compress', locale)}
@@ -164,7 +337,7 @@ export const Home: React.FC = () => {
             description={t('card.favicon.desc')}
           />
         </div>
-      </div>
+      </section>
     </div>
   );
 };

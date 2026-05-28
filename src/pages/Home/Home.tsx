@@ -332,7 +332,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Floating fixed widget for Working On It */}
-      <div className="fixed bottom-6 right-6 z-50 scale-75 md:scale-90 lg:scale-100 origin-bottom-right transition-transform duration-300">
+      <div className="fixed bottom-6 right-6 z-50 scale-90 md:scale-95 lg:scale-100 origin-bottom-right transition-transform duration-300">
         <WorkingOnIt />
       </div>
     </div>

@@ -74,7 +74,7 @@ const WorkingOnIt: React.FC = () => {
           font-['Syncopate',sans-serif] font-black tracking-[2px] transition-all duration-300 select-none ${
             isOpen
               ? "shadow-[0_0_30px_rgba(255,255,255,0.2)] scale-95 tracking-[6px]"
-              : "animate-pulse shadow-[0_0_15px_rgba(168,85,247,0.35)] hover:animate-none hover:scale-98 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]"
+              : "shadow-[0_0_0px_rgba(255,255,255,0)] hover:scale-98 hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] animate-scale-pulse"
           }
         `}
       >

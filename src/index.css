@@ -93,6 +93,18 @@
   --text-mono-sm: 12px;
   --text-mono-sm--line-height: 16px;
   --text-mono-sm--font-weight: 400;
+
+  /* Custom scale-pulse animation for WorkingOnIt widget trigger */
+  --animate-scale-pulse: scale-pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+  @keyframes scale-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.06);
+    }
+  }
 }
 
 :root {

@@ -59,7 +59,7 @@ export const Navbar: React.FC = () => {
   const isToolsActive = pathname.includes('/tools/') || pathname.includes('/herramientas/');
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-xl z-50 transition-all duration-300 ease-in-out border-b border-border/50">
+    <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-xl z-50 transition-all duration-300 ease-in-out border-b border-gray-100">
       <div className="flex justify-between items-center h-20 px-6 md:px-12 max-w-[1600px] mx-auto">
         
         {/* Lado Izquierdo: Marca / Logo */}
@@ -107,7 +107,7 @@ export const Navbar: React.FC = () => {
           {/* Selector de idioma */}
           <button
             onClick={switchLanguage}
-            className="flex items-center gap-1.5 text-[10px] font-bold text-foreground hover:bg-muted/50 transition-colors uppercase tracking-widest px-2.5 py-1 border border-border rounded cursor-pointer max-[390px]:hidden"
+            className="flex items-center gap-1.5 text-[10px] font-bold text-foreground hover:bg-muted/50 transition-colors uppercase tracking-[0.12em] px-2.5 py-1.5 border border-gray-100 rounded cursor-pointer max-[390px]:hidden"
             aria-label={t('lang.switchLabel')}
             title={t('lang.switchLabel')}
           >
@@ -120,7 +120,7 @@ export const Navbar: React.FC = () => {
             href="https://ko-fi.com/pixetide"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden min-[990px]:flex items-center px-5 py-2 border-2 border-primary text-[10px] font-bold text-primary uppercase tracking-widest hover:bg-primary hover:text-white transition-all rounded-full"
+            className="hidden min-[990px]:flex items-center px-5 py-2 border-2 border-primary text-[10px] font-bold text-primary uppercase tracking-[0.12em] hover:bg-primary hover:text-white transition-all rounded-full"
           >
             {t('nav.support')}
           </a>

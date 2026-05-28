@@ -35,7 +35,7 @@ export const Card: React.FC<CardProps> = ({ to, icon, title, description, disabl
       
       {/* Titular */}
       <h3 className={cn(
-        "font-serif text-lg font-semibold tracking-tight mb-2 transition-colors duration-300",
+        "font-sans text-lg font-semibold tracking-tight mb-2 transition-colors duration-300",
         disabled 
           ? "text-neutral-400" 
           : "text-foreground group-hover:text-primary"

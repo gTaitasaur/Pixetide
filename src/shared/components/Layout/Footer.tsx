@@ -45,7 +45,7 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-5 lg:col-span-6 flex flex-col items-start">
             <Link
               to={homePath}
-              className="group flex items-center gap-2.5 text-2xl font-serif font-black text-primary tracking-[-0.04em] mb-6 hover:opacity-90 transition-opacity select-none"
+              className="group flex items-center gap-2.5 text-3xl font-serif font-black text-primary tracking-tight mb-6 hover:opacity-90 transition-opacity select-none"
             >
               {/* Logo Pixelado Miniaturizado ("Núcleo Púrpura") con Rotación Diamante */}
               <div className="size-6 flex items-center justify-center rotate-45 transition-transform duration-500 ease-out group-hover:scale-120">
@@ -62,7 +62,7 @@ export const Footer: React.FC = () => {
               <span className="translate-y-[1px]">Pixetide.</span>
             </Link>
             
-            <p className="text-xl text-muted-foreground max-w-sm leading-relaxed font-light mb-8">
+            <p className="font-sans text-lg text-neutral-700 max-w-sm leading-relaxed font-light mb-8">
               {taglineText}
             </p>
             
@@ -113,7 +113,7 @@ export const Footer: React.FC = () => {
             
             {/* Columna: Producto */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary select-none">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary select-none">
                 {locale === 'es' ? 'Producto' : 'Product'}
               </h3>
               <div className="flex flex-col gap-3">
@@ -142,7 +142,7 @@ export const Footer: React.FC = () => {
             
             {/* Columna: Legal */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary select-none">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary select-none">
                 Legal
               </h3>
               <div className="flex flex-col gap-3">
@@ -172,7 +172,7 @@ export const Footer: React.FC = () => {
             
             {/* Columna: Comunidad */}
             <div className="flex flex-col gap-4">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary select-none">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary select-none">
                 {locale === 'es' ? 'Comunidad' : 'Community'}
               </h3>
               <div className="flex flex-col gap-3">

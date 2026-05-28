@@ -22,7 +22,18 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const homePath = locale === 'es' ? '/es/' : '/';
-  const toolsPath = locale === 'es' ? '/es/herramientas/comprimir-imagen' : '/tools/compress-image';
+  const toolsPath = locale === 'es' ? '/es/#tools-grid-section' : '/#tools-grid-section';
+
+  const handleToolsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const isHome = pathname === '/' || pathname === '/es' || pathname === '/es/';
+    if (isHome) {
+      e.preventDefault();
+      const element = document.getElementById('tools-grid-section');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
 
   const [isSmallScreen, setIsSmallScreen] = React.useState(false);
 
@@ -82,6 +93,7 @@ export const Navbar: React.FC = () => {
           </Link>
           <Link
             to={toolsPath}
+            onClick={handleToolsClick}
             className={cn(
               "text-xs font-semibold uppercase tracking-[0.2em] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[1px] after:bg-primary after:transition-transform after:duration-300",
               isToolsActive 
@@ -162,6 +174,7 @@ export const Navbar: React.FC = () => {
                     <SheetClose asChild>
                       <Link 
                         to={toolsPath}
+                        onClick={handleToolsClick}
                         className={cn(
                           "text-lg font-semibold uppercase tracking-[0.15em] transition-colors py-2 border-b border-border/30",
                           isToolsActive ? "text-primary" : "text-muted-foreground hover:text-primary"

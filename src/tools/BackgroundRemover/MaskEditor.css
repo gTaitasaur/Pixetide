@@ -1,97 +1,99 @@
 /* ==========================================================================
-   MASK EDITOR STYLES - Estética Senior UI
+   MASK EDITOR STYLES - Estética Senior UI (Encapsulado)
    ========================================================================== */
 
-.bgrm-editor-toolbar-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: var(--spacing-lg);
-}
+.bgrm-main-layout {
+  & .bgrm-editor-toolbar-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: var(--spacing-lg);
+  }
 
-.bgrm-tool-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background-color: white;
-  border: 1.5px solid #e5e5e5;
-  border-radius: 12px;
-  padding: 12px 8px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--color-text-primary);
-}
+  & .bgrm-tool-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background-color: white;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-text-primary);
 
-.bgrm-tool-btn .tool-icon {
-  font-size: 1.5rem;
-  transition: transform 0.2s;
-}
+    & .tool-icon {
+      font-size: 1.5rem;
+      transition: transform 0.2s;
+    }
 
-.bgrm-tool-btn span:last-child {
-  font-size: 0.85rem;
-  font-weight: 700;
-}
+    & span:last-child {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
 
-.bgrm-tool-btn:hover {
-  border-color: var(--secondary);
-  background-color: rgba(37, 99, 235, 0.02);
-  transform: translateY(-2px);
-}
+    &:hover {
+      border-color: var(--secondary);
+      background-color: rgba(37, 99, 235, 0.02);
+      transform: translateY(-2px);
 
-.bgrm-tool-btn:hover .tool-icon {
-  transform: scale(1.1);
-}
+      & .tool-icon {
+        transform: scale(1.1);
+      }
+    }
 
-.bgrm-tool-btn.is-active {
-  background-color: rgba(37, 99, 235, 0.05);
-  border-color: var(--secondary);
-  color: var(--secondary);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
-}
+    &.is-active {
+      background-color: rgba(37, 99, 235, 0.05);
+      border-color: var(--secondary);
+      color: var(--secondary);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+  }
 
-.bgrm-brush-size {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-family: var(--font-sans);
-  font-size: 1.1rem;
-  color: var(--color-text-primary);
-  padding-top: var(--spacing-md);
-  border-top: 1px dashed #e5e5e5;
-}
+  & .bgrm-brush-size {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    color: var(--color-text-primary);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed #e5e5e5;
 
-.bgrm-brush-size input[type="range"] {
-  accent-color: var(--secondary);
-  width: 100%;
-}
+    & input[type="range"] {
+      accent-color: var(--secondary);
+      width: 100%;
+    }
+  }
 
-/* Lienzo de trabajo */
-.bgrm-editor-workspace {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Importante para no hacer scroll al dibujar en móvil */
-  touch-action: none;
-}
+  /* Lienzo de trabajo */
+  & .bgrm-editor-workspace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Importante para no hacer scroll al dibujar en móvil */
+    touch-action: none;
+  }
 
-.bgrm-paint-canvas {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  /* Prevenir selección accidental */
-  user-select: none;
-  -webkit-user-select: none;
-}
+  & .bgrm-paint-canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    /* Prevenir selección accidental */
+    user-select: none;
+    -webkit-user-select: none;
+  }
 
-/* Cursors customizados */
-.cursor-restore { cursor: crosshair; }
-.cursor-erase { cursor: cell; }
-.cursor-pan { cursor: grab; }
-.cursor-pan:active { cursor: grabbing; }
+  /* Cursors customizados */
+  & .cursor-restore { cursor: crosshair; }
+  & .cursor-erase { cursor: cell; }
+  & .cursor-pan { cursor: grab; }
+  & .cursor-pan:active { cursor: grabbing; }
+}

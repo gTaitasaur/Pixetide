@@ -326,64 +326,66 @@
   background: rgba(0, 0, 0, 0.02);
 }
 
-/* Controles Deslizantes Genéricos */
-input[type=range] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  background: transparent;
-  cursor: pointer;
-}
+/* Controles Deslizantes Encapsulados en Watermark */
+.wm-container {
+  & input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+  }
 
-/* Track - Webkit */
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 10px;
-  background: #ffffff;
-  border: 2px solid var(--color-text-primary);
-  border-radius: 6px;
-}
+  /* Track - Webkit */
+  & input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    background: #ffffff;
+    border: 2px solid var(--color-text-primary);
+    border-radius: 6px;
+  }
 
-/* Track - Moz */
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 10px;
-  background: #ffffff;
-  border: 2px solid var(--color-text-primary);
-  border-radius: 6px;
-}
+  /* Track - Moz */
+  & input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 10px;
+    background: #ffffff;
+    border: 2px solid var(--color-text-primary);
+    border-radius: 6px;
+  }
 
-/* Thumb - Webkit */
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 22px;
-  width: 22px;
-  border-radius: 50%;
-  background: var(--secondary);
-  border: 2px solid var(--color-text-primary);
-  cursor: pointer;
-  margin-top: -8px; /* Ajuste para centrar el thumb en un track de 10px */
-  box-shadow: 2px 2px 0px var(--color-text-primary);
-  transition: transform 0.1s ease;
-}
+  /* Thumb - Webkit */
+  & input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 22px;
+    width: 22px;
+    border-radius: 50%;
+    background: var(--secondary);
+    border: 2px solid var(--color-text-primary);
+    cursor: pointer;
+    margin-top: -8px; /* Ajuste para centrar el thumb en un track de 10px */
+    box-shadow: 2px 2px 0px var(--color-text-primary);
+    transition: transform 0.1s ease;
+  }
 
-/* Thumb - Moz */
-input[type=range]::-moz-range-thumb {
-  height: 20px; /* Firefox lo maneja un poco diferente */
-  width: 20px;
-  border-radius: 50%;
-  background: var(--secondary);
-  border: 2px solid var(--color-text-primary);
-  cursor: pointer;
-  box-shadow: 2px 2px 0px var(--color-text-primary);
-}
+  /* Thumb - Moz */
+  & input[type=range]::-moz-range-thumb {
+    height: 20px; /* Firefox lo maneja un poco diferente */
+    width: 20px;
+    border-radius: 50%;
+    background: var(--secondary);
+    border: 2px solid var(--color-text-primary);
+    cursor: pointer;
+    box-shadow: 2px 2px 0px var(--color-text-primary);
+  }
 
-input[type=range]:active::-webkit-slider-thumb {
-  transform: scale(1.15);
-}
+  & input[type=range]:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
 
-input[type=range]:active::-moz-range-thumb {
-  transform: scale(1.15);
+  & input[type=range]:active::-moz-range-thumb {
+    transform: scale(1.15);
+  }
 }
 
 /* Grid Posicionador (9 Puntos) */

@@ -5,6 +5,7 @@ import { detectTransparency, convertImage, packageZip } from './formatConverter'
 import { useLocale } from '../../core/i18n/useLocale';
 import { Button } from '../../shared/components/UI/Button/Button';
 import { DownloadButton } from '../../shared/components/UI/DownloadButton/DownloadButton';
+import { Loader } from '../../shared/components/UI/Loader/Loader';
 import './ConverterModule.css';
 
 interface ConverterModuleProps {
@@ -303,7 +304,7 @@ export const ConverterModule: React.FC<ConverterModuleProps> = ({ files, onAddFi
 
                 {item.status !== 'idle' && (
                   <div className={`card-status-bar status-${item.status}`}>
-                    {item.status === 'processing' && <div className="status-loader"></div>}
+                    {item.status === 'processing' && <Loader variant="inline" size="sm" />}
                     <span>{item.status === 'processing' ? t('conv.converting') : item.status === 'done' ? t('conv.done') : t('conv.error')}</span>
                   </div>
                 )}

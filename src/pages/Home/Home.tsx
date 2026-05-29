@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
 import { SEO_PAGES } from '../../core/seo/seoConfig';
-import WorkingOnIt from '../../shared/components/UI/Working on it/WorkingOnIt';
+import WorkingOnIt from '../../shared/components/UI/WorkingOnIt/WorkingOnIt';
 
 /** Helper para obtener la ruta de una herramienta por su ID y locale */
 function getToolPath(id: string, locale: 'en' | 'es'): string {
@@ -31,26 +31,24 @@ export const Home: React.FC = () => {
     }
   };
 
-  const githubText = locale === 'es' ? "Ver en GitHub" : "View on GitHub";
-  const ctaText = locale === 'es' ? "Usar herramientas gratis" : "Use Free Tools";
-  const badgeText = locale === 'es' ? "Procesamiento Local WebAssembly" : "WebAssembly Local Processing";
-  const featuredTitle = locale === 'es' ? "Herramientas Destacadas" : "Featured Tools";
-  const watermarkText = locale === 'es' ? "PRIVACIDAD" : "PRIVACY";
+  const githubText = t('home.heroGithubCta');
+  const ctaText = t('home.heroPrimaryCta');
+  const badgeText = t('home.badgeText');
+  const featuredTitle = t('home.featuredTitle');
+  const watermarkText = t('home.watermarkText');
 
-  // Texto del subtítulo del Hero — hardcodeado temporalmente para fidelidad con el prototipo
-  const heroSubtitle = locale === 'es'
-    ? 'Comprime, convierte, elimina fondos y añade marcas de agua sin subir tus imágenes. Todo se procesa localmente en tu navegador.'
-    : 'Compress, convert, remove backgrounds and add watermarks without uploading your images. Everything is processed locally in your browser.';
+  // Texto del subtítulo del Hero
+  const heroSubtitle = t('home.editorialHeroSubtitle');
 
   // Herramientas destacadas en la columna editorial derecha — Alineadas con el prototipo exacto
   const featuredTools = [
-    { id: 'convert', label: locale === 'es' ? 'Convertir Imágenes (JPG, PNG, WebP, AVIF)' : 'Convert Images (JPG, PNG, WebP, AVIF)', num: '01' },
-    { id: 'remove-bg', label: locale === 'es' ? 'Eliminar Fondo de Imagen gratis' : 'Remove Image Background for Free', num: '02' },
-    { id: 'watermark', label: locale === 'es' ? 'Añadir Marca de Agua a imágenes' : 'Add Watermark to Images', num: '03' },
-    { id: 'compress', label: locale === 'es' ? 'Comprimir Imágenes Sin Perder Calidad' : 'Compress Images Without Losing Quality', num: '04' },
+    { id: 'convert', label: t('home.featured.convert'), num: '01' },
+    { id: 'remove-bg', label: t('home.featured.removeBg'), num: '02' },
+    { id: 'watermark', label: t('home.featured.watermark'), num: '03' },
+    { id: 'compress', label: t('home.featured.compress'), num: '04' },
   ] as const;
 
-  const moreToolsLabel = locale === 'es' ? 'Más Herramientas . . .' : 'More Tools . . .';
+  const moreToolsLabel = t('home.moreTools');
 
   return (
     <div className="w-full flex flex-col items-center bg-background min-h-screen relative pt-20 overflow-x-hidden">
@@ -71,25 +69,14 @@ export const Home: React.FC = () => {
             <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground mb-6 flex items-center gap-4 leading-snug">
               <span className="w-8 h-px bg-muted-foreground shrink-0"></span>
               <span>
-                {locale === 'es' ? (
-                  <>Herramientas de imágen 100% locales<br />sin registro - sin cuenta - sin subir archivos</>
-                ) : (
-                  <>100% local image tools<br />no registration - no account - no file uploads</>
-                )}
+                <>{t('home.heroMicrocopyLine1')}<br />{t('home.heroMicrocopyLine2')}</>
               </span>
             </p>
 
-            {locale === 'es' ? (
-              <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary font-black leading-[1.05] tracking-tight mb-8">
-                Herramientas de imagen gratis y<br />
-                <span className="italic font-semibold text-neutral-500">privada.</span>
-              </h2>
-            ) : (
-              <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary font-black leading-[1.05] tracking-tight mb-8">
-                Free and<br />
-                <span className="italic font-semibold text-neutral-500">private tools.</span>
-              </h2>
-            )}
+            <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary font-black leading-[1.05] tracking-tight mb-8">
+              {t('home.heroTitleLine1')}<br />
+              <span className="italic font-semibold text-neutral-500">{t('home.heroTitleAccent')}</span>
+            </h2>
 
             {/* Subtítulo — Hardcodeado temporalmente para fidelidad con el prototipo */}
             <p className="text-xl md:text-2xl text-neutral-700 max-w-xl leading-relaxed font-light">
@@ -191,7 +178,7 @@ export const Home: React.FC = () => {
         <div className="border-t border-border/80 pt-12 md:pt-16 mb-12 flex flex-col md:flex-row md:items-baseline md:justify-between gap-4">
           <div>
             <h2 className="font-sans text-3xl md:text-4xl font-bold tracking-tight text-primary">
-              {locale === 'es' ? 'Todas las Herramientas' : 'All Image Tools'}
+              {t('home.allToolsTitle')}
             </h2>
           </div>
         </div>

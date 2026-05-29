@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, TouchEvent as ReactTouchEvent } from 'react';
 import { ImagePreviewCanvas } from '../../shared/components/UI/ImagePreviewCanvas/ImagePreviewCanvas';
+import { Button } from '../../shared/components/UI/Button/Button';
 import './MaskEditor.css';
 
 interface MaskEditorProps {
@@ -367,7 +368,7 @@ export const MaskEditor: React.FC<MaskEditorProps> = ({ originalSrc, resultSrc, 
             style={{ cursor: getCursor() }}
           >
             {!isReady && (
-              <div className="spinner" style={{ margin: '40px auto', borderColor: 'var(--color-accent)', borderTopColor: 'transparent' }}></div>
+              <div className="spinner" style={{ margin: '40px auto', borderColor: 'var(--secondary)', borderTopColor: 'transparent' }}></div>
             )}
             
             <canvas
@@ -438,15 +439,15 @@ export const MaskEditor: React.FC<MaskEditorProps> = ({ originalSrc, resultSrc, 
         </div>
 
         <div className="bgrm-actions-panel" style={{ marginTop: 'auto' }}>
-          <button className="btn-download-primary" onClick={handleSave}>
+          <Button variant="primary" onClick={handleSave} fullWidth>
             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" style={{ marginRight: '8px' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
             Guardar Cambios
-          </button>
-          <button className="btn-text-action" onClick={onCancel} style={{ justifyContent: 'center', marginTop: '10px' }}>
+          </Button>
+          <Button variant="secondary" onClick={onCancel} fullWidth style={{ marginTop: '10px' }}>
             Cancelar edición
-          </button>
+          </Button>
         </div>
       </aside>
     </>

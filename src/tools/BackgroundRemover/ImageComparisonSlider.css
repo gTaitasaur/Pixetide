@@ -6,12 +6,6 @@
   touch-action: none;
 }
 
-/* El fondo checkerboard ahora lo provee ImagePreviewCanvas, 
-   pero mantenemos esta clase vacía temporalmente por si hay referencias */
-.comparison-checkerboard {
-  display: none;
-}
-
 .comparison-img-base {
   display: block;
   position: absolute;
@@ -45,7 +39,7 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: var(--color-accent);
+  background-color: var(--secondary);
   z-index: 3;
   transform: translateX(-50%);
   cursor: ew-resize;
@@ -60,12 +54,12 @@
   width: 36px;
   height: 36px;
   background-color: white;
-  border: 3px solid var(--color-accent);
+  border: 3px solid var(--secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-accent);
+  color: var(--secondary);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   transition: transform 0.2s, background-color 0.2s;
 }

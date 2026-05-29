@@ -83,7 +83,7 @@
 }
 
 .text-primary {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   color: var(--color-text-primary);
   font-size: 1.8rem;
   font-weight: 400;
@@ -141,7 +141,7 @@
   background-color: transparent;
   color: #dc2626;
   border: 2px solid #dc2626;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   padding: 8px 20px;
   border-radius: 10px;
   cursor: pointer;

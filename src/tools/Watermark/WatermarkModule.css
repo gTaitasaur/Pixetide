@@ -19,7 +19,7 @@
 .btn-text-action {
   background: transparent;
   border: none;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -142,7 +142,7 @@
 }
 
 .wm-gallery-thumb.is-active {
-  border-color: var(--color-accent);
+  border-color: var(--secondary);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
@@ -219,7 +219,7 @@
   padding: 8px 0;
   background: transparent;
   border: none;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -259,7 +259,7 @@
 }
 
 .wm-control-group label {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -281,7 +281,7 @@
 
 .wm-input:focus,
 .wm-select:focus {
-  border-color: var(--color-accent);
+  border-color: var(--secondary);
 }
 
 .wm-color-picker {
@@ -312,7 +312,7 @@
   background: transparent;
   border: 1.5px dashed var(--color-text-secondary);
   border-radius: 8px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -359,7 +359,7 @@ input[type=range]::-webkit-slider-thumb {
   height: 22px;
   width: 22px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--secondary);
   border: 2px solid var(--color-text-primary);
   cursor: pointer;
   margin-top: -8px; /* Ajuste para centrar el thumb en un track de 10px */
@@ -372,7 +372,7 @@ input[type=range]::-moz-range-thumb {
   height: 20px; /* Firefox lo maneja un poco diferente */
   width: 20px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--secondary);
   border: 2px solid var(--color-text-primary);
   cursor: pointer;
   box-shadow: 2px 2px 0px var(--color-text-primary);
@@ -411,17 +411,10 @@ input[type=range]:active::-moz-range-thumb {
 }
 
 .wm-grid-positioner button:hover {
-  background: var(--color-accent);
+  background: var(--secondary);
   border-color: var(--color-text-primary);
   transform: scale(1.05);
   box-shadow: 2px 2px 0px var(--color-text-primary);
-}
-
-/* Better Action Buttons */
-.wm-action-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 4px;
 }
 
 .btn-action-brutal {
@@ -431,7 +424,7 @@ input[type=range]:active::-moz-range-thumb {
   justify-content: center;
   gap: 8px;
   padding: 10px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
   border: 2px solid var(--color-text-primary);
@@ -471,11 +464,11 @@ input[type=range]:active::-moz-range-thumb {
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: var(--color-accent);
+  background-color: var(--secondary);
   color: white;
   border: 2px solid var(--color-text-primary);
   padding: 14px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   border-radius: 12px;
   cursor: pointer;
@@ -520,7 +513,7 @@ input[type=range]:active::-moz-range-thumb {
 }
 
 .wm-layers h4 {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-text-primary);
@@ -558,7 +551,7 @@ input[type=range]:active::-moz-range-thumb {
 .wm-layer-item.active {
   background: #eff6ff;
   border-color: #bfdbfe;
-  color: var(--color-accent);
+  color: var(--secondary);
 }
 
 .wm-layer-icon {
@@ -629,7 +622,7 @@ input[type=range]:active::-moz-range-thumb {
   border: 1.5px solid var(--color-text-primary);
   border-radius: 8px;
   padding: 8px 16px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-weight: 700;
   font-size: 1rem;
   color: var(--color-text-primary);
@@ -659,7 +652,7 @@ input[type=range]:active::-moz-range-thumb {
   border: 1.5px solid #dc2626;
   border-radius: 8px;
   padding: 8px 16px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-weight: 700;
   font-size: 1rem;
   color: #dc2626;

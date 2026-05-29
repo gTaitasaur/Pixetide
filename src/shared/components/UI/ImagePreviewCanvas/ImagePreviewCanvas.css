@@ -52,7 +52,7 @@
 
 .image-preview-canvas__error-msg {
   color: #c53030;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.2rem;
   text-align: center;
   padding: 20px;

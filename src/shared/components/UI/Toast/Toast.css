@@ -43,7 +43,7 @@
 }
 
 .toast__message {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   color: var(--color-text-primary);
   line-height: 1.2;

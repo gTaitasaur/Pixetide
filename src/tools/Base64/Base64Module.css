@@ -43,7 +43,7 @@
   padding: var(--spacing-md);
   border: 2px solid var(--color-text-primary);
   border-radius: 12px;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
   line-height: 1.5;
   resize: vertical;
@@ -57,12 +57,12 @@
 
 .b64-textarea:focus {
   outline: none;
-  border-color: var(--color-accent);
+  border-color: var(--secondary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 4px 4px 0px rgba(0,0,0,0.05);
 }
 
 .b64-decode-label {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   color: var(--color-text-primary);
   font-weight: bold;
@@ -109,7 +109,7 @@
   border: none;
   border-radius: 8px;
   background: transparent;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -122,7 +122,7 @@
 
 .b64-tab.active {
   background-color: white;
-  color: var(--color-accent);
+  color: var(--secondary);
   font-weight: bold;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
@@ -136,7 +136,7 @@
 }
 
 .b64-filename {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.3rem;
   font-weight: bold;
   color: var(--color-text-primary);
@@ -161,7 +161,7 @@
 
 .b64-copied-toast {
   text-align: center;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.15rem;
   color: #16a34a;
   padding: 8px;

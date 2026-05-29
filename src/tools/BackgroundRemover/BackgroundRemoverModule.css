@@ -57,7 +57,7 @@
 }
 
 .bgrm-control-title {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   color: var(--color-text-primary);
   margin: 0;
@@ -83,7 +83,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.1rem;
   color: var(--color-text-secondary);
 }

@@ -24,7 +24,7 @@
   background: transparent;
   border: 1.5px solid var(--color-text-primary);
   color: var(--color-text-primary);
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1rem;
   padding: 6px 14px;
   border-radius: 8px;
@@ -35,8 +35,8 @@
 .btn-text-action:hover {
   background-color: var(--color-bg-surface);
   transform: rotate(-1deg) translateY(-1px);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--secondary);
+  color: var(--secondary);
 }
 
 /* Layout Principal */
@@ -62,7 +62,7 @@
 }
 
 .cropper-drag-over {
-  border-color: var(--color-accent) !important;
+  border-color: var(--secondary) !important;
   background-color: rgba(37, 99, 235, 0.05) !important;
 }
 
@@ -91,7 +91,7 @@
 }
 
 .aspect-ratio-title {
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.6rem;
   color: var(--color-text-primary);
   margin: 0;
@@ -124,13 +124,13 @@
 }
 
 .aspect-chip:hover {
-  border-color: var(--color-accent);
+  border-color: var(--secondary);
   background-color: rgba(37, 99, 235, 0.02);
   transform: translateY(-2px);
 }
 
 .aspect-chip.is-active {
-  border-color: var(--color-accent);
+  border-color: var(--secondary);
   background-color: rgba(37, 99, 235, 0.05);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
 }
@@ -141,7 +141,7 @@
 }
 
 .aspect-chip.is-active .aspect-chip-icon-wrapper {
-  color: var(--color-accent);
+  color: var(--secondary);
 }
 
 .aspect-chip-icon {
@@ -180,11 +180,11 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: var(--color-accent);
+  background-color: var(--secondary);
   color: white;
   border: 2px solid var(--color-text-primary);
   padding: 14px;
-  font-family: var(--font-handwriting);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   border-radius: 12px;
   cursor: pointer;
@@ -222,7 +222,7 @@
 
 /* Ajustes de ReactCrop para que sea más "ligero" */
 .ReactCrop__crop-selection {
-  border: 2px solid var(--color-accent) !important;
+  border: 2px solid var(--secondary) !important;
   box-shadow: 0 0 0 9999em rgba(255, 255, 255, 0.5) !important;
 }
 
@@ -230,22 +230,22 @@
   width: 10px !important;
   height: 10px !important;
   background-color: white !important;
-  border: 2px solid var(--color-accent) !important;
+  border: 2px solid var(--secondary) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Animación de carga en botón */
-.btn-spinner {
+.cropper-btn-spinner {
   width: 18px;
   height: 18px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   border-top-color: white;
-  animation: spin 0.8s linear infinite;
+  animation: cropper-spin 0.8s linear infinite;
   margin-right: 10px;
 }
 
-@keyframes spin {
+@keyframes cropper-spin {
   to { transform: rotate(360deg); }
 }
 

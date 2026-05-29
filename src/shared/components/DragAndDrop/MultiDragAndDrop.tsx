@@ -68,7 +68,7 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
 
   return (
     <div className="drag-drop-container">
-      {error && <div className="error-message" style={{ marginBottom: '16px' }}>{error}</div>}
+      {error && <div className="dnd-error-message" style={{ marginBottom: '16px' }}>{error}</div>}
       
       <div 
         className={`drop-zone ${isDragActive ? 'active' : ''}`}
@@ -88,8 +88,8 @@ export const MultiDragAndDrop: React.FC<MultiDragAndDropProps> = ({ onFilesSelec
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
           </svg>
-          <span className="text-primary">{t('dragdrop.multiPrompt')}</span>
-          <span className="text-secondary">{t('dragdrop.multiHint')}</span>
+          <span className="dnd-text-primary">{t('dragdrop.multiPrompt')}</span>
+          <span className="dnd-text-secondary">{t('dragdrop.multiHint')}</span>
         </div>
       </div>
     </div>

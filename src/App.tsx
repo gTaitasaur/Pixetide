@@ -7,7 +7,6 @@ import { ToastContainer } from './shared/components/UI/Toast/ToastContainer';
 import { SeoHead } from './core/seo/SeoHead';
 import { SchemaMarkup } from './core/seo/SchemaMarkup';
 import { LocaleProvider } from './core/i18n/LocaleProvider';
-import './App.css';
 
 /**
  * App.tsx — Punto de entrada del CLIENTE.

@@ -53,7 +53,7 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({ onImageSelected }) => 
 
   return (
     <div className="drag-drop-container">
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="dnd-error-message">{error}</div>}
       
       <div 
         className={`drop-zone ${isDragActive ? 'active' : ''}`}
@@ -72,8 +72,8 @@ export const DragAndDrop: React.FC<DragAndDropProps> = ({ onImageSelected }) => 
           <svg className="upload-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
-          <span className="text-primary">{t('dragdrop.prompt')}</span>
-          <span className="text-secondary">{t('dragdrop.hint')}</span>
+          <span className="dnd-text-primary">{t('dragdrop.prompt')}</span>
+          <span className="dnd-text-secondary">{t('dragdrop.hint')}</span>
         </div>
       </div>
     </div>

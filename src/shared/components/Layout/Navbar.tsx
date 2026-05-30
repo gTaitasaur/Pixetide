@@ -40,7 +40,7 @@ export const Navbar: React.FC = () => {
   React.useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 390px)');
     setIsSmallScreen(mediaQuery.matches);
-    
+
     const handler = (e: MediaQueryListEvent) => setIsSmallScreen(e.matches);
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
@@ -72,7 +72,7 @@ export const Navbar: React.FC = () => {
   return (
     <nav className="fixed top-0 left-0 w-full bg-white/70 backdrop-blur-xl z-50 transition-all duration-300 ease-in-out border-b border-gray-100">
       <div className="flex justify-between items-center h-20 px-6 md:px-12 max-w-[1600px] mx-auto">
-        
+
         {/* Lado Izquierdo: Marca / Logo */}
         <Link to={homePath} className="flex items-center gap-2 max-[390px]:hidden">
           <Logo size={40} className="hover:opacity-90 transition-opacity" />
@@ -84,8 +84,8 @@ export const Navbar: React.FC = () => {
             to={homePath}
             className={cn(
               "text-xs font-semibold uppercase tracking-[0.2em] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[1px] after:bg-primary after:transition-transform after:duration-300",
-              isHomeActive 
-                ? "text-primary after:scale-x-100" 
+              isHomeActive
+                ? "text-primary after:scale-x-100"
                 : "text-muted-foreground hover:text-primary after:scale-x-0 hover:after:scale-x-100"
             )}
           >
@@ -96,14 +96,14 @@ export const Navbar: React.FC = () => {
             onClick={handleToolsClick}
             className={cn(
               "text-xs font-semibold uppercase tracking-[0.2em] transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[1px] after:bg-primary after:transition-transform after:duration-300",
-              isToolsActive 
-                ? "text-primary after:scale-x-100" 
+              isToolsActive
+                ? "text-primary after:scale-x-100"
                 : "text-muted-foreground hover:text-primary after:scale-x-0 hover:after:scale-x-100"
             )}
           >
             {t('nav.tools')}
           </Link>
-          
+
           {/* Placeholders visuales del prototipo */}
           <span className="text-xs font-semibold text-muted-foreground/40 cursor-not-allowed uppercase tracking-[0.2em] select-none">
             Blogs
@@ -115,7 +115,7 @@ export const Navbar: React.FC = () => {
 
         {/* Lado Derecho: Acciones Desktop */}
         <div className="flex items-center gap-4 md:gap-8 max-[390px]:w-full max-[390px]:justify-start">
-          
+
           {/* Selector de idioma */}
           <button
             onClick={switchLanguage}
@@ -127,41 +127,71 @@ export const Navbar: React.FC = () => {
             {t('lang.switch')}
           </button>
 
-          {/* Botón de Apoyo (CTA) */}
+          {/* Botón de Apoyo (CTA) - Estilo Ko-fi Neobrutalista Pulsante */}
           <a
             href="https://ko-fi.com/pixetide"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden min-[990px]:flex items-center px-5 py-2 border-2 border-primary text-[10px] font-bold text-primary uppercase tracking-[0.12em] hover:bg-primary hover:text-white transition-all rounded-full"
+            className="hidden md:inline-flex items-center px-5 py-2.5 btn-support-kofi text-[10px]"
           >
             {t('nav.support')}
+            <svg 
+              className="w-5 h-5 ml-2 flex-shrink-0" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Contorno de la taza */}
+              <path 
+                d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" 
+                fill="#ffffff" 
+                stroke="#000000" 
+                strokeWidth="2.5" 
+                strokeLinejoin="round"
+              />
+              {/* Asa de la taza */}
+              <path 
+                d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" 
+                stroke="#000000" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+              {/* Corazón en el centro */}
+              <path 
+                d="M10 6.6C9.64 6.12 9.09 5.92 8.55 5.92C7.38 5.92 6.47 6.83 6.47 8.01C6.47 9.42 7.52 10.33 8.68 11.47L10 12.7L11.32 11.47C12.48 10.33 13.53 9.42 13.53 8.01C13.53 6.83 12.62 5.92 11.45 5.92C10.91 5.92 10.36 6.12 10 6.6Z" 
+                fill="#ff5e5b"
+                stroke="#ff5e5b"
+                strokeWidth="0.5"
+              />
+            </svg>
           </a>
 
           {/* Menú Hamburguesa Móvil (shadcn/ui Sheet) */}
           <div className="min-[990px]:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <button 
+                <button
                   className="p-2 text-foreground hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"
                   aria-label={t('nav.openMenu')}
                 >
                   <Menu className="size-6" />
                 </button>
               </SheetTrigger>
-               <SheetContent 
-                side={isSmallScreen ? "left" : "right"} 
+              <SheetContent
+                side={isSmallScreen ? "left" : "right"}
                 className={cn(
-                  "w-[300px] sm:w-[350px] p-6 flex flex-col justify-between bg-white", 
+                  "w-[300px] sm:w-[350px] p-6 flex flex-col justify-between bg-white",
                   isSmallScreen ? "border-r border-border" : "border-l border-border"
-                )} 
+                )}
                 showCloseButton={true}
               >
-                
+
                 {/* Enlaces Móviles */}
                 <div className="flex flex-col space-y-8 mt-12">
                   <div className="flex flex-col space-y-4">
                     <SheetClose asChild>
-                      <Link 
+                      <Link
                         to={homePath}
                         className={cn(
                           "text-lg font-semibold uppercase tracking-[0.15em] transition-colors py-2 border-b border-border/30",
@@ -172,7 +202,7 @@ export const Navbar: React.FC = () => {
                       </Link>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Link 
+                      <Link
                         to={toolsPath}
                         onClick={handleToolsClick}
                         className={cn(
@@ -213,9 +243,39 @@ export const Navbar: React.FC = () => {
                       href="https://ko-fi.com/pixetide"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center py-3 border-2 border-primary text-xs font-bold text-primary uppercase tracking-widest hover:bg-primary hover:text-white transition-all rounded-full text-center"
+                      className="flex items-center justify-center py-3 btn-support-kofi text-xs text-center"
                     >
                       {t('nav.support')}
+                      <svg 
+                        className="w-5.5 h-5.5 ml-2 flex-shrink-0" 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        {/* Contorno de la taza */}
+                        <path 
+                          d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" 
+                          fill="#ffffff" 
+                          stroke="#000000" 
+                          strokeWidth="2.5" 
+                          strokeLinejoin="round"
+                        />
+                        {/* Asa de la taza */}
+                        <path 
+                          d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" 
+                          stroke="#000000" 
+                          strokeWidth="2.5" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                        {/* Corazón en el centro */}
+                        <path 
+                          d="M10 6.6C9.64 6.12 9.09 5.92 8.55 5.92C7.38 5.92 6.47 6.83 6.47 8.01C6.47 9.42 7.52 10.33 8.68 11.47L10 12.7L11.32 11.47C12.48 10.33 13.53 9.42 13.53 8.01C13.53 6.83 12.62 5.92 11.45 5.92C10.91 5.92 10.36 6.12 10 6.6Z" 
+                          fill="#ff5e5b"
+                          stroke="#ff5e5b"
+                          strokeWidth="0.5"
+                        />
+                      </svg>
                     </a>
                   </SheetClose>
                 </div>

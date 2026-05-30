@@ -26,7 +26,7 @@ const en = {
   "nav.about": "About",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
-  "nav.support": "Support Pixetide ☕",
+  "nav.support": "Support Pixetide",
   "nav.supportMicrocopy": "No ads, no subscriptions. Help me keep it that way.",
 
   // ─── Language Switcher ───
@@ -299,7 +299,7 @@ const es: Record<TranslationKey, string> = {
   "nav.about": "Acerca de",
   "nav.openMenu": "Abrir menú",
   "nav.closeMenu": "Cerrar menú",
-  "nav.support": "Apoya a Pixetide ☕",
+  "nav.support": "Apoya a Pixetide",
   "nav.supportMicrocopy":
     "Sin anuncios, sin suscripciones. Ayúdame a que siga así.",
 

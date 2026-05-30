@@ -173,3 +173,77 @@
   }
 }
 
+/* Compensación de la altura del Navbar en las páginas de herramientas */
+.home-container {
+  padding-top: 80px; /* Altura exacta de h-20 (80px) del Navbar fixed */
+}
+
+/* Botón de Apoyo Ko-fi Llamativo (Neobrutalista con Halo Pulsante) */
+.btn-support-kofi {
+  position: relative;
+  background-color: #ff5e5b; /* Color del corazón de Ko-fi */
+  color: #ffffff !important;
+  border: 2px solid #000000; /* Borde negro neobrutalista */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9999px; /* Botón rounded-full */
+  cursor: pointer;
+  overflow: visible; /* Requerido para ver los halos expandiéndose */
+  z-index: 1;
+}
+
+.btn-support-kofi:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: #ff4a47; /* Un poco más oscuro en hover */
+}
+
+.btn-support-kofi:active {
+  transform: translateY(1px);
+  box-shadow: 1px 1px 0px #000000;
+}
+
+/* Halos pulsantes con ::before y ::after */
+.btn-support-kofi::before,
+.btn-support-kofi::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 9999px;
+  border: 2px solid #ff5e5b;
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.btn-support-kofi::before {
+  animation: kofi-pulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.btn-support-kofi::after {
+  animation: kofi-pulse 2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+  animation-delay: 1s; /* Desfase de 1s para pulsación alternada */
+}
+
+@keyframes kofi-pulse {
+  0% {
+    /* Comienza ligeramente expandido para no superponerse ni ocultar el borde negro del botón principal */
+    transform: scale(1.03, 1.07);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.2, 1.45); /* Expansión asimétrica acorde a la forma del botón */
+    opacity: 0;
+  }
+}
+
+
+

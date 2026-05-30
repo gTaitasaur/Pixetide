@@ -4,18 +4,18 @@ import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
 import { SEO_PAGES } from '../../core/seo/seoConfig';
 import WorkingOnIt from '../../shared/components/UI/WorkingOnIt/WorkingOnIt';
-import { 
-  Minimize2, 
-  ArrowLeftRight, 
-  Crop, 
-  Stamp, 
-  Eraser, 
-  RotateCw, 
-  Palette, 
-  Binary, 
-  Sparkles, 
-  Sliders, 
-  Globe 
+import {
+  Minimize2,
+  ArrowLeftRight,
+  Crop,
+  Stamp,
+  Eraser,
+  RotateCw,
+  Palette,
+  Binary,
+  Sparkles,
+  Sliders,
+  Globe
 } from 'lucide-react';
 
 /** Helper para obtener la ruta de una herramienta por su ID y locale */
@@ -86,7 +86,7 @@ export const Home: React.FC = () => {
               </span>
             </p>
 
-            <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary font-black leading-[1.05] tracking-tight mb-8">
+            <h2 className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-8xl text-primary font-medium leading-[1.05] tracking-tight mb-8">
               {t('home.heroTitleLine1')}<br />
               <span className="italic font-semibold text-neutral-500">{t('home.heroTitleAccent')}</span>
             </h2>

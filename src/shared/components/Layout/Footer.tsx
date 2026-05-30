@@ -45,7 +45,7 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-5 lg:col-span-6 flex flex-col items-start">
             <Link
               to={homePath}
-              className="group flex items-center gap-2.5 text-2xl font-serif font-black text-primary tracking-tight mb-6 hover:opacity-90 transition-opacity select-none"
+              className="group flex items-center gap-2.5 text-3xl font-serif font-medium text-primary tracking-tight mb-6 hover:opacity-90 transition-opacity select-none"
             >
               {/* Logo Pixelado Miniaturizado ("Núcleo Púrpura") con Rotación Diamante */}
               <div className="size-6 flex items-center justify-center rotate-45 transition-transform duration-500 ease-out group-hover:scale-120">

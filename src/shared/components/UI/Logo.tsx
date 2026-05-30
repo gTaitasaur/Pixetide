@@ -28,9 +28,9 @@ export const Logo: React.FC<LogoProps> = ({ size = 32, className = '' }) => {
           <rect x="10" y="10" width="4" height="4" fill="#a855f7" />
         </svg>
       </div>
-      
+
       {/* Branding textual unificado bajo Playfair Display */}
-      <span className="font-serif font-black text-2xl md:text-3xl tracking-tight text-primary translate-y-[1px] ml-2 max-[420px]:hidden select-none">
+      <span className="font-serif font-medium text-2xl md:text-3xl tracking-tight text-primary translate-y-[1px] ml-2 max-[420px]:hidden select-none">
         Pixetide.
       </span>
     </div>

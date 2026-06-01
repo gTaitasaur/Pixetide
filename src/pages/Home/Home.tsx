@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
 import { SEO_PAGES } from '../../core/seo/seoConfig';
-import WorkingOnIt from '../../shared/components/UI/WorkingOnIt/WorkingOnIt';
 import {
   Minimize2,
   ArrowLeftRight,
@@ -287,10 +286,6 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* Floating fixed widget for Working On It */}
-      <div className="fixed bottom-12 right-6 z-50 scale-105 md:scale-95 lg:scale-100 origin-bottom-right transition-transform duration-300">
-        <WorkingOnIt />
-      </div>
     </div>
   );
 };

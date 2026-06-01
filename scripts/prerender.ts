@@ -49,12 +49,6 @@ function generateHeadTags(page: PageSeoEntry, locale: SupportedLocale): string {
   const ogLocale = locale === 'es' ? 'es_ES' : 'en_US';
 
   const tags: string[] = [
-    // Title (reemplaza el fallback del template)
-    `<title>${title}</title>`,
-
-    // Meta Description
-    `<meta name="description" content="${description}" />`,
-
     // Canonical
     `<link rel="canonical" href="${canonicalUrl}" />`,
 

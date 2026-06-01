@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
 import { getToolPath } from '../../core/seo/getToolPath';
-import { TOOLS_CONFIG } from '../../core/tools/toolsConfig';
+import { TOOLS_CONFIG, type ToolIconName } from '../../core/tools/toolsConfig';
+import {
+  Minimize2, ArrowLeftRight, Crop, Stamp, Eraser,
+  RotateCw, Palette, Binary, Sparkles, Sliders, Globe,
+  type LucideIcon
+} from 'lucide-react';
 
 /**
  * Home Page — Rework completo del Hero Section con diseño editorial de alta fidelidad.
@@ -43,6 +48,11 @@ export const Home: React.FC = () => {
   ] as const;
 
   const moreToolsLabel = t('home.moreTools');
+
+  const ICON_MAP: Record<ToolIconName, LucideIcon> = {
+    Minimize2, ArrowLeftRight, Crop, Stamp, Eraser,
+    RotateCw, Palette, Binary, Sparkles, Sliders, Globe,
+  };
 
   return (
     <div className="w-full flex flex-col items-center bg-background min-h-screen relative pt-20 overflow-x-hidden">
@@ -179,16 +189,19 @@ export const Home: React.FC = () => {
 
         {/* Grilla Responsiva: 1 col en mobile, 2 en tablet (sm/md), 3 en laptops, 4 en desktop xl */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-          {TOOLS_CONFIG.map(({ id, icon: Icon, titleKey, descKey, disabled }) => (
-            <Card
-              key={id}
-              to={disabled ? undefined : getToolPath(id, locale)}
-              disabled={disabled}
-              icon={<Icon />}
-              title={t(titleKey)}
-              description={t(descKey)}
-            />
-          ))}
+          {TOOLS_CONFIG.map(({ id, iconName, titleKey, descKey, disabled }) => {
+            const Icon = ICON_MAP[iconName];
+            return (
+              <Card
+                key={id}
+                to={disabled ? undefined : getToolPath(id, locale)}
+                disabled={disabled}
+                icon={<Icon />}
+                title={t(titleKey)}
+                description={t(descKey)}
+              />
+            );
+          })}
         </div>
       </section>
 

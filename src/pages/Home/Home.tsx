@@ -2,26 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from '../../shared/components/UI/Card';
 import { useLocale } from '../../core/i18n/useLocale';
-import { SEO_PAGES } from '../../core/seo/seoConfig';
-import {
-  Minimize2,
-  ArrowLeftRight,
-  Crop,
-  Stamp,
-  Eraser,
-  RotateCw,
-  Palette,
-  Binary,
-  Sparkles,
-  Sliders,
-  Globe
-} from 'lucide-react';
-
-/** Helper para obtener la ruta de una herramienta por su ID y locale */
-function getToolPath(id: string, locale: 'en' | 'es'): string {
-  const page = SEO_PAGES.find((p) => p.id === id);
-  return page?.path[locale] ?? '/';
-}
+import { getToolPath } from '../../core/seo/getToolPath';
+import { TOOLS_CONFIG } from '../../core/tools/toolsConfig';
 
 /**
  * Home Page — Rework completo del Hero Section con diseño editorial de alta fidelidad.
@@ -197,92 +179,16 @@ export const Home: React.FC = () => {
 
         {/* Grilla Responsiva: 1 col en mobile, 2 en tablet (sm/md), 3 en laptops, 4 en desktop xl */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
-
-          {/* 1. Comprimir */}
-          <Card
-            to={getToolPath('compress', locale)}
-            icon={<Minimize2 />}
-            title={t('card.compress.title')}
-            description={t('card.compress.desc')}
-          />
-
-          {/* 2. Convertir */}
-          <Card
-            to={getToolPath('convert', locale)}
-            icon={<ArrowLeftRight />}
-            title={t('card.convert.title')}
-            description={t('card.convert.desc')}
-          />
-
-          {/* 3. Recortar */}
-          <Card
-            to={getToolPath('crop', locale)}
-            icon={<Crop />}
-            title={t('card.crop.title')}
-            description={t('card.crop.desc')}
-          />
-
-          {/* 4. Marca de agua */}
-          <Card
-            to={getToolPath('watermark', locale)}
-            icon={<Stamp />}
-            title={t('card.watermark.title')}
-            description={t('card.watermark.desc')}
-          />
-
-          {/* 5. Quitar fondo */}
-          <Card
-            to={getToolPath('remove-bg', locale)}
-            icon={<Eraser />}
-            title={t('card.removeBg.title')}
-            description={t('card.removeBg.desc')}
-          />
-
-          {/* 6. Girar y Voltear */}
-          <Card
-            to={getToolPath('rotate-flip', locale)}
-            icon={<RotateCw />}
-            title={t('card.rotateFlip.title')}
-            description={t('card.rotateFlip.desc')}
-          />
-
-          {/* 7. Paleta de Colores */}
-          <Card
-            to={getToolPath('color-palette', locale)}
-            icon={<Palette />}
-            title={t('card.colorPalette.title')}
-            description={t('card.colorPalette.desc')}
-          />
-
-          {/* 8. Base64 */}
-          <Card
-            to={getToolPath('base64', locale)}
-            icon={<Binary />}
-            title={t('card.base64.title')}
-            description={t('card.base64.desc')}
-          />
-
-          {/* 9. Próximamente */}
-          <Card
-            disabled
-            icon={<Sparkles />}
-            title={t('card.upscale.title')}
-            description={t('card.upscale.desc')}
-          />
-
-          <Card
-            disabled
-            icon={<Sliders />}
-            title={t('card.photoEditor.title')}
-            description={t('card.photoEditor.desc')}
-          />
-
-          <Card
-            disabled
-            icon={<Globe />}
-            title={t('card.favicon.title')}
-            description={t('card.favicon.desc')}
-          />
+          {TOOLS_CONFIG.map(({ id, icon: Icon, titleKey, descKey, disabled }) => (
+            <Card
+              key={id}
+              to={disabled ? undefined : getToolPath(id, locale)}
+              disabled={disabled}
+              icon={<Icon />}
+              title={t(titleKey)}
+              description={t(descKey)}
+            />
+          ))}
         </div>
       </section>
 

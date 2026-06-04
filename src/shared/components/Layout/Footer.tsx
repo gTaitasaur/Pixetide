@@ -70,7 +70,7 @@ export const Footer: React.FC = () => {
             <div className="flex gap-4">
               {/* GitHub */}
               <a
-                href="https://github.com/taitasaur/MarkWaterImg"
+                href="https://github.com/gTaitasaur"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="GitHub"
@@ -177,7 +177,7 @@ export const Footer: React.FC = () => {
               </h3>
               <div className="flex flex-col gap-3">
                 <a
-                  href="https://github.com/taitasaur/MarkWaterImg"
+                  href="https://github.com/gTaitasaur"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"

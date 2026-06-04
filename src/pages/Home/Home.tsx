@@ -98,7 +98,7 @@ export const Home: React.FC = () => {
               {ctaText}
             </a>
             <a
-              href="https://github.com/taitasaur/MarkWaterImg"
+              href="https://github.com/gTaitasaur"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-transparent text-primary font-medium text-sm uppercase tracking-[0.12em] border-2 border-primary hover:bg-neutral-50 transition-all cursor-pointer"

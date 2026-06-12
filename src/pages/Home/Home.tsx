@@ -90,13 +90,12 @@ export const Home: React.FC = () => {
 
           {/* Botones de Acción */}
           <div className="flex flex-col sm:flex-row gap-6 mt-12">
-            <a
-              href="#tools-grid-section"
-              onClick={scrollToTools}
+            <Link
+              to={locale === 'es' ? '/es/herramientas/' : '/tools/'}
               className="inline-flex items-center justify-center h-14 px-8 rounded-full bg-primary text-white font-medium text-sm uppercase tracking-[0.12em] hover:bg-neutral-800 transition-all border-2 border-primary hover:-translate-y-1 cursor-pointer"
             >
               {ctaText}
-            </a>
+            </Link>
             <a
               href="https://github.com/gTaitasaur"
               target="_blank"

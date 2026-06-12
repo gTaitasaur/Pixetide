@@ -54,6 +54,9 @@ const Base64Tool = React.lazy(() =>
 const BackgroundRemoverTool = React.lazy(() =>
   import('./tools/BackgroundRemover/BackgroundRemoverTool').then((m) => ({ default: m.BackgroundRemoverTool }))
 );
+const ToolsDashboard = React.lazy(() =>
+  import('./pages/ToolsDashboard/ToolsDashboard').then((m) => ({ default: m.ToolsDashboard }))
+);
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */
 const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -77,6 +80,12 @@ const TOOL_ROUTES = [
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* ═══ RUTAS DEL DASHBOARD (SIN NAVBAR/FOOTER GLOBALES) ═══ */}
+      <Route path="/tools" element={<LazyTool><ToolsDashboard /></LazyTool>} />
+      <Route path="/tools/" element={<LazyTool><ToolsDashboard /></LazyTool>} />
+      <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>} />
+      <Route path="/es/herramientas/" element={<LazyTool><ToolsDashboard /></LazyTool>} />
+
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Home />} />

@@ -1,0 +1,11 @@
+/* ToolsDashboard.css — Estilos encapsulados para el dashboard de herramientas. */
+
+/* Transición suave para el ancho de la barra lateral y su contenido */
+aside {
+  transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de desplazamiento suave y consistente para el contenido principal */
+main {
+  scroll-behavior: smooth;
+}

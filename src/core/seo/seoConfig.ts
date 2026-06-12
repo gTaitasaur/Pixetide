@@ -253,6 +253,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
       es: ['imagen a base64', 'codificador base64', 'base64 a imagen', 'convertidor base64'],
     },
   },
+
+  // ─── Tools Dashboard ───
+  {
+    id: 'tools-dashboard',
+    path: { en: '/tools/', es: '/es/herramientas/' },
+    title: {
+      en: 'Pixetide — Private & Free Image Tools Workspace',
+      es: 'Pixetide — Área de Trabajo de Herramientas de Imagen Privada y Gratis',
+    },
+    description: {
+      en: 'Explore and use our complete suite of browser-based image editing tools. 100% private and free.',
+      es: 'Explora y utiliza nuestra suite completa de herramientas de edición de imágenes en el navegador. 100% privado y gratis.',
+    },
+    h1: {
+      en: 'Tools Workspace',
+      es: 'Área de Trabajo',
+    },
+    keywords: {
+      en: ['image tools', 'online image editor', 'workspace'],
+      es: ['herramientas de imagen', 'editor online', 'área de trabajo'],
+    },
+  },
 ] as const;
 
 // ────────────────────────────────────────────────────────────────

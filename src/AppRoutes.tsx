@@ -30,18 +30,6 @@ import { NotFound } from './shared/components/Errors/NotFound';
 // Esto permite SSR del layout + Home sin que canvas/Fabric/WASM crasheen.
 // ────────────────────────────────────────────────────────────────
 
-const AspectRatioTool = React.lazy(() =>
-  import('./tools/AspectRatio/AspectRatioTool').then((m) => ({ default: m.AspectRatioTool }))
-);
-const OptimizerTool = React.lazy(() =>
-  import('./tools/Optimizer/OptimizerTool').then((m) => ({ default: m.OptimizerTool }))
-);
-const ConverterTool = React.lazy(() =>
-  import('./tools/Converter/ConverterTool').then((m) => ({ default: m.ConverterTool }))
-);
-const RotateFlipTool = React.lazy(() =>
-  import('./tools/RotateFlip/RotateFlipTool').then((m) => ({ default: m.RotateFlipTool }))
-);
 const WatermarkTool = React.lazy(() =>
   import('./tools/Watermark/WatermarkTool').then((m) => ({ default: m.WatermarkTool }))
 );
@@ -67,10 +55,6 @@ const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 
 /** Definición de herramientas para evitar duplicar rutas */
 const TOOL_ROUTES = [
-  { en: 'tools/crop-image/',         es: 'herramientas/recortar-imagen/',      element: <LazyTool><AspectRatioTool /></LazyTool> },
-  { en: 'tools/compress-image/',     es: 'herramientas/comprimir-imagen/',     element: <LazyTool><OptimizerTool /></LazyTool> },
-  { en: 'tools/convert-image/',      es: 'herramientas/convertir-imagen/',     element: <LazyTool><ConverterTool /></LazyTool> },
-  { en: 'tools/rotate-flip-image/',  es: 'herramientas/girar-voltear-imagen/', element: <LazyTool><RotateFlipTool /></LazyTool> },
   { en: 'tools/watermark-image/',    es: 'herramientas/marca-de-agua/',        element: <LazyTool><WatermarkTool /></LazyTool> },
   { en: 'tools/color-palette/',      es: 'herramientas/paleta-colores/',       element: <LazyTool><ColorPaletteTool /></LazyTool> },
   { en: 'tools/base64-converter/',   es: 'herramientas/convertidor-base64/',   element: <LazyTool><Base64Tool /></LazyTool> },

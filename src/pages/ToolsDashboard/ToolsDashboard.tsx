@@ -78,9 +78,6 @@ export const ToolsDashboard: React.FC = () => {
     }
   };
 
-  // Filtrar las herramientas habilitadas para los submenús
-  const activeTools = TOOLS_CONFIG.filter(t => !t.disabled);
-
   // Enlaces de navegación principales
   const navItems = [
     {
@@ -95,10 +92,11 @@ export const ToolsDashboard: React.FC = () => {
       icon: LayoutGrid,
       disabled: false,
       active: true, // Esta es la sección activa actual
-      subItems: activeTools.map(tool => ({
+      subItems: TOOLS_CONFIG.map(tool => ({
         label: t(tool.titleKey),
-        to: getToolPath(tool.id, locale),
-        icon: ICON_MAP[tool.iconName]
+        to: tool.disabled ? '#' : getToolPath(tool.id, locale),
+        icon: ICON_MAP[tool.iconName],
+        disabled: tool.disabled
       }))
     },
     {
@@ -184,6 +182,18 @@ export const ToolsDashboard: React.FC = () => {
                   <div className="ml-8 mt-1 mb-2 flex flex-col space-y-1 border-l border-border/60 pl-2">
                     {item.subItems.map((sub, subIdx) => {
                       const SubIcon = sub.icon;
+                      if (sub.disabled) {
+                        return (
+                          <div 
+                            key={subIdx} 
+                            className="flex items-center gap-2.5 px-3 py-1.5 text-[11px] font-medium text-muted-foreground/30 cursor-not-allowed select-none"
+                            title={locale === 'es' ? 'Próximamente disponible' : 'Available soon'}
+                          >
+                            <SubIcon className="size-3.5 shrink-0" />
+                            <span className="truncate leading-tight">{sub.label}</span>
+                          </div>
+                        );
+                      }
                       return (
                         <Link 
                           key={subIdx} 
@@ -357,6 +367,17 @@ export const ToolsDashboard: React.FC = () => {
                               <div className="ml-8 mt-1 mb-4 flex flex-col space-y-1.5 border-l border-border/60 pl-3">
                                 {item.subItems.map((sub, subIdx) => {
                                   const SubIcon = sub.icon;
+                                  if (sub.disabled) {
+                                    return (
+                                      <div 
+                                        key={subIdx} 
+                                        className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-muted-foreground/30 cursor-not-allowed select-none"
+                                      >
+                                        <SubIcon className="size-3.5 shrink-0" />
+                                        <span className="truncate leading-tight">{sub.label}</span>
+                                      </div>
+                                    );
+                                  }
                                   return (
                                     <Link 
                                       key={subIdx} 

@@ -3,7 +3,18 @@ import { fabric } from 'fabric';
 import { MultiDragAndDrop } from '../../shared/components/DragAndDrop/MultiDragAndDrop';
 import { ImagePreviewCanvas } from '../../shared/components/UI/ImagePreviewCanvas/ImagePreviewCanvas';
 import { validateImageFile } from '../../shared/utils/fileUpload';
-import { packageZip } from '../Converter/formatConverter';
+import JSZip from 'jszip';
+
+const packageZip = async (
+  files: { blob: Blob; filename: string }[]
+): Promise<Blob> => {
+  const zip = new JSZip();
+  files.forEach(({ blob, filename }) => {
+    zip.file(filename, blob);
+  });
+  return await zip.generateAsync({ type: 'blob' });
+};
+
 import { 
   WatermarkFile, 
   WatermarkType, 

@@ -34,7 +34,6 @@ export default defineConfig({
     noExternal: [],
     external: [
       'canvas',           // Binding nativo de Fabric.js — no existe en Node
-      '@imagemagick/magick-wasm', // WASM — solo funciona en el navegador
       '@imgly/background-removal', // Modelo de IA — solo navegador
     ],
   },

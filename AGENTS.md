@@ -49,7 +49,8 @@ Cuando dos decisiones entren en conflicto, resolver en este orden:
 
 | Librería | Uso | Carga |
 |---|---|---|
-| `@imagemagick/magick-wasm` | Compress, convert, crop, rotate | Web Worker compartido |
+| `@imagemagick/magick-wasm` | Compress, convert, crop | Web Worker compartido |
+| `wasm-vips` | Rotate & Flip (Girar y Voltear) | Worker dedicado en la herramienta (`vips.worker.ts`) |
 | `@imgly/background-removal` | Quitar fondo con IA | Worker dedicado en la herramienta |
 | `fabric.js` v5 | Watermark (canvas) | Lazy-loaded |
 | `node-vibrant` + `culori` + `chroma-js` | Extracción de paletas de color | Import dinámico |
@@ -217,12 +218,60 @@ El pipeline de build (`pnpm build`):
 
 ### 6.4 Web Workers
 
-- **Worker compartido** (`shared/workers/magick.worker.ts`): ImageMagick WASM. Soporta acciones `CONVERT_IMAGE`, `OPTIMIZE_IMAGE`, `ROTATE_FLIP`, `CROP_IMAGE`, `DETECT_TRANSPARENCY`.
+- **Worker compartido** (`shared/workers/magick.worker.ts`): ImageMagick WASM. Soporta acciones `CONVERT_IMAGE`, `OPTIMIZE_IMAGE`, `CROP_IMAGE`, `DETECT_TRANSPARENCY`. (Nota: Girar y Voltear migró a wasm-vips).
 - Se comunica vía `shared/utils/magickEngine.ts` → `runMagickTask(action, payload)`.
-- **Worker dedicado** (`tools/BackgroundRemover/bgRemoval.worker.ts`): para `@imgly/background-removal`.
+- **Worker dedicado (wasm-vips)** (`tools/RotateFlip/vips.worker.ts`): Worker dedicado para la herramienta Girar y Voltear. Realiza rotaciones rápidas de 90/180/270 grados (lossless), rotaciones finas de ángulos arbitrarios y volteos.
+- **Worker dedicado (Background Remover)** (`tools/BackgroundRemover/bgRemoval.worker.ts`): para `@imgly/background-removal`.
 - Workers usan `{ type: 'module' }` y format `es` (configurado en `vite.config.ts → worker.format`).
 
-### 6.5 Componentes UI (la convención ui vs UI)
+### 6.5 Estándares de Robustez, Privacidad Técnica y Manejo de Errores
+
+#### 6.5.1 Manejo de Archivos Eliminados o Bloqueados en Disco
+*   **Problema:** Si el usuario sube un archivo a la galería, lo modifica y luego elimina el archivo físico de su disco duro antes de procesarlo o descargarlo, el navegador lanzará un error de tipo `NotFoundError` (al leer `.arrayBuffer()` en el worker) o un `DataCloneError` (al serializar el `File` en `postMessage` en el hilo principal).
+*   **Solución Estándar:** Capturar ambos tipos de errores:
+    1.  **Síncrono (Hilo Principal):** Envolver el `postMessage` en un bloque `try/catch` para interceptar el `DataCloneError` si el archivo ya no existe.
+    2.  **Asíncrono (Worker):** Capturar excepciones dentro de la lectura del buffer del archivo en el worker.
+    3.  **UI de Recuperación:** Transformar estos errores en un código unificado `FILE_NOT_FOUND`. Al recibirlo, la UI debe detener de inmediato el loader de procesamiento, ocultar el visor principal y mostrar un panel de advertencia: `"Archivo no disponible / No se pudo encontrar el archivo original sobre el que se está trabajando..."`. Debe ofrecerse un botón de `"Eliminar imagen"` para permitir al usuario purgar el elemento roto de la galería y continuar editando otras imágenes.
+
+#### 6.5.2 Resiliencia frente a Fallos de Carga del Worker y Evitar Loaders Infinitos
+*   **Problema:** Si la inicialización del worker de WebAssembly falla (por ejemplo, debido a políticas CORS del navegador, cabeceras COOP/COEP mal configuradas o bloqueos del sandbox), el hilo principal puede quedarse esperando la respuesta de carga del worker de forma indefinida, provocando un spinner de carga infinito.
+*   **Solución Estándar:**
+    1.  Escuchar el evento `worker.onerror` en el hilo principal para capturar fallos globales del script del worker.
+    2.  Envolver la instanciación (`new Worker()`) y los primeros `postMessage` en bloques `try/catch` para capturar excepciones síncronas.
+    3.  En caso de error, mostrar un toast genérico y actualizar el estado de carga (`vipsState` o equivalente) a `'error'` para que renderice un panel de reintento.
+    4.  Al dar clic en "Reintentar", asegurarse de limpiar el worker antiguo (`worker.terminate(); worker = null`) antes de reconstruir para que no herede estados rotos.
+
+#### 6.5.3 Privacidad Técnica en Mensajes de Error (OWASP)
+*   **Regla:** Nunca exponer detalles técnicos del stack interno, librerías Wasm, nombres de archivos de desarrollo ni palabras como "wasm-vips" o "motor de procesamiento" en mensajes visibles del frontend.
+*   **Solución Estándar:** Los fallos técnicos del worker o inicialización se informan de forma genérica como `"Error desconocido"` y `"Ocurrió un error desconocido. Por favor, intenta de nuevo."`. Esto previene fugas de información sobre vulnerabilidades o tecnologías internas de Pixetide.
+
+#### 6.5.4 Procesamiento por Fotogramas de GIFs Animados en libvips
+*   **Formato "toilet roll":** Al cargar un GIF usando `n: -1` en `newFromBuffer`, libvips concatena todos los fotogramas en una tira vertical larga de dimensiones `width x (pageHeight * nPages)`.
+*   **Procesamiento:** Para procesar animaciones, se debe:
+    1.  Determinar la cantidad de páginas con `image.getInt('n-pages')` y el alto de página con `image.getInt('page-height')`.
+    2.  Extraer los metadatos de la animación `delay` (arreglo de enteros) y `loop` (entero).
+    3.  Iterar sobre cada fotograma mediante `.crop(0, i * pageHeight, width, pageHeight)`.
+    4.  Procesar cada fotograma individualmente aplicando transformaciones y guardarlo en una lista.
+    5.  Concatenarlos de nuevo verticalmente mediante `vips.Image.arrayjoin(processedPages, { across: 1 })`.
+    6.  Reinyectar en la imagen resultante los metadatos `page-height` (la nueva altura de página unitaria), `n-pages`, `delay` y `loop` antes de llamar a `writeToBuffer('.gif')`.
+
+#### 6.5.5 Gestión de Galerías con Múltiples Imágenes
+*   **Aislamiento y Persistencia de Estado:** Al manejar varias imágenes de forma simultánea, cada imagen en la galería debe mantener sus propios parámetros y transformaciones de forma independiente.
+*   **Adición Incremental:** Al subir nuevas imágenes a la galería, estas deben agregarse al final del listado sin alterar ni reiniciar el estado o las transformaciones de los archivos que ya estaban en el Área de Galería.
+*   **Flujo de Descarga Unificada:**
+    - **Caso 1 (Una Imagen):** Descarga directa de la imagen con transformaciones.
+    - **Caso 2 (Múltiples Imágenes):** Genera un archivo `.zip` que contiene todas las imágenes de la galería con sus modificaciones.
+*   **Nomenclatura Unificada:** Usar "DESCARGAR" para una imagen y "DESCARGAR (.zip)" para múltiples.
+
+#### 6.5.6 Validación Estricta de Formatos y Carga Optimizada
+*   **Validación Multinivel:** No confiar únicamente en el atributo `accept` del input HTML. El evento de arrastrar y soltar (Drag and Drop) o la inyección de archivos debe ser validada a nivel de código (MIME type y extensión) mediante helpers centralizados (como `shared/utils/fileUpload.ts`).
+*   **Rechazo y Notificaciones:** Si el usuario intenta subir archivos incompatibles, estos deben ser bloqueados de inmediato y se debe mostrar una notificación visual (Toast) amigable: `"El archivo [nombre] no se pudo cargar porque no tiene el formato correcto."`.
+*   **Límites de Peso:** Cada archivo individual cargado debe respetar un peso máximo (usualmente 20MB por archivo) para mitigar fugas de memoria o bloqueos del navegador en entornos cliente.
+*   **Optimización del Tiempo de Espera en Carga:**
+    - Al subir un archivo por primera vez y el motor del worker no se ha descargado o inicializado, se permite un tiempo de espera amplio para asegurar su correcta inicialización.
+    - Si el motor ya está inicializado (`state === 'ready'`), se debe optimizar el delay de la UI (por ejemplo, ampliando a un retardo visual controlado de 1000ms en lugar de 300ms) para mejorar la consistencia visual y evitar parpadeos abruptos en la transición de la galería.
+
+### 6.6 Componentes UI (la convención ui vs UI)
 
 | Carpeta | Contenido | Ejemplo |
 |---|---|---|

@@ -78,6 +78,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
     },
   },
 
+  // ─── Rotate & Flip / Girar y Voltear ───
+  {
+    id: 'rotate-flip',
+    path: { en: '/tools/rotate-flip-image/', es: '/es/herramientas/girar-voltear-imagen/' },
+    title: {
+      en: 'Rotate & Flip Images Online Free | Pixetide',
+      es: 'Girar y Voltear Imágenes Online Gratis | Pixetide',
+    },
+    description: {
+      en: 'Rotate photos any angle or mirror flip them. Quick, private, browser-based. No upload needed. Supports JPG, PNG, WebP.',
+      es: 'Rota fotos a cualquier ángulo o aplica efecto espejo. Rápido, privado, en tu navegador. Sin subir archivos.',
+    },
+    h1: {
+      en: 'Rotate & Flip Images — Free & Private',
+      es: 'Girar y Voltear Imágenes — Gratis y Privado',
+    },
+    keywords: {
+      en: ['rotate image online', 'flip image', 'mirror image', 'rotate photo'],
+      es: ['girar imagen online', 'voltear imagen', 'efecto espejo imagen', 'rotar foto'],
+    },
+  },
+
   // ─── Watermark / Marca de Agua ───
   {
     id: 'watermark',

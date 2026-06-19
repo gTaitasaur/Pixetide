@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { useLocale } from '../../core/i18n/useLocale';
-import { SEO_PAGES } from '../../core/seo/seoConfig';
+import { SEO_PAGES, getSeoByPath } from '../../core/seo/seoConfig';
 import { TOOLS_CONFIG, type ToolIconName } from '../../core/tools/toolsConfig';
 import { getToolPath } from '../../core/seo/getToolPath';
 import { Logo } from '../../shared/components/UI/Logo';
-import { Card } from '../../shared/components/UI/Card';
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from '../../shared/components/ui/sheet';
 import { cn } from '../../shared/utils/cn';
 import {
@@ -50,6 +49,15 @@ export const ToolsDashboard: React.FC = () => {
   const { t, locale, setLocale } = useLocale();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const currentToolSeo = getSeoByPath(pathname);
+  const isDashboardHome = !currentToolSeo || currentToolSeo.id === 'tools-dashboard';
+
+  // Obtener título limpio traducido para evitar sufijos de SEO como "Online Gratis"
+  const currentToolConfig = currentToolSeo ? TOOLS_CONFIG.find(t => t.id === currentToolSeo.id) : null;
+  const toolTitle = currentToolConfig 
+    ? t(currentToolConfig.titleKey) 
+    : (currentToolSeo ? currentToolSeo.title[locale].split('—')[0].trim() : '');
 
   // Estados de layout
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -436,9 +444,21 @@ export const ToolsDashboard: React.FC = () => {
               </Sheet>
             </div>
 
-            {/* Título de la sección actual (Herramientas / Tools) */}
-            <h1 className="text-lg font-serif font-semibold text-primary translate-y-[1px]">
-              {t('nav.tools')}
+            {/* Título de la sección actual (Herramientas / Tools) con Breadcrumb dinámico unificado en tipografía sans-serif */}
+            <h1 className="text-xs sm:text-sm font-sans font-semibold text-primary flex items-center gap-1.5 sm:gap-2 select-none">
+              {isDashboardHome ? (
+                <span>{t('nav.tools')}</span>
+              ) : (
+                <>
+                  <Link to={toolsPath} className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    {t('nav.tools')}
+                  </Link>
+                  <span className="text-muted-foreground/45 font-light text-xs font-mono">&gt;</span>
+                  <span className="text-primary font-semibold">
+                    {toolTitle}
+                  </span>
+                </>
+              )}
             </h1>
           </div>
 
@@ -459,36 +479,10 @@ export const ToolsDashboard: React.FC = () => {
 
         </header>
 
-        {/* ─── CONTENIDO PRINCIPAL (HUB DE HERRAMIENTAS) ─── */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 lg:p-12 w-full">
-          <div className="max-w-[1600px] mx-auto">
-            <div className="mb-10">
-              <h2 className="font-serif text-3xl md:text-4xl text-primary font-medium tracking-tight mb-2">
-                {locale === 'es' ? 'Todas las Herramientas' : 'All Image Tools'}
-              </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {locale === 'es' 
-                  ? 'Procesa, edita y optimiza tus imágenes localmente en el navegador. Tus archivos nunca salen de tu dispositivo.'
-                  : 'Process, edit and optimize your images locally in your browser. Your files never leave your device.'}
-              </p>
-            </div>
-
-            {/* Grilla de Herramientas: Reutilizando el Hub del Home */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 pb-12">
-              {TOOLS_CONFIG.map(({ id, iconName, titleKey, descKey, disabled }) => {
-                const Icon = ICON_MAP[iconName];
-                return (
-                  <Card
-                    key={id}
-                    to={disabled ? undefined : getToolPath(id, locale)}
-                    disabled={disabled}
-                    icon={<Icon />}
-                    title={t(titleKey)}
-                    description={t(descKey)}
-                  />
-                );
-              })}
-            </div>
+        {/* ─── CONTENIDO PRINCIPAL (OUTLET PARA SUBRUTAS) ─── */}
+        <main className="flex-1 flex flex-col overflow-y-auto lg:overflow-hidden p-6 md:p-8 lg:p-8 w-full">
+          <div className="flex-1 min-h-0 w-full h-full">
+            <Outlet />
           </div>
         </main>
       </div>

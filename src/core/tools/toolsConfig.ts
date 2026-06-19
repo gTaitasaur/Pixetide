@@ -32,7 +32,7 @@ export const TOOLS_CONFIG: ToolItem[] = [
   { id: 'crop',          iconName: 'Crop',            titleKey: 'card.crop.title',          descKey: 'card.crop.desc',            disabled: true },
   { id: 'watermark',     iconName: 'Stamp',           titleKey: 'card.watermark.title',     descKey: 'card.watermark.desc' },
   { id: 'remove-bg',     iconName: 'Eraser',          titleKey: 'card.removeBg.title',      descKey: 'card.removeBg.desc' },
-  { id: 'rotate-flip',   iconName: 'RotateCw',        titleKey: 'card.rotateFlip.title',    descKey: 'card.rotateFlip.desc',      disabled: true },
+  { id: 'rotate-flip',   iconName: 'RotateCw',        titleKey: 'card.rotateFlip.title',    descKey: 'card.rotateFlip.desc' },
   { id: 'color-palette', iconName: 'Palette',         titleKey: 'card.colorPalette.title',  descKey: 'card.colorPalette.desc' },
   { id: 'base64',        iconName: 'Binary',          titleKey: 'card.base64.title',        descKey: 'card.base64.desc' },
   { id: 'upscale',       iconName: 'Sparkles',        titleKey: 'card.upscale.title',       descKey: 'card.upscale.desc',       disabled: true },

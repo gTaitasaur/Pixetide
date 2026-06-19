@@ -45,6 +45,12 @@ const BackgroundRemoverTool = React.lazy(() =>
 const ToolsDashboard = React.lazy(() =>
   import('./pages/ToolsDashboard/ToolsDashboard').then((m) => ({ default: m.ToolsDashboard }))
 );
+const ToolsHub = React.lazy(() =>
+  import('./pages/ToolsDashboard/ToolsHub').then((m) => ({ default: m.ToolsHub }))
+);
+const RotateFlipTool = React.lazy(() =>
+  import('./tools/RotateFlip/RotateFlipTool').then((m) => ({ default: m.RotateFlipTool }))
+);
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */
 const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -65,10 +71,14 @@ export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       {/* ═══ RUTAS DEL DASHBOARD (SIN NAVBAR/FOOTER GLOBALES) ═══ */}
-      <Route path="/tools" element={<LazyTool><ToolsDashboard /></LazyTool>} />
-      <Route path="/tools/" element={<LazyTool><ToolsDashboard /></LazyTool>} />
-      <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>} />
-      <Route path="/es/herramientas/" element={<LazyTool><ToolsDashboard /></LazyTool>} />
+      <Route path="/tools" element={<LazyTool><ToolsDashboard /></LazyTool>}>
+        <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
+        <Route path="rotate-flip-image" element={<LazyTool><RotateFlipTool /></LazyTool>} />
+      </Route>
+      <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>}>
+        <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
+        <Route path="girar-voltear-imagen" element={<LazyTool><RotateFlipTool /></LazyTool>} />
+      </Route>
 
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}
       <Route path="/" element={<MainLayout />}>

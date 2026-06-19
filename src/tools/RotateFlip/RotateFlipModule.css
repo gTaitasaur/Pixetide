@@ -1,0 +1,57 @@
+.dropzone-grid {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* Decoraciones de esquina de visor */
+.corner-decorator {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #cbd5e1;
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.corner-tl {
+  top: 16px;
+  left: 16px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.corner-tr {
+  top: 16px;
+  right: 16px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.corner-bl {
+  bottom: 16px;
+  left: 16px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.corner-br {
+  bottom: 16px;
+  right: 16px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Hover en dropzone ilumina las esquinas */
+.group:hover .corner-decorator {
+  border-color: #6366f1; /* Indigo matching active hover */
+}

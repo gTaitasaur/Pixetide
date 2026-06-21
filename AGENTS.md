@@ -49,8 +49,8 @@ Cuando dos decisiones entren en conflicto, resolver en este orden:
 
 | Librería | Uso | Carga |
 |---|---|---|
-| `@imagemagick/magick-wasm` | Compress, convert, crop | Web Worker compartido |
-| `wasm-vips` | Rotate & Flip (Girar y Voltear) | Worker dedicado en la herramienta (`vips.worker.ts`) |
+| `@imagemagick/magick-wasm` | Compress, convert | Web Worker compartido |
+| `wasm-vips` | Rotate & Flip, Crop | Workers dedicados (`vips.worker.ts`, `crop.worker.ts`) |
 | `@imgly/background-removal` | Quitar fondo con IA | Worker dedicado en la herramienta |
 | `fabric.js` v5 | Watermark (canvas) | Lazy-loaded |
 | `node-vibrant` + `culori` + `chroma-js` | Extracción de paletas de color | Import dinámico |
@@ -256,7 +256,7 @@ El pipeline de build (`pnpm build`):
     6.  Reinyectar en la imagen resultante los metadatos `page-height` (la nueva altura de página unitaria), `n-pages`, `delay` y `loop` antes de llamar a `writeToBuffer('.gif')`.
 
 #### 6.5.5 Gestión de Galerías con Múltiples Imágenes
-*   **Aislamiento y Persistencia de Estado:** Al manejar varias imágenes de forma simultánea, cada imagen en la galería debe mantener sus propios parámetros y transformaciones de forma independiente.
+*   **Aislamiento y Persistencia de Estado:** Al manejar varias imágenes de forma simultánea, cada imagen en la galería debe mantener sus propios parámetros y transformaciones de forma independiente. Para parámetros con actualizaciones de alta frecuencia (como zoom o coordenadas de desplazamiento/paneo), se debe evitar actualizar el array global de imágenes en tiempo real para no causar lag en la UI por re-renders repetitivos del listado de miniaturas. En su lugar, mantener estados locales de UI sincronizados con refs en cada render y persistirlos en el listado global de imágenes de forma diferida y atómica únicamente en el cambio de imagen activa (`activeIndex`).
 *   **Adición Incremental:** Al subir nuevas imágenes a la galería, estas deben agregarse al final del listado sin alterar ni reiniciar el estado o las transformaciones de los archivos que ya estaban en el Área de Galería.
 *   **Flujo de Descarga Unificada:**
     - **Caso 1 (Una Imagen):** Descarga directa de la imagen con transformaciones.

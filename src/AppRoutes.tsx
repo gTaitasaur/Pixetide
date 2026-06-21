@@ -51,6 +51,9 @@ const ToolsHub = React.lazy(() =>
 const RotateFlipTool = React.lazy(() =>
   import('./tools/RotateFlip/RotateFlipTool').then((m) => ({ default: m.RotateFlipTool }))
 );
+const AspectRatioTool = React.lazy(() =>
+  import('./tools/AspectRatio/AspectRatioTool').then((m) => ({ default: m.AspectRatioTool }))
+);
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */
 const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -74,10 +77,12 @@ export const AppRoutes: React.FC = () => {
       <Route path="/tools" element={<LazyTool><ToolsDashboard /></LazyTool>}>
         <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
         <Route path="rotate-flip-image" element={<LazyTool><RotateFlipTool /></LazyTool>} />
+        <Route path="crop-image" element={<LazyTool><AspectRatioTool /></LazyTool>} />
       </Route>
       <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>}>
         <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
         <Route path="girar-voltear-imagen" element={<LazyTool><RotateFlipTool /></LazyTool>} />
+        <Route path="recortar-imagen" element={<LazyTool><AspectRatioTool /></LazyTool>} />
       </Route>
 
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}

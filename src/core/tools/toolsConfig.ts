@@ -29,7 +29,7 @@ export interface ToolItem {
 export const TOOLS_CONFIG: ToolItem[] = [
   { id: 'compress',      iconName: 'Minimize2',      titleKey: 'card.compress.title',      descKey: 'card.compress.desc',       disabled: true },
   { id: 'convert',       iconName: 'ArrowLeftRight',  titleKey: 'card.convert.title',       descKey: 'card.convert.desc',        disabled: true },
-  { id: 'crop',          iconName: 'Crop',            titleKey: 'card.crop.title',          descKey: 'card.crop.desc',            disabled: true },
+  { id: 'crop',          iconName: 'Crop',            titleKey: 'card.crop.title',          descKey: 'card.crop.desc' },
   { id: 'watermark',     iconName: 'Stamp',           titleKey: 'card.watermark.title',     descKey: 'card.watermark.desc' },
   { id: 'remove-bg',     iconName: 'Eraser',          titleKey: 'card.removeBg.title',      descKey: 'card.removeBg.desc' },
   { id: 'rotate-flip',   iconName: 'RotateCw',        titleKey: 'card.rotateFlip.title',    descKey: 'card.rotateFlip.desc' },

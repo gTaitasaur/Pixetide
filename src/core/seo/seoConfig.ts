@@ -188,6 +188,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
     },
   },
 
+  // ─── Crop / Recortar Fotos ───
+  {
+    id: 'crop',
+    path: { en: '/tools/crop-image/', es: '/es/herramientas/recortar-imagen/' },
+    title: {
+      en: 'Crop & Resize Images Online Free | Pixetide',
+      es: 'Recortar y Redimensionar Imágenes Online Gratis | Pixetide',
+    },
+    description: {
+      en: 'Crop photos to the perfect aspect ratio for Instagram, Facebook, or Pinterest. Free, private, browser-based. No registration needed.',
+      es: 'Recorta fotos a las medidas ideales para Instagram, Facebook o Pinterest. Gratis, privado y local. Sin subir archivos.',
+    },
+    h1: {
+      en: 'Crop & Resize Images — Free & Private',
+      es: 'Recortar y Redimensionar Imágenes — Gratis y Privado',
+    },
+    keywords: {
+      en: ['crop image online', 'resize photo', 'aspect ratio crop', 'social media crop'],
+      es: ['recortar imagen online', 'redimensionar foto', 'relacion de aspecto', 'recortar para instagram'],
+    },
+  },
+
   // ─── Tools Dashboard ───
   {
     id: 'tools-dashboard',

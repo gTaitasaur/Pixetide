@@ -703,8 +703,11 @@ export const AspectRatioModule: React.FC = () => {
     }
   };
 
-  const renderPresetIcon = (iconName: string) => {
-    const sizeClass = "size-4 text-muted-foreground group-hover:text-primary transition-colors";
+  const renderPresetIcon = (iconName: string, isActive: boolean) => {
+    const sizeClass = cn(
+      "size-4 transition-colors",
+      isActive ? "text-[#a855f7]" : "text-muted-foreground group-hover:text-primary"
+    );
     switch (iconName) {
       case 'Square':
         return <Square className={sizeClass} />;
@@ -738,26 +741,26 @@ export const AspectRatioModule: React.FC = () => {
                   onClick={() => handleSelectPreset(preset.id)}
                   disabled={!activeImage || isProcessing}
                   className={cn(
-                    "flex flex-col items-start text-left p-3 rounded-xl border transition-all relative overflow-hidden group select-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed",
+                    "flex flex-col items-start text-left p-3 rounded-xl border transition-all relative overflow-hidden group select-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed font-semibold",
                     isActive 
-                      ? "border-[#a855f7] bg-purple-500/[0.02] shadow-[0_2px_8px_rgba(168,85,247,0.06)]" 
-                      : "border-border hover:border-muted-foreground/35 bg-white"
+                      ? "border-[#a855f7] bg-purple-50/40 text-[#a855f7]" 
+                      : "border-border hover:bg-slate-50 text-muted-foreground"
                   )}
                 >
                   <div className="flex items-center justify-between w-full mb-1">
-                    {renderPresetIcon(preset.iconName)}
-                    {isActive && (
-                      <span className="size-1.5 rounded-full bg-[#a855f7]" />
-                    )}
+                    {renderPresetIcon(preset.iconName, isActive)}
                   </div>
                   <span className={cn(
-                    "text-xs font-serif font-medium",
-                    isActive ? "text-primary font-semibold" : "text-muted-foreground group-hover:text-primary"
+                    "text-xs font-semibold transition-colors",
+                    isActive ? "text-[#a855f7]" : "text-muted-foreground group-hover:text-primary"
                   )}>
                     {preset.label[locale]}
                   </span>
                   {preset.subLabel && (
-                    <span className="text-[9px] font-mono text-muted-foreground/75 mt-0.5 line-clamp-1">
+                    <span className={cn(
+                      "text-[9px] font-mono mt-0.5 line-clamp-1 transition-colors",
+                      isActive ? "text-[#a855f7]/70" : "text-muted-foreground/75"
+                    )}>
                       {preset.subLabel[locale]}
                     </span>
                   )}
@@ -1138,10 +1141,11 @@ export const AspectRatioModule: React.FC = () => {
           )}
         </div>
 
-        {/* PIE DE PÁGINA: GUÍA Y RECOMENDACIÓN */}
+        {/* ENLACES / INFORMACIÓN DE PIE DE PÁGINA ASIMÉTRICOS CON SEPARADOR Y GLOW */}
         <div className="flex flex-col md:flex-row items-center gap-4 select-none w-full">
-          {/* Tarjeta 1: Guía de uso */}
+          {/* Tarjeta 1: Editorial Limpia con Elevación y Brillo Sutil */}
           <div className="flex-1 w-full bg-slate-50/60 hover:bg-slate-50/80 border border-border/80 hover:border-[#a855f7]/30 p-5 rounded-2xl transition-all cursor-pointer group flex justify-between items-center relative overflow-hidden hover:shadow-[0_8px_30px_rgba(168,85,247,0.06)] hover:-translate-y-0.5 active:translate-y-0 duration-300">
+            {/* Destello de gradiente morado en hover */}
             <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/0 via-purple-500/[0.005] to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-[#a855f7]/[0.02] rounded-full pointer-events-none"></div>
 
@@ -1157,12 +1161,12 @@ export const AspectRatioModule: React.FC = () => {
             <span className="text-primary group-hover:translate-x-1.5 transition-transform duration-300 font-bold z-10">→</span>
           </div>
 
-          {/* Separador vertical */}
+          {/* Separador vertical decorativo | en desktop */}
           <div className="hidden md:flex items-center justify-center text-border/60 text-lg font-light font-sans px-1 pointer-events-none self-center">
             |
           </div>
 
-          {/* Tarjeta 2: Destacado Girar y Voltear */}
+          {/* Tarjeta 2: Destacada con Glow de color morado y Badge */}
           <div 
             onClick={() => {
               if (!isProcessing) {
@@ -1171,13 +1175,16 @@ export const AspectRatioModule: React.FC = () => {
             }}
             className="flex-1 w-full bg-slate-50/60 hover:bg-slate-50/80 border border-border/80 hover:border-[#a855f7]/30 p-5 rounded-2xl transition-all cursor-pointer group flex justify-between items-center relative overflow-hidden hover:shadow-[0_8px_30px_rgba(168,85,247,0.06)] hover:-translate-y-0.5 active:translate-y-0 duration-300"
           >
+            {/* Destello de gradiente morado en hover */}
             <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/0 via-purple-500/[0.005] to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             <div className="absolute right-0 top-0 translate-x-4 -translate-y-4 w-20 h-20 bg-[#a855f7]/[0.02] rounded-full pointer-events-none"></div>
 
             <div className="space-y-1.5 z-10">
-              <span className="text-[8px] font-mono font-bold uppercase tracking-wider text-white bg-[#a855f7] px-1.5 py-0.5 rounded-md">
-                {locale === 'es' ? 'Recomendado' : 'Featured'}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[8px] font-mono font-bold uppercase tracking-wider text-white bg-[#a855f7] px-1.5 py-0.5 rounded-md">
+                  {locale === 'es' ? 'Recomendado' : 'Featured'}
+                </span>
+              </div>
               <p className="text-sm font-serif text-primary font-medium">
                 {locale === 'es' ? 'Girar y voltear imágenes online' : 'Rotate and flip images online'}
               </p>

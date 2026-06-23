@@ -1,0 +1,116 @@
+.dropzone-grid {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* Decoraciones de esquina del visor */
+.corner-decorator {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #cbd5e1;
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.corner-tl {
+  top: 16px;
+  left: 16px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.corner-tr {
+  top: 16px;
+  right: 16px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.corner-bl {
+  bottom: 16px;
+  left: 16px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.corner-br {
+  bottom: 16px;
+  right: 16px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Hover en dropzone ilumina las esquinas */
+.group:hover .corner-decorator {
+  border-color: #a855f7;
+}
+
+/* Indicador de comparación de peso de archivo (Premium UI) */
+.savings-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.savings-positive {
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.savings-neutral {
+  background-color: rgba(100, 116, 139, 0.1);
+  color: #475569;
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+/* Slider comparativo */
+.compare-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.compare-bar-bg {
+  height: 6px;
+  background-color: #f1f5f9;
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.compare-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #a855f7);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* Slider de visualización completa */
+.viewer-image-wrapper {
+  transition: transform 0.2s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

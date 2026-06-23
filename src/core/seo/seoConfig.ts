@@ -78,6 +78,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
     },
   },
 
+  // ─── Compress / Comprimir Imágenes ───
+  {
+    id: 'compress',
+    path: { en: '/tools/compress-image/', es: '/es/herramientas/comprimir-imagen/' },
+    title: {
+      en: 'Compress Images Online Free | Pixetide',
+      es: 'Comprimir Imágenes Online Gratis | Pixetide',
+    },
+    description: {
+      en: 'Compress JPG, PNG, or WebP images online without losing quality. Fast, private, and 100% browser-based. No uploads required.',
+      es: 'Comprime imágenes JPG, PNG o WebP online sin perder calidad. Rápido, privado y 100% en tu navegador. Sin subir archivos.',
+    },
+    h1: {
+      en: 'Compress Images Without Quality Loss',
+      es: 'Comprimir Imágenes sin Perder Calidad',
+    },
+    keywords: {
+      en: ['compress image', 'reduce image size', 'optimize image', 'compress png', 'compress jpeg'],
+      es: ['comprimir imagen', 'reducir peso imagen', 'optimizar imagen', 'comprimir png', 'comprimir jpeg'],
+    },
+  },
+
   // ─── Rotate & Flip / Girar y Voltear ───
   {
     id: 'rotate-flip',

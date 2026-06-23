@@ -184,6 +184,7 @@ const en = {
   "opt.presetAggressiveDesc": "For Web",
   "opt.presetMax": "Maximum",
   "opt.presetMaxDesc": "Smallest size",
+  "opt.warningLargerWebp": "The resulting WebP is larger than the original. This happens when the original image is already highly compressed, and a high-quality or lossless conversion cannot reduce its size further. The file will still be saved as WebP as requested.",
 
   // ─── Cropper Module ───
   "crop.selectFormat": "Select a format",
@@ -459,6 +460,7 @@ const es: Record<TranslationKey, string> = {
   "opt.presetAggressiveDesc": "Para Web",
   "opt.presetMax": "Máximo",
   "opt.presetMaxDesc": "Mínimo peso",
+  "opt.warningLargerWebp": "El WebP resultante es más grande que el original. Esto ocurre cuando la imagen de entrada ya está muy comprimida y la conversión con alta calidad o sin pérdidas no logra reducir más su peso. El archivo se guardará en WebP de todos modos.",
 
   // ─── Cropper Module ───
   "crop.selectFormat": "Selecciona un formato",

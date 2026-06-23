@@ -27,7 +27,7 @@ export interface ToolItem {
  * Los íconos se resuelven en el componente que los renderiza (Home.tsx).
  */
 export const TOOLS_CONFIG: ToolItem[] = [
-  { id: 'compress',      iconName: 'Minimize2',      titleKey: 'card.compress.title',      descKey: 'card.compress.desc',       disabled: true },
+  { id: 'compress',      iconName: 'Minimize2',      titleKey: 'card.compress.title',      descKey: 'card.compress.desc' },
   { id: 'convert',       iconName: 'ArrowLeftRight',  titleKey: 'card.convert.title',       descKey: 'card.convert.desc',        disabled: true },
   { id: 'crop',          iconName: 'Crop',            titleKey: 'card.crop.title',          descKey: 'card.crop.desc' },
   { id: 'watermark',     iconName: 'Stamp',           titleKey: 'card.watermark.title',     descKey: 'card.watermark.desc' },

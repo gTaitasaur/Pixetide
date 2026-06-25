@@ -26,7 +26,7 @@ interface ConverterImageItem {
   id: string;
   file: File;
   previewUrl: string;
-  targetFormat: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp';
+  targetFormat: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico';
   bgColor: 'white' | 'black';
   isProcessing: boolean;
   isProcessed: boolean;
@@ -42,11 +42,12 @@ export const ConverterModule: React.FC = () => {
   
   // Listado de imágenes cargadas en memoria
   const [images, setImages] = useState<ConverterImageItem[]>([]);
-  const [batchFormat, setBatchFormat] = useState<'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp'>('webp');
+  const [batchFormat, setBatchFormat] = useState<'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico'>('webp');
   const [batchBgColor, setBatchBgColor] = useState<'white' | 'black'>('white');
+  const [icoSizes, setIcoSizes] = useState<number[]>([16, 32, 48]);
 
   // Cambiar formato global en cascada
-  const handleGlobalFormatChange = (fmt: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp') => {
+  const handleGlobalFormatChange = (fmt: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico') => {
     setBatchFormat(fmt);
     setImages(prev => prev.map(img => ({
       ...img,
@@ -88,7 +89,7 @@ export const ConverterModule: React.FC = () => {
   const isFirstLoadRef = useRef<boolean>(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const workerRef = useRef<Worker | null>(null);
-  const processingQueueRef = useRef<Array<{ id: string; file: File; targetFormat: string; bgColor: string }>>([]);
+  const processingQueueRef = useRef<Array<{ id: string; file: File; targetFormat: string; bgColor: string; icoSizes?: number[] }>>([]);
 
   // Liberar ObjectURLs al desmontar
   useEffect(() => {
@@ -125,7 +126,8 @@ export const ConverterModule: React.FC = () => {
       id: next.id,
       file: next.file,
       targetFormat: next.targetFormat,
-      bgColor: next.bgColor
+      bgColor: next.bgColor,
+      icoSizes: next.icoSizes
     });
   };
 
@@ -341,7 +343,8 @@ export const ConverterModule: React.FC = () => {
       id: img.id,
       file: img.file,
       targetFormat: img.targetFormat,
-      bgColor: img.bgColor
+      bgColor: img.bgColor,
+      icoSizes: img.targetFormat === 'ico' ? icoSizes : undefined
     }));
 
     // Resetear estados de todas las imágenes (sin marcar isProcessing aún)
@@ -386,7 +389,8 @@ export const ConverterModule: React.FC = () => {
       id: img.id,
       file: img.file,
       targetFormat: img.targetFormat,
-      bgColor: img.bgColor
+      bgColor: img.bgColor,
+      icoSizes: img.targetFormat === 'ico' ? icoSizes : undefined
     });
   };
 
@@ -521,7 +525,7 @@ export const ConverterModule: React.FC = () => {
             {locale === 'es' ? 'Formato de Salida Global' : 'Global Output Format'}
           </label>
           <div className="grid grid-cols-4 gap-2">
-            {(['webp', 'png', 'jpg', 'gif', 'avif', 'tiff', 'bmp'] as const).map((fmt) => {
+            {(['webp', 'png', 'jpg', 'gif', 'avif', 'tiff', 'bmp', 'ico'] as const).map((fmt) => {
               const isActive = batchFormat === fmt;
               return (
                 <button
@@ -580,6 +584,66 @@ export const ConverterModule: React.FC = () => {
                   <span>{t('conv.black')}</span>
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Ajustes para formato ICO (Selección de resoluciones) */}
+        {batchFormat === 'ico' && (
+          <div className="space-y-3.5 p-4 rounded-xl border border-border bg-slate-50/40">
+            <div className="flex gap-2 text-slate-600">
+              <span className="text-[9px] font-mono font-bold uppercase bg-slate-200/80 text-slate-700 px-1.5 py-0.5 rounded-md self-start shrink-0">ICO</span>
+              <p className="text-[10px] leading-normal font-medium">
+                {locale === 'es' 
+                  ? 'Selecciona los tamaños a incluir en el archivo de icono final:' 
+                  : 'Select the sizes to include in the final icon file:'}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              {([16, 32, 48, 64, 128, 256] as const).map((sz) => {
+                const isChecked = icoSizes.includes(sz);
+                return (
+                  <label
+                    key={sz}
+                    className={cn(
+                      "flex items-center gap-2 h-8 px-2.5 rounded-lg border text-xs font-semibold select-none cursor-pointer transition-all bg-white",
+                      isChecked
+                        ? "border-[#a855f7]/60 text-primary font-bold shadow-xs bg-[#a855f7]/5"
+                        : "border-border text-muted-foreground hover:bg-slate-50"
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => {
+                        setIcoSizes(prev => {
+                          const updated = prev.includes(sz)
+                            ? prev.filter(x => x !== sz)
+                            : [...prev, sz].sort((a, b) => a - b);
+                          if (updated.length === 0) {
+                            showToast(
+                              locale === 'es' 
+                                ? 'Debes seleccionar al menos un tamaño para el ICO.' 
+                                : 'You must select at least one size for the ICO.',
+                              'error'
+                            );
+                            return prev;
+                          }
+                          return updated;
+                        });
+                        setImages(prev => prev.map(img => ({
+                          ...img,
+                          isProcessed: false,
+                          resultBlob: null,
+                          resultSize: null
+                        })));
+                      }}
+                      className="accent-[#a855f7] cursor-pointer size-3.5 rounded border-border"
+                    />
+                    <span>{sz} x {sz}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
         )}
@@ -796,6 +860,7 @@ export const ConverterModule: React.FC = () => {
                         <option value="avif">AVIF</option>
                         <option value="tiff">TIFF</option>
                         <option value="bmp">BMP</option>
+                        <option value="ico">ICO</option>
                       </select>
                     </div>
 

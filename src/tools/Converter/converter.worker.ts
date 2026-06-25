@@ -84,6 +84,51 @@ function encodeBMP(image: any): Uint8Array {
   return fileBuffer;
 }
 
+// Empaquetador ICO manual en JS dinámico que genera un archivo .ico a partir de una lista personalizada de buffers y tamaños PNG
+function encodeICO(pngs: Uint8Array[], sizes: number[]): Uint8Array {
+  const headerSize = 6;
+  const directorySize = 16 * pngs.length;
+  
+  // Calcular offsets
+  const offsets: number[] = [];
+  let currentOffset = headerSize + directorySize;
+  for (let i = 0; i < pngs.length; i++) {
+    offsets.push(currentOffset);
+    currentOffset += pngs[i].length;
+  }
+  
+  const totalSize = currentOffset;
+  const fileBuffer = new Uint8Array(totalSize);
+  const view = new DataView(fileBuffer.buffer);
+  
+  // Cabecera (6 bytes)
+  view.setUint16(0, 0, true);           // Reservado
+  view.setUint16(2, 1, true);           // Tipo (1 = ICO)
+  view.setUint16(4, pngs.length, true); // Número de imágenes
+  
+  // Directorio de imágenes (16 bytes por entrada)
+  for (let i = 0; i < pngs.length; i++) {
+    const entryOffset = headerSize + i * 16;
+    
+    // Si la dimensión es >= 256, se escribe 0 en el campo de 1 byte de ancho/alto
+    fileBuffer[entryOffset + 0] = sizes[i] >= 256 ? 0 : sizes[i]; 
+    fileBuffer[entryOffset + 1] = sizes[i] >= 256 ? 0 : sizes[i];
+    fileBuffer[entryOffset + 2] = 0;        // Cantidad de colores (0 = TrueColor)
+    fileBuffer[entryOffset + 3] = 0;        // Reservado
+    view.setUint16(entryOffset + 4, 1, true);   // Planos de color (1)
+    view.setUint16(entryOffset + 6, 32, true);  // Bits por píxel (32 = RGBA)
+    view.setUint32(entryOffset + 8, pngs[i].length, true); // Tamaño de datos PNG
+    view.setUint32(entryOffset + 12, offsets[i], true);    // Desplazamiento
+  }
+  
+  // Escribir datos binarios PNG
+  for (let i = 0; i < pngs.length; i++) {
+    fileBuffer.set(pngs[i], offsets[i]);
+  }
+  
+  return fileBuffer;
+}
+
 /**
  * Umbral máximo de megapíxeles para AVIF antes de reducir resolución.
  * El codificador AVIF consume ~50x los píxeles en memoria de trabajo,
@@ -117,7 +162,7 @@ function ensureExportableColorspace(img: any): any {
 }
 
 self.onmessage = async (e: MessageEvent) => {
-  const { action, id, file, targetFormat, bgColor } = e.data;
+  const { action, id, file, targetFormat, bgColor, icoSizes } = e.data;
 
   if (action === 'init') {
     try {
@@ -208,7 +253,10 @@ self.onmessage = async (e: MessageEvent) => {
         mimeType = 'image/tiff';
       } else if (extension === '.bmp') {
         mimeType = 'image/bmp';
+      } else if (extension === '.ico') {
+        mimeType = 'image/x-icon';
       }
+
 
       // Función helper para procesar transparencias por página
       const processAlphaAndFormat = (img: any): any => {
@@ -282,6 +330,55 @@ self.onmessage = async (e: MessageEvent) => {
       let outBuffer: Uint8Array;
       if (extension === '.bmp') {
         outBuffer = encodeBMP(image);
+      } else if (extension === '.ico') {
+        let icoImg = image;
+        let createdAlpha = false;
+        
+        // 1. Garantizar canal alfa para soportar transparencias en favicon
+        if (!icoImg.hasAlpha()) {
+          const alpha = vips.Image.black(icoImg.width, icoImg.height).add(255);
+          try {
+            icoImg = icoImg.bandjoin(alpha);
+            createdAlpha = true;
+          } finally {
+            alpha.delete();
+          }
+        }
+        
+        try {
+          const sizes = (Array.isArray(icoSizes) && icoSizes.length > 0) ? icoSizes : [16, 32, 48];
+          const pngBuffers: Uint8Array[] = [];
+          
+          for (const size of sizes) {
+            const scale = Math.min(size / icoImg.width, size / icoImg.height);
+            const resized = icoImg.resize(scale);
+            
+            try {
+              const left = Math.floor((size - resized.width) / 2);
+              const top = Math.floor((size - resized.height) / 2);
+              
+              const embedded = resized.embed(left, top, size, size, {
+                extend: 'background',
+                background: [0, 0, 0, 0]
+              });
+              
+              try {
+                const pngBuf = embedded.writeToBuffer('.png') as Uint8Array;
+                pngBuffers.push(pngBuf);
+              } finally {
+                embedded.delete();
+              }
+            } finally {
+              resized.delete();
+            }
+          }
+          
+          outBuffer = encodeICO(pngBuffers, sizes);
+        } finally {
+          if (createdAlpha) {
+            icoImg.delete();
+          }
+        }
       } else if (extension === '.avif') {
         // AVIF: El codificador AV1 consume mucha memoria (~50× megapíxeles).
         // Para imágenes muy grandes, reducimos resolución para evitar OOM.

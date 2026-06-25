@@ -456,6 +456,8 @@ self.onmessage = async (e: MessageEvent) => {
             safeGif.delete();
           }
         }
+      } else if (extension === '.tiff' || extension === '.tif') {
+        outBuffer = image.writeToBuffer(extension, { compression: 'lzw' }) as Uint8Array;
       } else {
         outBuffer = image.writeToBuffer(extension) as Uint8Array;
       }

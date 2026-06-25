@@ -109,6 +109,51 @@ const decodeHEIC = async (file: File): Promise<Blob> => {
   return Array.isArray(conversionResult) ? conversionResult[0] : conversionResult;
 };
 
+// Helper para decodificar BMP utilizando el motor nativo del navegador (Canvas)
+// Esto asegura 100% de retención de píxeles (lossless) sin requerir codificadores pesados en WASM.
+const decodeBMP = (file: File): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const objectURL = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = objectURL;
+    
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('No se pudo obtener el contexto del canvas 2D'));
+          return;
+        }
+        
+        // Desactivamos suavizado para mantener los pixeles exactos del BMP
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, 0, 0);
+        
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(objectURL);
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Fallo al exportar canvas BMP a Blob'));
+          }
+        }, 'image/png'); // Exportamos como PNG sin pérdida (lossless) para vips
+      } catch (err) {
+        URL.revokeObjectURL(objectURL);
+        reject(err);
+      }
+    };
+    
+    img.onerror = (err) => {
+      URL.revokeObjectURL(objectURL);
+      reject(err);
+    };
+  });
+};
+
 export const ConverterModule: React.FC = () => {
   const { locale, t } = useLocale();
   const { showToast } = useToast();
@@ -236,7 +281,27 @@ export const ConverterModule: React.FC = () => {
             : 'An unknown error occurred. Please try again.',
           'error'
         );
+        
+        // Saneo de estado interno para evitar UI congelada ("Convirtiendo...")
         setVipsState('error');
+        setGlobalProcessing(false);
+        processingQueueRef.current = [];
+        
+        setImages(prev => prev.map(img => 
+          img.isProcessing 
+            ? { 
+                ...img, 
+                isProcessing: false, 
+                error: locale === 'es' ? 'Fallo crítico del motor' : 'Critical engine failure' 
+              }
+            : img
+        ));
+        
+        // Destruir el worker roto para asegurar que "Reintentar" levante uno nuevo y limpio
+        if (workerRef.current) {
+          workerRef.current.terminate();
+          workerRef.current = null;
+        }
       };
 
       worker.onmessage = (e) => {
@@ -410,7 +475,7 @@ export const ConverterModule: React.FC = () => {
     const decodingTasks: Array<{
       id: string;
       file: File;
-      type: 'svg' | 'heic';
+      type: 'svg' | 'heic' | 'bmp';
     }> = [];
 
     for (let i = 0; i < filesList.length; i++) {
@@ -426,8 +491,9 @@ export const ConverterModule: React.FC = () => {
       const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
       const isSvg = ext === '.svg';
       const isHeic = ext === '.heic' || ext === '.heif';
+      const isBmp = ext === '.bmp';
 
-      if (isSvg || isHeic) {
+      if (isSvg || isHeic || isBmp) {
         itemsToAdd.push({
           id,
           file,
@@ -442,13 +508,15 @@ export const ConverterModule: React.FC = () => {
           isDecoding: true,
           decodingMessage: isSvg 
             ? (locale === 'es' ? 'Procesando SVG...' : 'Processing SVG...')
-            : (locale === 'es' ? 'Decodificando HEIC...' : 'Decoding HEIC...')
+            : isHeic
+              ? (locale === 'es' ? 'Decodificando HEIC...' : 'Decoding HEIC...')
+              : (locale === 'es' ? 'Decodificando BMP...' : 'Decoding BMP...')
         });
 
         decodingTasks.push({
           id,
           file,
-          type: isSvg ? 'svg' : 'heic'
+          type: isSvg ? 'svg' : isHeic ? 'heic' : 'bmp'
         });
       } else {
         const previewUrl = URL.createObjectURL(file);
@@ -481,6 +549,10 @@ export const ConverterModule: React.FC = () => {
           decodedBlob = await rasterizeSVG(task.file);
           // Yield al event loop para que el navegador respire e interaccione entre archivos
           await new Promise(resolve => requestAnimationFrame(resolve));
+        } else if (task.type === 'bmp') {
+          decodedBlob = await decodeBMP(task.file);
+          // Yield al event loop
+          await new Promise(resolve => setTimeout(resolve, 0));
         } else {
           decodedBlob = await decodeHEIC(task.file);
           // Yield al event loop

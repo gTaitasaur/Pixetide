@@ -100,6 +100,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
     },
   },
 
+  // ─── Convert / Convertidor de Formato ───
+  {
+    id: 'convert',
+    path: { en: '/tools/convert-image/', es: '/es/herramientas/convertir-imagen/' },
+    title: {
+      en: 'Convert Image Format Online Free | Pixetide',
+      es: 'Convertidor de Formatos de Imagen Online Gratis | Pixetide',
+    },
+    description: {
+      en: 'Convert your images to PNG, JPG, WebP, or GIF in bulk. 100% private, fast, and local in your browser. No files are uploaded.',
+      es: 'Convierte tus imágenes a PNG, JPG, WebP o GIF por lotes. 100% privado, rápido y local en tu navegador. Sin subir archivos.',
+    },
+    h1: {
+      en: 'Convert Image Formats — Free & Private',
+      es: 'Convertidor de Formatos de Imagen — Gratis y Privado',
+    },
+    keywords: {
+      en: ['convert image format', 'convert jpg to png', 'convert png to webp', 'bulk image converter', 'image format changer'],
+      es: ['convertir formato imagen', 'convertir jpg a png', 'convertir png a webp', 'convertidor masivo de imagenes', 'cambiar formato de foto'],
+    },
+  },
+
   // ─── Rotate & Flip / Girar y Voltear ───
   {
     id: 'rotate-flip',

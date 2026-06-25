@@ -57,6 +57,9 @@ const AspectRatioTool = React.lazy(() =>
 const OptimizerTool = React.lazy(() =>
   import('./tools/Optimizer/OptimizerTool').then((m) => ({ default: m.OptimizerTool }))
 );
+const ConverterTool = React.lazy(() =>
+  import('./tools/Converter/ConverterTool').then((m) => ({ default: m.ConverterTool }))
+);
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */
 const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -82,12 +85,14 @@ export const AppRoutes: React.FC = () => {
         <Route path="rotate-flip-image" element={<LazyTool><RotateFlipTool /></LazyTool>} />
         <Route path="crop-image" element={<LazyTool><AspectRatioTool /></LazyTool>} />
         <Route path="compress-image" element={<LazyTool><OptimizerTool /></LazyTool>} />
+        <Route path="convert-image" element={<LazyTool><ConverterTool /></LazyTool>} />
       </Route>
       <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>}>
         <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
         <Route path="girar-voltear-imagen" element={<LazyTool><RotateFlipTool /></LazyTool>} />
         <Route path="recortar-imagen" element={<LazyTool><AspectRatioTool /></LazyTool>} />
         <Route path="comprimir-imagen" element={<LazyTool><OptimizerTool /></LazyTool>} />
+        <Route path="convertir-imagen" element={<LazyTool><ConverterTool /></LazyTool>} />
       </Route>
 
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}

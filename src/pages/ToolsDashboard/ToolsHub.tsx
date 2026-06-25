@@ -15,6 +15,7 @@ import {
   Sparkles,
   Sliders,
   Globe,
+  FileText,
   type LucideIcon
 } from 'lucide-react';
 
@@ -30,6 +31,7 @@ const ICON_MAP: Record<ToolIconName, LucideIcon> = {
   Sparkles,
   Sliders,
   Globe,
+  FileText,
 };
 
 export const ToolsHub: React.FC = () => {

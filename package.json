@@ -32,7 +32,6 @@
     "react-image-crop": "^11.0.10",
     "react-router": "^7.15.1",
     "react-router-dom": "^7.14.1",
-    "styled-components": "^6.4.2",
     "tailwind-merge": "^3.6.0",
     "wasm-vips": "^0.0.18"
   },

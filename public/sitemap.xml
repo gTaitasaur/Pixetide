@@ -130,6 +130,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://pixetide.com/tools/crop-image/" />
   </url>
   <url>
+    <loc>https://pixetide.com/tools/images-to-pdf/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixetide.com/tools/images-to-pdf/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixetide.com/es/herramientas/imagenes-a-pdf/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixetide.com/tools/images-to-pdf/" />
+  </url>
+  <url>
+    <loc>https://pixetide.com/es/herramientas/imagenes-a-pdf/</loc>
+    <lastmod>2026-06-25</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pixetide.com/tools/images-to-pdf/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://pixetide.com/es/herramientas/imagenes-a-pdf/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pixetide.com/tools/images-to-pdf/" />
+  </url>
+  <url>
     <loc>https://pixetide.com/tools/</loc>
     <lastmod>2026-06-25</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://pixetide.com/tools/" />

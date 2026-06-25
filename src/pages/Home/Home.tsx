@@ -6,7 +6,7 @@ import { getToolPath } from '../../core/seo/getToolPath';
 import { TOOLS_CONFIG, type ToolIconName } from '../../core/tools/toolsConfig';
 import {
   Minimize2, ArrowLeftRight, Crop, Stamp, Eraser,
-  RotateCw, Palette, Binary, Sparkles, Sliders, Globe,
+  RotateCw, Palette, Binary, Sparkles, Sliders, Globe, FileText,
   type LucideIcon
 } from 'lucide-react';
 
@@ -51,7 +51,7 @@ export const Home: React.FC = () => {
 
   const ICON_MAP: Record<ToolIconName, LucideIcon> = {
     Minimize2, ArrowLeftRight, Crop, Stamp, Eraser,
-    RotateCw, Palette, Binary, Sparkles, Sliders, Globe,
+    RotateCw, Palette, Binary, Sparkles, Sliders, Globe, FileText,
   };
 
   return (

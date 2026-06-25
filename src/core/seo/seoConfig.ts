@@ -254,6 +254,28 @@ export const SEO_PAGES: readonly PageSeoEntry[] = [
     },
   },
 
+  // ─── Images to PDF / Imágenes a PDF ───
+  {
+    id: 'images-to-pdf',
+    path: { en: '/tools/images-to-pdf/', es: '/es/herramientas/imagenes-a-pdf/' },
+    title: {
+      en: 'Convert Images to PDF Online Free | Pixetide',
+      es: 'Convertidor de Imágenes a PDF Online Gratis | Pixetide',
+    },
+    description: {
+      en: 'Convert PNG, JPG, or WebP images into a single PDF document. Rearrange pages easily. 100% private and local.',
+      es: 'Convierte imágenes PNG, JPG o WebP en un único documento PDF. Reordena las páginas fácilmente. 100% privado y local.',
+    },
+    h1: {
+      en: 'Convert Images to PDF',
+      es: 'Convertir Imágenes a PDF',
+    },
+    keywords: {
+      en: ['images to pdf', 'convert image to pdf', 'jpg to pdf', 'png to pdf', 'pdf merger'],
+      es: ['imagenes a pdf', 'convertir imagen a pdf', 'jpg a pdf', 'png a pdf', 'unir pdf'],
+    },
+  },
+
   // ─── Tools Dashboard ───
   {
     id: 'tools-dashboard',

@@ -60,6 +60,9 @@ const OptimizerTool = React.lazy(() =>
 const ConverterTool = React.lazy(() =>
   import('./tools/Converter/ConverterTool').then((m) => ({ default: m.ConverterTool }))
 );
+const ImagesToPdfTool = React.lazy(() =>
+  import('./tools/ImagesToPdf/ImagesToPdfTool').then((m) => ({ default: m.ImagesToPdfTool }))
+);
 
 /** Wrapper que envuelve cada herramienta lazy en Suspense */
 const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -86,6 +89,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="crop-image" element={<LazyTool><AspectRatioTool /></LazyTool>} />
         <Route path="compress-image" element={<LazyTool><OptimizerTool /></LazyTool>} />
         <Route path="convert-image" element={<LazyTool><ConverterTool /></LazyTool>} />
+        <Route path="images-to-pdf" element={<LazyTool><ImagesToPdfTool /></LazyTool>} />
       </Route>
       <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>}>
         <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
@@ -93,6 +97,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="recortar-imagen" element={<LazyTool><AspectRatioTool /></LazyTool>} />
         <Route path="comprimir-imagen" element={<LazyTool><OptimizerTool /></LazyTool>} />
         <Route path="convertir-imagen" element={<LazyTool><ConverterTool /></LazyTool>} />
+        <Route path="imagenes-a-pdf" element={<LazyTool><ImagesToPdfTool /></LazyTool>} />
       </Route>
 
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}

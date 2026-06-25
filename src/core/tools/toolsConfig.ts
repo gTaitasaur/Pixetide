@@ -11,7 +11,8 @@ export type ToolIconName =
   | 'Binary'
   | 'Sparkles'
   | 'Sliders'
-  | 'Globe';
+  | 'Globe'
+  | 'FileText';
 
 export interface ToolItem {
   id: string;
@@ -35,6 +36,7 @@ export const TOOLS_CONFIG: ToolItem[] = [
   { id: 'rotate-flip',   iconName: 'RotateCw',        titleKey: 'card.rotateFlip.title',    descKey: 'card.rotateFlip.desc' },
   { id: 'color-palette', iconName: 'Palette',         titleKey: 'card.colorPalette.title',  descKey: 'card.colorPalette.desc' },
   { id: 'base64',        iconName: 'Binary',          titleKey: 'card.base64.title',        descKey: 'card.base64.desc' },
+  { id: 'images-to-pdf', iconName: 'FileText',        titleKey: 'card.imagesToPdf.title',   descKey: 'card.imagesToPdf.desc' },
   { id: 'upscale',       iconName: 'Sparkles',        titleKey: 'card.upscale.title',       descKey: 'card.upscale.desc',       disabled: true },
   { id: 'photo-editor',  iconName: 'Sliders',         titleKey: 'card.photoEditor.title',   descKey: 'card.photoEditor.desc',   disabled: true },
   { id: 'favicon',       iconName: 'Globe',           titleKey: 'card.favicon.title',       descKey: 'card.favicon.desc',       disabled: true },

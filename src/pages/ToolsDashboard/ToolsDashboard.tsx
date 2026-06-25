@@ -27,6 +27,7 @@ import {
   Binary,
   Sparkles,
   Sliders,
+  FileText,
   type LucideIcon
 } from 'lucide-react';
 import './ToolsDashboard.css';
@@ -43,6 +44,7 @@ const ICON_MAP: Record<ToolIconName, LucideIcon> = {
   Sparkles,
   Sliders,
   Globe,
+  FileText,
 };
 
 export const ToolsDashboard: React.FC = () => {

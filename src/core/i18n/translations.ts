@@ -96,6 +96,9 @@ const en = {
   "card.favicon.title": "Favicon ICO Generator",
   "card.favicon.desc":
     "Create the perfect icon for your website. Upload your logo and convert it to .ico and other standardized formats ready to use. (Coming Soon)",
+  "card.imagesToPdf.title": "Images to PDF",
+  "card.imagesToPdf.desc":
+    "Convert multiple images (JPG, PNG, WebP) into a single PDF document. Rearrange pages easily and optimize file size.",
 
   // ─── Shared: DragAndDrop ───
   "dragdrop.prompt": "Choose an image to get started",
@@ -308,6 +311,40 @@ const en = {
   "wm.addOtherImage": "Add another image",
   "wm.placeholderText": "Add a text to start",
   "wm.placeholderImage": "Upload an image to start",
+
+  // ─── Images to PDF Tool ───
+  "pdf.title": "Images to PDF Converter",
+  "pdf.description": "Merge multiple images into a single, high-quality PDF document. Rearrange pages and customize layout locally.",
+  "pdf.settings": "PDF Layout Settings",
+  "pdf.pageSize": "Page Size",
+  "pdf.pageSizeOriginal": "Original (Image Size)",
+  "pdf.orientation": "Page Orientation",
+  "pdf.orientationAuto": "Auto",
+  "pdf.orientationPortrait": "Portrait",
+  "pdf.orientationLandscape": "Landscape",
+  "pdf.margin": "Page Margins",
+  "pdf.marginNone": "None (0px)",
+  "pdf.marginNoneVal": "None",
+  "pdf.marginSmall": "Small (20px)",
+  "pdf.marginSmallVal": "Small",
+  "pdf.marginLarge": "Large (40px)",
+  "pdf.marginLargeVal": "Large",
+  "pdf.imageQuality": "Image Quality (Compression)",
+  "pdf.generate": "Generate PDF",
+  "pdf.btnGenerateAndDownload": "GENERATE & DOWNLOAD PDF",
+  "pdf.generating": "Generating PDF...",
+  "pdf.clearAll": "Clear All",
+  "pdf.uploadNew": "Upload Images",
+  "pdf.dropzonePrompt": "Drag your images here or click to upload",
+  "pdf.dropzoneHint": "PNG, JPG, WEBP, GIF, SVG, HEIC, or BMP. Max 20MB per file.",
+  "pdf.reorderTooltip": "Drag to reorder pages",
+  "pdf.moveUp": "Move Up",
+  "pdf.moveDown": "Move Down",
+  "pdf.remove": "Remove",
+  "pdf.page": "Page",
+  "pdf.downloadSuccess": "Successfully generated and downloaded PDF.",
+  "pdf.downloadError": "Error generating PDF. Please try again.",
+  "pdf.userGuideTitle": "How to merge images into a single PDF?",
 } as const;
 
 // ────────────────────────────────────────────────────────────────
@@ -392,6 +429,9 @@ const es: Record<TranslationKey, string> = {
   "card.favicon.title": "Generador de Favicon ICO",
   "card.favicon.desc":
     "Crea el icono perfecto para tu página web. Sube tu logo y conviértelo a .ico y otros formatos estandarizados listos para usar. (Próximamente)",
+  "card.imagesToPdf.title": "Imágenes a PDF",
+  "card.imagesToPdf.desc":
+    "Convierte múltiples imágenes (JPG, PNG, WebP) en un único documento PDF. Reordena las páginas fácilmente y optimiza el tamaño del archivo.",
 
   // ─── Shared: DragAndDrop ───
   "dragdrop.prompt": "Elige una imagen para empezar",
@@ -609,6 +649,40 @@ const es: Record<TranslationKey, string> = {
   "wm.addOtherImage": "Agregar otra imagen",
   "wm.placeholderText": "Agrega un texto para comenzar",
   "wm.placeholderImage": "Sube una imagen para comenzar",
+
+  // ─── Images to PDF Tool ───
+  "pdf.title": "Convertidor de Imágenes a PDF",
+  "pdf.description": "Une múltiples imágenes en un único documento PDF de alta calidad. Reordena páginas y personaliza el diseño localmente.",
+  "pdf.settings": "Ajustes de Diseño del PDF",
+  "pdf.pageSize": "Tamaño de Página",
+  "pdf.pageSizeOriginal": "Original (Tamaño de Imagen)",
+  "pdf.orientation": "Orientación",
+  "pdf.orientationAuto": "Auto",
+  "pdf.orientationPortrait": "Vertical",
+  "pdf.orientationLandscape": "Horizontal",
+  "pdf.margin": "Márgenes de Página",
+  "pdf.marginNone": "Sin Margen (0px)",
+  "pdf.marginNoneVal": "Ninguno",
+  "pdf.marginSmall": "Margen Pequeño (20px)",
+  "pdf.marginSmallVal": "Pequeño",
+  "pdf.marginLarge": "Margen Grande (40px)",
+  "pdf.marginLargeVal": "Grande",
+  "pdf.imageQuality": "Calidad de Imagen (Compresión)",
+  "pdf.generate": "Generar PDF",
+  "pdf.btnGenerateAndDownload": "GENERAR Y DESCARGAR PDF",
+  "pdf.generating": "Generando PDF...",
+  "pdf.clearAll": "Limpiar Todo",
+  "pdf.uploadNew": "Subir Imágenes",
+  "pdf.dropzonePrompt": "Arrastra tus imágenes aquí o haz clic para subir",
+  "pdf.dropzoneHint": "PNG, JPG, WEBP, GIF, SVG, HEIC o BMP. Máximo 20MB por archivo.",
+  "pdf.reorderTooltip": "Arrastra para reordenar las páginas",
+  "pdf.moveUp": "Subir",
+  "pdf.moveDown": "Bajar",
+  "pdf.remove": "Eliminar",
+  "pdf.page": "Página",
+  "pdf.downloadSuccess": "PDF generado y descargado con éxito.",
+  "pdf.downloadError": "Error al generar el PDF. Por favor, intenta de nuevo.",
+  "pdf.userGuideTitle": "¿Cómo unir imágenes en un solo PDF?",
 };
 
 // ────────────────────────────────────────────────────────────────

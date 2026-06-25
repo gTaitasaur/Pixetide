@@ -35,6 +35,8 @@ interface ConverterImageItem {
   error: string | null;
   isDecoding?: boolean;
   decodingMessage?: string;
+  originalName?: string;
+  originalFormat?: string;
 }
 
 // Helper para rasterizar SVG a alta densidad (hasta 4K) en el hilo principal sin congelar el event loop
@@ -510,7 +512,9 @@ export const ConverterModule: React.FC = () => {
             ? (locale === 'es' ? 'Procesando SVG...' : 'Processing SVG...')
             : isHeic
               ? (locale === 'es' ? 'Decodificando HEIC...' : 'Decoding HEIC...')
-              : (locale === 'es' ? 'Decodificando BMP...' : 'Decoding BMP...')
+              : (locale === 'es' ? 'Decodificando BMP...' : 'Decoding BMP...'),
+          originalName: file.name,
+          originalFormat: isSvg ? 'SVG' : isHeic ? (ext === '.heif' ? 'HEIF' : 'HEIC') : 'BMP'
         });
 
         decodingTasks.push({
@@ -530,7 +534,9 @@ export const ConverterModule: React.FC = () => {
           isProcessed: false,
           resultBlob: null,
           resultSize: null,
-          error: null
+          error: null,
+          originalName: file.name,
+          originalFormat: getSourceFormat(file)
         });
       }
     }
@@ -990,8 +996,8 @@ export const ConverterModule: React.FC = () => {
             </h2>
             <p className="text-xs text-muted-foreground leading-normal max-w-xl">
               {locale === 'es' 
-                ? 'Transforma el formato de tus fotos JPG, PNG, WebP y GIF de forma masiva o individual de manera 100% privada.'
-                : 'Convert the format of your JPG, PNG, WebP, and GIF photos in bulk or individually. 100% private.'}
+                ? 'Transforma el formato de tus fotos (JPG, PNG, WebP, GIF, SVG, HEIC, BMP, TIFF) de forma masiva o individual de manera 100% privada.'
+                : 'Convert the format of your photos (JPG, PNG, WebP, GIF, SVG, HEIC, BMP, TIFF) in bulk or individually. 100% private.'}
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -1094,7 +1100,7 @@ export const ConverterModule: React.FC = () => {
                 
                 {/* Formats Badges */}
                 <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-                  {['PNG', 'JPG', 'WEBP', 'GIF'].map((fmt) => (
+                  {['PNG', 'JPG', 'WEBP', 'GIF', 'SVG', 'HEIC', 'BMP', 'TIFF'].map((fmt) => (
                     <span 
                       key={fmt} 
                       className="px-2 py-0.5 rounded-md text-[10px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200/60"
@@ -1177,22 +1183,22 @@ export const ConverterModule: React.FC = () => {
                         <div className="flex items-center gap-3 min-w-0">
                           <img 
                             src={item.previewUrl} 
-                            alt={item.file.name}
+                            alt={item.originalName || item.file.name}
                             className="size-10 rounded-lg object-cover border border-border/85 shrink-0 bg-slate-50"
                           />
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold text-primary truncate" title={item.file.name}>
-                              {truncateFilename(item.file.name)}
+                            <p className="text-xs font-semibold text-primary truncate" title={item.originalName || item.file.name}>
+                              {truncateFilename(item.originalName || item.file.name)}
                             </p>
                             <p className="text-[10px] text-muted-foreground/80 md:hidden font-mono mt-0.5">
-                              {getSourceFormat(item.file)}
+                              {item.originalFormat || getSourceFormat(item.file)}
                             </p>
                           </div>
                         </div>
 
                         {/* Formato Original (Desktop) */}
                         <span className="hidden md:inline text-xs font-mono text-muted-foreground">
-                          {getSourceFormat(item.file)}
+                          {item.originalFormat || getSourceFormat(item.file)}
                         </span>
 
                         {/* Formato de Destino */}

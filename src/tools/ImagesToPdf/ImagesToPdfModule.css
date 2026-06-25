@@ -1,0 +1,260 @@
+/* Layout de la herramienta */
+.pdf-main-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg, 1.5rem);
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .pdf-main-layout {
+    flex-direction: row;
+    gap: var(--spacing-xl, 2rem);
+  }
+}
+
+/* Decoradores estilo visor fotográfico */
+.corner-decorator {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #cbd5e1;
+  pointer-events: none;
+  transition: border-color 0.2s ease;
+}
+
+.corner-tl {
+  top: 16px;
+  left: 16px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.corner-tr {
+  top: 16px;
+  right: 16px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.corner-bl {
+  bottom: 16px;
+  left: 16px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.corner-br {
+  bottom: 16px;
+  right: 16px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+.group:hover .corner-decorator {
+  border-color: #a855f7;
+}
+
+/* Dropzone (Tablero de damas de fondo para transparencia) */
+.dropzone-grid {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* Grilla de Storyboard de Páginas */
+.storyboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .storyboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .storyboard-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .storyboard-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .storyboard-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* Tarjeta de página */
+.page-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  user-select: none;
+}
+
+.page-card:hover {
+  border-color: #a855f7;
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.06);
+  transform: translateY(-2px);
+}
+
+.page-card.dragging {
+  opacity: 0.4;
+  border: 2px dashed #a855f7;
+  background-color: #fcf8ff;
+}
+
+.page-card.drag-over {
+  border-color: #a855f7;
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.12);
+}
+
+/* Contenedor de la miniatura */
+.thumbnail-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.thumbnail-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.page-card:hover .thumbnail-image {
+  transform: scale(1.03);
+}
+
+/* Indicador de número de página */
+.page-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  z-index: 10;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Capa de reordenamiento drag manual */
+.drag-handle-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.02);
+  cursor: grab;
+  z-index: 5;
+}
+
+.drag-handle-overlay:active {
+  cursor: grabbing;
+}
+
+/* Panel de información e interacción de la tarjeta */
+.page-info-panel {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  gap: 0.5rem;
+  background-color: #ffffff;
+  position: relative;
+  z-index: 15; /* Asegura estar sobre el drag overlay para interactuar con botones */
+}
+
+.filename-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--foreground, #0f172a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.size-label {
+  font-size: 9px;
+  font-family: monospace;
+  color: var(--muted-foreground, #64748b);
+}
+
+/* Fila de controles de la página */
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  border-top: 1px solid var(--border, #f1f5f9);
+  padding-top: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.control-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--border, #e2e8f0);
+  background-color: #ffffff;
+  color: var(--muted-foreground, #64748b);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.control-btn:hover {
+  background-color: #f8fafc;
+  color: var(--foreground, #0f172a);
+  border-color: #cbd5e1;
+}
+
+.control-btn.btn-danger:hover {
+  background-color: #fef2f2;
+  color: #ef4646;
+  border-color: #fca5a5;
+}
+
+.control-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background-color: #f8fafc;
+}

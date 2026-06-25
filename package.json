@@ -21,6 +21,8 @@
     "clsx": "^2.1.1",
     "culori": "^4.0.2",
     "fabric": "^5.5.2",
+    "heic2any": "^0.0.4",
+    "jspdf": "^4.2.1",
     "jszip": "^3.10.1",
     "lucide-react": "^1.16.0",
     "node-vibrant": "^4.0.4",

@@ -26,15 +26,88 @@ interface ConverterImageItem {
   id: string;
   file: File;
   previewUrl: string;
-  targetFormat: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico';
+  targetFormat: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'pdf';
   bgColor: 'white' | 'black';
   isProcessing: boolean;
   isProcessed: boolean;
   resultBlob: Blob | null;
   resultSize: number | null;
   error: string | null;
+  isDecoding?: boolean;
+  decodingMessage?: string;
 }
 
+// Helper para rasterizar SVG a alta densidad (hasta 4K) en el hilo principal sin congelar el event loop
+const rasterizeSVG = (file: File): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const objectURL = URL.createObjectURL(file);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = objectURL;
+    
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const maxDim = 4096; // 4K para nitidez vectorial profesional
+        let w = img.naturalWidth || maxDim;
+        let h = img.naturalHeight || maxDim;
+        
+        if (w === 0 || h === 0) {
+          w = maxDim;
+          h = maxDim;
+        }
+        
+        const scale = Math.min(maxDim / w, maxDim / h);
+        const destW = Math.round(w * scale);
+        const destH = Math.round(h * scale);
+        
+        canvas.width = destW;
+        canvas.height = destH;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('No se pudo obtener el contexto del canvas 2D'));
+          return;
+        }
+        
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, destW, destH);
+        
+        canvas.toBlob((blob) => {
+          URL.revokeObjectURL(objectURL);
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Fallo al exportar canvas SVG a Blob'));
+          }
+        }, 'image/png');
+      } catch (err) {
+        URL.revokeObjectURL(objectURL);
+        reject(err);
+      }
+    };
+    
+    img.onerror = (err) => {
+      URL.revokeObjectURL(objectURL);
+      reject(err);
+    };
+  });
+};
+
+// Helper para decodificar HEIC a PNG utilizando heic2any directamente
+// Nota: heic2any ya maneja internamente un Web Worker para la decodificación pesada,
+// por lo que no bloquea el hilo principal de la UI al ser invocada.
+const decodeHEIC = async (file: File): Promise<Blob> => {
+  const { default: heic2any } = await import('heic2any');
+  const conversionResult = await heic2any({
+    blob: file,
+    toType: 'image/png',
+    quality: 0.95
+  });
+  
+  return Array.isArray(conversionResult) ? conversionResult[0] : conversionResult;
+};
 
 export const ConverterModule: React.FC = () => {
   const { locale, t } = useLocale();
@@ -42,12 +115,18 @@ export const ConverterModule: React.FC = () => {
   
   // Listado de imágenes cargadas en memoria
   const [images, setImages] = useState<ConverterImageItem[]>([]);
-  const [batchFormat, setBatchFormat] = useState<'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico'>('webp');
+  const [batchFormat, setBatchFormat] = useState<'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'pdf'>('webp');
   const [batchBgColor, setBatchBgColor] = useState<'white' | 'black'>('white');
   const [icoSizes, setIcoSizes] = useState<number[]>([16, 32, 48]);
 
+  // Ref para mantener la lista de imágenes actualizada y evitar cierres desactualizados en callbacks
+  const imagesRef = useRef<ConverterImageItem[]>(images);
+  useEffect(() => {
+    imagesRef.current = images;
+  }, [images]);
+
   // Cambiar formato global en cascada
-  const handleGlobalFormatChange = (fmt: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico') => {
+  const handleGlobalFormatChange = (fmt: 'png' | 'jpg' | 'webp' | 'gif' | 'avif' | 'tiff' | 'bmp' | 'ico' | 'pdf') => {
     setBatchFormat(fmt);
     setImages(prev => prev.map(img => ({
       ...img,
@@ -121,11 +200,13 @@ export const ConverterModule: React.FC = () => {
       img.id === next.id ? { ...img, isProcessing: true } : img
     ));
 
+    const finalFormatForWorker = next.targetFormat === 'pdf' ? 'png' : next.targetFormat;
+
     workerRef.current?.postMessage({
       action: 'process',
       id: next.id,
       file: next.file,
-      targetFormat: next.targetFormat,
+      targetFormat: finalFormatForWorker,
       bgColor: next.bgColor,
       icoSizes: next.icoSizes
     });
@@ -184,21 +265,79 @@ export const ConverterModule: React.FC = () => {
           );
           setVipsState('error');
         } else if (type === 'result') {
-          setImages(prev => prev.map(img => {
-            if (img.id === id) {
-              return {
-                ...img,
-                isProcessing: false,
-                isProcessed: true,
-                resultBlob: blob,
-                resultSize: size,
-                error: null
-              };
-            }
-            return img;
-          }));
-          // Procesar la siguiente imagen en la cola
-          processNextInQueue();
+          const item = imagesRef.current.find(img => img.id === id);
+          if (item && item.targetFormat === 'pdf') {
+            (async () => {
+              try {
+                const { jsPDF } = await import('jspdf');
+                const objectURL = URL.createObjectURL(blob);
+                const img = new Image();
+                img.src = objectURL;
+                
+                img.onload = () => {
+                  try {
+                    const width = img.naturalWidth || 800;
+                    const height = img.naturalHeight || 600;
+                    
+                    const pdf = new jsPDF({
+                      orientation: width > height ? 'landscape' : 'portrait',
+                      unit: 'px',
+                      format: [width, height]
+                    });
+                    
+                    pdf.addImage(img, 'PNG', 0, 0, width, height);
+                    const pdfBlob = pdf.output('blob');
+                    
+                    URL.revokeObjectURL(objectURL);
+                    
+                    setImages(prev => prev.map(i => {
+                      if (i.id === id) {
+                        return {
+                          ...i,
+                          isProcessing: false,
+                          isProcessed: true,
+                          resultBlob: pdfBlob,
+                          resultSize: pdfBlob.size,
+                          error: null
+                        };
+                      }
+                      return i;
+                    }));
+                    
+                    processNextInQueue();
+                  } catch (pdfErr) {
+                    URL.revokeObjectURL(objectURL);
+                    console.error('Error rendering PDF:', pdfErr);
+                    handlePdfError(id, String(pdfErr));
+                  }
+                };
+                
+                img.onerror = (err) => {
+                  URL.revokeObjectURL(objectURL);
+                  console.error('Error loading PNG for PDF wrapping:', err);
+                  handlePdfError(id, locale === 'es' ? 'Error al renderizar el documento PDF.' : 'Error rendering PDF document.');
+                };
+              } catch (importErr) {
+                console.error('Error importing jsPDF:', importErr);
+                handlePdfError(id, locale === 'es' ? 'No se pudo inicializar el generador de PDF.' : 'Could not initialize PDF generator.');
+              }
+            })();
+          } else {
+            setImages(prev => prev.map(img => {
+              if (img.id === id) {
+                return {
+                  ...img,
+                  isProcessing: false,
+                  isProcessed: true,
+                  resultBlob: blob,
+                  resultSize: size,
+                  error: null
+                };
+              }
+              return img;
+            }));
+            processNextInQueue();
+          }
         } else if (type === 'process_error') {
           console.error('Worker process error:', message);
           setImages(prev => prev.map(img => {
@@ -225,6 +364,22 @@ export const ConverterModule: React.FC = () => {
     }
   };
 
+  // Manejo de errores al envolver en PDF en el hilo principal
+  const handlePdfError = (id: string, message: string) => {
+    setImages(prev => prev.map(img => {
+      if (img.id === id) {
+        return {
+          ...img,
+          isProcessing: false,
+          isProcessed: false,
+          error: message
+        };
+      }
+      return img;
+    }));
+    processNextInQueue();
+  };
+
   // Cargar el worker en primer uso de carga de archivos
   useEffect(() => {
     if (images.length > 0 && vipsState === 'idle') {
@@ -246,12 +401,18 @@ export const ConverterModule: React.FC = () => {
   // No se usa useEffect para evitar conflictos con reintentos individuales
 
   // Procesamiento de archivos
-  const handleFiles = (filesList: FileList | null) => {
+  const handleFiles = async (filesList: FileList | null) => {
     if (!filesList || filesList.length === 0) return;
     setIsImagesLoading(true);
     setUploadCount(filesList.length);
 
-    const newItems: ConverterImageItem[] = [];
+    const itemsToAdd: ConverterImageItem[] = [];
+    const decodingTasks: Array<{
+      id: string;
+      file: File;
+      type: 'svg' | 'heic';
+    }> = [];
+
     for (let i = 0; i < filesList.length; i++) {
       const file = filesList[i];
       const validation = validateImageFile(file);
@@ -262,32 +423,112 @@ export const ConverterModule: React.FC = () => {
       }
 
       const id = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-      const previewUrl = URL.createObjectURL(file);
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      const isSvg = ext === '.svg';
+      const isHeic = ext === '.heic' || ext === '.heif';
 
-      newItems.push({
-        id,
-        file,
-        previewUrl,
-        targetFormat: batchFormat,
-        bgColor: batchBgColor,
-        isProcessing: false,
-        isProcessed: false,
-        resultBlob: null,
-        resultSize: null,
-        error: null
-      });
+      if (isSvg || isHeic) {
+        itemsToAdd.push({
+          id,
+          file,
+          previewUrl: '',
+          targetFormat: batchFormat,
+          bgColor: batchBgColor,
+          isProcessing: false,
+          isProcessed: false,
+          resultBlob: null,
+          resultSize: null,
+          error: null,
+          isDecoding: true,
+          decodingMessage: isSvg 
+            ? (locale === 'es' ? 'Procesando SVG...' : 'Processing SVG...')
+            : (locale === 'es' ? 'Decodificando HEIC...' : 'Decoding HEIC...')
+        });
+
+        decodingTasks.push({
+          id,
+          file,
+          type: isSvg ? 'svg' : 'heic'
+        });
+      } else {
+        const previewUrl = URL.createObjectURL(file);
+        itemsToAdd.push({
+          id,
+          file,
+          previewUrl,
+          targetFormat: batchFormat,
+          bgColor: batchBgColor,
+          isProcessing: false,
+          isProcessed: false,
+          resultBlob: null,
+          resultSize: null,
+          error: null
+        });
+      }
     }
 
-    if (newItems.length > 0) {
-      setImages(prev => [...prev, ...newItems]);
-      showToast(
-        locale === 'es' 
-          ? `Cargadas ${newItems.length} imágenes correctamente.` 
-          : `Successfully loaded ${newItems.length} images.`,
-        'success'
-      );
+    if (itemsToAdd.length > 0) {
+      setImages(prev => [...prev, ...itemsToAdd]);
     }
+    
     setIsImagesLoading(false);
+
+    // Procesar asíncronamente las tareas de decodificación en cola secuencial
+    for (const task of decodingTasks) {
+      try {
+        let decodedBlob: Blob;
+        if (task.type === 'svg') {
+          decodedBlob = await rasterizeSVG(task.file);
+          // Yield al event loop para que el navegador respire e interaccione entre archivos
+          await new Promise(resolve => requestAnimationFrame(resolve));
+        } else {
+          decodedBlob = await decodeHEIC(task.file);
+          // Yield al event loop
+          await new Promise(resolve => setTimeout(resolve, 0));
+        }
+
+        const decodedFileName = task.file.name.substring(0, task.file.name.lastIndexOf('.')) + '.png';
+        const decodedFile = new File([decodedBlob], decodedFileName, { type: 'image/png' });
+        const newPreviewUrl = URL.createObjectURL(decodedFile);
+
+        setImages(prev => prev.map(img => {
+          if (img.id === task.id) {
+            return {
+              ...img,
+              file: decodedFile,
+              previewUrl: newPreviewUrl,
+              isDecoding: false,
+              decodingMessage: undefined
+            };
+          }
+          return img;
+        }));
+      } catch (err) {
+        console.error(`Error processing task ${task.id}:`, err);
+        const errMsg = locale === 'es' 
+          ? 'Error al procesar el archivo. Formato inválido o corrupto.' 
+          : 'Failed to process file. Invalid or corrupt format.';
+        
+        showToast(
+          locale === 'es' 
+            ? `No se pudo procesar ${task.file.name}` 
+            : `Could not process ${task.file.name}`, 
+          'error'
+        );
+
+        setImages(prev => prev.map(img => {
+          if (img.id === task.id) {
+            return {
+              ...img,
+              isDecoding: false,
+              decodingMessage: undefined,
+              error: errMsg
+            };
+          }
+          return img;
+        }));
+      }
+    }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -384,11 +625,13 @@ export const ConverterModule: React.FC = () => {
         : i
     ));
 
+    const finalFormatForWorker = img.targetFormat === 'pdf' ? 'png' : img.targetFormat;
+
     workerRef.current?.postMessage({
       action: 'process',
       id: img.id,
       file: img.file,
-      targetFormat: img.targetFormat,
+      targetFormat: finalFormatForWorker,
       bgColor: img.bgColor,
       icoSizes: img.targetFormat === 'ico' ? icoSizes : undefined
     });
@@ -525,7 +768,7 @@ export const ConverterModule: React.FC = () => {
             {locale === 'es' ? 'Formato de Salida Global' : 'Global Output Format'}
           </label>
           <div className="grid grid-cols-4 gap-2">
-            {(['webp', 'png', 'jpg', 'gif', 'avif', 'tiff', 'bmp', 'ico'] as const).map((fmt) => {
+            {(['webp', 'png', 'jpg', 'gif', 'avif', 'tiff', 'bmp', 'ico', 'pdf'] as const).map((fmt) => {
               const isActive = batchFormat === fmt;
               return (
                 <button
@@ -661,7 +904,7 @@ export const ConverterModule: React.FC = () => {
         onChange={handleFileInputChange} 
         className="hidden" 
         multiple
-        accept="image/png, image/jpeg, image/webp, image/gif"
+        accept="image/png, image/jpeg, image/webp, image/gif, image/tiff, image/bmp, image/svg+xml, .heic, .heif"
       />
 
       {/* ─── COLUMNA IZQUIERDA: VISUALIZADOR / LISTA ─── */}
@@ -820,129 +1063,170 @@ export const ConverterModule: React.FC = () => {
                       item.error && "error"
                     )}
                   >
-                    {/* Thumbnail + Nombre */}
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img 
-                        src={item.previewUrl} 
-                        alt={item.file.name}
-                        className="size-10 rounded-lg object-cover border border-border/85 shrink-0 bg-slate-50"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-xs font-semibold text-primary truncate" title={item.file.name}>
-                          {truncateFilename(item.file.name)}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground/80 md:hidden font-mono mt-0.5">
-                          {getSourceFormat(item.file)}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Formato Original (Desktop) */}
-                    <span className="hidden md:inline text-xs font-mono text-muted-foreground">
-                      {getSourceFormat(item.file)}
-                    </span>
-
-                    {/* Formato de Destino */}
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground/60 md:hidden">
-                        {t('conv.targetFormat')}
-                      </span>
-                      <select
-                        value={item.targetFormat}
-                        disabled={globalProcessing}
-                        onChange={(e) => updateImageOption(item.id, { targetFormat: e.target.value as any })}
-                        className="h-8 border border-border bg-white rounded-lg text-xs font-semibold text-primary px-2 outline-none focus:border-[#a855f7] cursor-pointer"
-                      >
-                        <option value="webp">WEBP</option>
-                        <option value="png">PNG</option>
-                        <option value="jpg">JPG</option>
-                        <option value="gif">GIF</option>
-                        <option value="avif">AVIF</option>
-                        <option value="tiff">TIFF</option>
-                        <option value="bmp">BMP</option>
-                        <option value="ico">ICO</option>
-                      </select>
-                    </div>
-
-                    {/* Color de fondo si es JPG */}
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground/60 md:hidden">
-                        {t('conv.bgColor')}
-                      </span>
-                      {showBgColor ? (
-                        <select
-                          value={item.bgColor}
-                          disabled={globalProcessing}
-                          onChange={(e) => updateImageOption(item.id, { bgColor: e.target.value as any })}
-                          className="h-8 border border-border bg-white rounded-lg text-xs font-semibold text-primary px-2 outline-none focus:border-[#a855f7] cursor-pointer"
-                        >
-                          <option value="white">{t('conv.white')}</option>
-                          <option value="black">{t('conv.black')}</option>
-                        </select>
-                      ) : (
-                        <span className="text-xs text-muted-foreground/50 italic">-</span>
-                      )}
-                    </div>
-
-                    {/* Estado / Tamaño Resultante */}
-                    <div className="flex items-center gap-2">
-                      {item.isProcessing ? (
-                        <span className="text-xs text-primary font-semibold flex items-center gap-1">
-                          <RefreshCw className="size-3 animate-spin" />
-                          <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.converting')}</span>
-                        </span>
-                      ) : item.isProcessed ? (
-                        <div className="flex flex-col gap-0.5">
-                          <span className="text-xs text-green-600 font-semibold flex items-center gap-1">
-                            <CheckCircle2 className="size-3 shrink-0" />
-                            <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.statusSuccess')}</span>
-                          </span>
-                          <span className="text-[10px] font-mono text-muted-foreground leading-none">
-                            {formatSize(item.resultSize)}
-                          </span>
+                    {item.isDecoding ? (
+                      <>
+                        {/* Thumbnail vacío + Nombre en decodificación */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="size-10 rounded-lg border border-border/85 shrink-0 bg-slate-100 flex items-center justify-center">
+                            <ImageIcon className="size-5 text-muted-foreground/30 animate-pulse" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-primary truncate" title={item.file.name}>
+                              {truncateFilename(item.file.name)}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground/80 md:hidden font-mono mt-0.5 animate-pulse">
+                              {locale === 'es' ? 'Cargando...' : 'Loading...'}
+                            </p>
+                          </div>
                         </div>
-                      ) : item.error ? (
-                        <div className="flex flex-col gap-1">
-                          <span className="text-xs text-red-500 font-semibold flex items-center gap-1" title={item.error}>
-                            <AlertTriangle className="size-3 shrink-0" />
-                            <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.statusError')}</span>
-                          </span>
+
+                        {/* Loader compacto de decodificación (Col-span-4 en desktop) */}
+                        <div className="md:col-span-4 flex items-center justify-center md:justify-start w-full">
+                          <div className="w-full max-w-xs md:pl-6">
+                            <LoaderPrime message={item.decodingMessage} compact={true} />
+                          </div>
+                        </div>
+
+                        {/* Acciones */}
+                        <div className="flex items-center justify-end">
                           <button
-                            onClick={() => handleRetry(item.id)}
-                            disabled={globalProcessing || vipsState !== 'loaded'}
-                            className="text-[10px] font-semibold text-[#a855f7] hover:text-purple-700 flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            onClick={() => handleRemoveImage(item.id)}
+                            disabled={globalProcessing}
+                            className="p-2 text-muted-foreground/80 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            title={locale === 'es' ? 'Eliminar de la lista' : 'Remove from list'}
                           >
-                            <RefreshCw className="size-3" />
-                            <span className="uppercase font-mono tracking-wider">
-                              {locale === 'es' ? 'Reintentar' : 'Retry'}
-                            </span>
+                            <Trash2 className="size-4" />
                           </button>
                         </div>
-                      ) : (
-                        <span className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground/60">{t('conv.statusPending')}</span>
-                      )}
-                    </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Thumbnail + Nombre */}
+                        <div className="flex items-center gap-3 min-w-0">
+                          <img 
+                            src={item.previewUrl} 
+                            alt={item.file.name}
+                            className="size-10 rounded-lg object-cover border border-border/85 shrink-0 bg-slate-50"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-primary truncate" title={item.file.name}>
+                              {truncateFilename(item.file.name)}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground/80 md:hidden font-mono mt-0.5">
+                              {getSourceFormat(item.file)}
+                            </p>
+                          </div>
+                        </div>
 
-                    {/* Acciones */}
-                    <div className="flex items-center justify-end gap-2.5">
-                      {item.resultBlob && !globalProcessing && (
-                        <button
-                          onClick={() => handleDownloadSingle(item)}
-                          className="p-2 text-[#a855f7] hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
-                          title={t('conv.download')}
-                        >
-                          <Download className="size-4" />
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleRemoveImage(item.id)}
-                        disabled={globalProcessing}
-                        className="p-2 text-muted-foreground/80 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                        title={locale === 'es' ? 'Eliminar de la lista' : 'Remove from list'}
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
+                        {/* Formato Original (Desktop) */}
+                        <span className="hidden md:inline text-xs font-mono text-muted-foreground">
+                          {getSourceFormat(item.file)}
+                        </span>
+
+                        {/* Formato de Destino */}
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground/60 md:hidden">
+                            {t('conv.targetFormat')}
+                          </span>
+                          <select
+                            value={item.targetFormat}
+                            disabled={globalProcessing}
+                            onChange={(e) => updateImageOption(item.id, { targetFormat: e.target.value as any })}
+                            className="h-8 border border-border bg-white rounded-lg text-xs font-semibold text-primary px-2 outline-none focus:border-[#a855f7] cursor-pointer"
+                          >
+                            <option value="webp">WEBP</option>
+                            <option value="png">PNG</option>
+                            <option value="jpg">JPG</option>
+                            <option value="gif">GIF</option>
+                            <option value="avif">AVIF</option>
+                            <option value="tiff">TIFF</option>
+                            <option value="bmp">BMP</option>
+                            <option value="ico">ICO</option>
+                            <option value="pdf">PDF</option>
+                          </select>
+                        </div>
+
+                        {/* Color de fondo si es JPG */}
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground/60 md:hidden">
+                            {t('conv.bgColor')}
+                          </span>
+                          {showBgColor ? (
+                            <select
+                              value={item.bgColor}
+                              disabled={globalProcessing}
+                              onChange={(e) => updateImageOption(item.id, { bgColor: e.target.value as any })}
+                              className="h-8 border border-border bg-white rounded-lg text-xs font-semibold text-primary px-2 outline-none focus:border-[#a855f7] cursor-pointer"
+                            >
+                              <option value="white">{t('conv.white')}</option>
+                              <option value="black">{t('conv.black')}</option>
+                            </select>
+                          ) : (
+                            <span className="text-xs text-muted-foreground/50 italic">-</span>
+                          )}
+                        </div>
+
+                        {/* Estado / Tamaño Resultante */}
+                        <div className="flex items-center gap-2">
+                          {item.isProcessing ? (
+                            <span className="text-xs text-primary font-semibold flex items-center gap-1">
+                              <RefreshCw className="size-3 animate-spin" />
+                              <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.converting')}</span>
+                            </span>
+                          ) : item.isProcessed ? (
+                            <div className="flex flex-col gap-0.5">
+                              <span className="text-xs text-green-600 font-semibold flex items-center gap-1">
+                                <CheckCircle2 className="size-3 shrink-0" />
+                                <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.statusSuccess')}</span>
+                              </span>
+                              <span className="text-[10px] font-mono text-muted-foreground leading-none">
+                                {formatSize(item.resultSize)}
+                              </span>
+                            </div>
+                          ) : item.error ? (
+                            <div className="flex flex-col gap-1">
+                              <span className="text-xs text-red-500 font-semibold flex items-center gap-1" title={item.error}>
+                                <AlertTriangle className="size-3 shrink-0" />
+                                <span className="text-[10px] uppercase font-mono tracking-wider">{t('conv.statusError')}</span>
+                              </span>
+                              <button
+                                onClick={() => handleRetry(item.id)}
+                                disabled={globalProcessing || vipsState !== 'loaded'}
+                                className="text-[10px] font-semibold text-[#a855f7] hover:text-purple-700 flex items-center gap-1 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                              >
+                                <RefreshCw className="size-3" />
+                                <span className="uppercase font-mono tracking-wider">
+                                  {locale === 'es' ? 'Reintentar' : 'Retry'}
+                                </span>
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground/60">{t('conv.statusPending')}</span>
+                          )}
+                        </div>
+
+                        {/* Acciones */}
+                        <div className="flex items-center justify-end gap-2.5">
+                          {item.resultBlob && !globalProcessing && (
+                            <button
+                              onClick={() => handleDownloadSingle(item)}
+                              className="p-2 text-[#a855f7] hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                              title={t('conv.download')}
+                            >
+                              <Download className="size-4" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleRemoveImage(item.id)}
+                            disabled={globalProcessing}
+                            className="p-2 text-muted-foreground/80 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            title={locale === 'es' ? 'Eliminar de la lista' : 'Remove from list'}
+                          >
+                            <Trash2 className="size-4" />
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 );
               })}

@@ -11,13 +11,23 @@ export interface ValidationResult {
 }
 
 export const validateImageFile = (file: File): ValidationResult => {
+  const allowedExtensions = [
+    '.jpg', '.jpeg', '.png', '.webp', '.gif',
+    '.svg', '.heic', '.heif', '.tiff', '.tif', '.bmp'
+  ];
+  const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
   // Validación de tipo (OWASP: evitar scripts u otros binarios maliciosos)
-  if (!file.type.startsWith('image/')) {
+  const isImageMime = file.type.startsWith('image/');
+  const isAllowedExt = allowedExtensions.includes(ext);
+
+  if (!isImageMime && !isAllowedExt) {
     return {
       isValid: false,
-      error: 'El archivo seleccionado no es una imagen válida. Usa formatos como JPG, PNG o WebP.',
+      error: 'El archivo seleccionado no es un formato de imagen soportado. Usa JPG, PNG, WebP, GIF, SVG, HEIC o TIFF.',
     };
   }
+
 
   // Validación de peso para no sobrecargar el navegador de usuarios
   if (file.size > MAX_FILE_SIZE) {

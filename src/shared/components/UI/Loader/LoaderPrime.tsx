@@ -2,11 +2,12 @@ import React from 'react';
 
 interface LoaderPrimeProps {
   message?: string;
+  compact?: boolean;
 }
 
-export const LoaderPrime: React.FC<LoaderPrimeProps> = ({ message }) => {
+export const LoaderPrime: React.FC<LoaderPrimeProps> = ({ message, compact }) => {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-8">
+    <div className={`flex flex-col items-center justify-center ${compact ? 'gap-1.5 py-1' : 'gap-4 py-8'}`}>
       <style>{`
         .loader-prime-wrapper {
           position: relative;

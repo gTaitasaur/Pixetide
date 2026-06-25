@@ -414,8 +414,19 @@ self.onmessage = async (e: MessageEvent) => {
         }
       } else if (isGifDest && !isGifSrc) {
         // Conversión de formato estático → GIF
-        // Aseguramos que la imagen esté en 3 bandas RGB (sin alfa) antes de codificar
+        // GIF encoding (cgif) consume mucha memoria y puede causar OOM en WASM
+        // Limitamos a ~3 megapíxeles para conversiones estáticas a GIF
+        const megapixels = (image.width * image.height) / 1_000_000;
         let gifImage = image;
+        if (megapixels > 3) {
+          const scale = Math.sqrt(3 / megapixels);
+          const resized = gifImage.resize(scale);
+          gifImage = resized;
+          image.delete(); // limpiamos la original
+          image = gifImage;
+        }
+
+        // Aseguramos que no tenga alfa (aplanamos con el fondo)
         if (gifImage.hasAlpha()) {
           const bgPixel = bgColor === 'black' ? [0, 0, 0] : [255, 255, 255];
           const flattened = gifImage.flatten({ background: bgPixel });
@@ -423,7 +434,28 @@ self.onmessage = async (e: MessageEvent) => {
           gifImage = flattened;
           image = gifImage;
         }
-        outBuffer = gifImage.writeToBuffer('.gif') as Uint8Array;
+
+        try {
+          outBuffer = gifImage.writeToBuffer('.gif') as Uint8Array;
+        } catch (gifErr) {
+          console.warn('GIF encode failed, attempting fallback (uchar/srgb):', gifErr);
+          let safeGif = gifImage;
+          if (safeGif.format !== 'uchar') {
+            const casted = safeGif.cast('uchar');
+            safeGif = casted;
+          }
+          if (safeGif.interpretation !== 'srgb' && safeGif.interpretation !== 'b-w') {
+            const converted = safeGif.colourspace('srgb');
+            if (safeGif !== gifImage) safeGif.delete();
+            safeGif = converted;
+          }
+          
+          outBuffer = safeGif.writeToBuffer('.gif') as Uint8Array;
+          
+          if (safeGif !== gifImage) {
+            safeGif.delete();
+          }
+        }
       } else {
         outBuffer = image.writeToBuffer(extension) as Uint8Array;
       }

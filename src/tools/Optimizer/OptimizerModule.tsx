@@ -376,8 +376,9 @@ export const OptimizerModule: React.FC = () => {
         const baseName = originalName.substring(0, originalName.lastIndexOf('.'));
         const ext = item.webpFormat ? '.webp' : originalName.substring(originalName.lastIndexOf('.'));
         
+        const prefix = locale === 'es' ? 'Pixetide_Comprimir_' : 'Pixetide_Compress_';
         a.href = url;
-        a.download = `Optimizada_Pixetide_${baseName}${ext}`;
+        a.download = `${prefix}${baseName}${ext}`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -396,7 +397,8 @@ export const OptimizerModule: React.FC = () => {
             const originalName = item.file.name;
             const baseName = originalName.substring(0, originalName.lastIndexOf('.'));
             const ext = item.webpFormat ? '.webp' : originalName.substring(originalName.lastIndexOf('.'));
-            zip.file(`Optimizada_Pixetide_${baseName}${ext}`, item.optimizedBlob);
+            const prefix = locale === 'es' ? 'Pixetide_Comprimir_' : 'Pixetide_Compress_';
+            zip.file(`${prefix}${baseName}${ext}`, item.optimizedBlob);
           }
         }
         
@@ -404,7 +406,7 @@ export const OptimizerModule: React.FC = () => {
         const url = URL.createObjectURL(content);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Pixetide_Imagenes_Optimizadas.zip';
+        a.download = locale === 'es' ? 'Pixetide_Imagenes_Comprimidas.zip' : 'Pixetide_Compressed_Images.zip';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

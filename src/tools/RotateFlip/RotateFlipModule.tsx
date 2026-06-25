@@ -357,7 +357,8 @@ export const RotateFlipModule: React.FC = () => {
         const url = URL.createObjectURL(blob);
         
         const a = document.createElement('a');
-        const fileName = `Girar_Pixetide_com_${item.file.name}`;
+        const prefix = locale === 'es' ? 'Pixetide_Girar_' : 'Pixetide_Rotate_';
+        const fileName = `${prefix}${item.file.name}`;
         
         a.href = url;
         a.download = fileName;
@@ -380,7 +381,8 @@ export const RotateFlipModule: React.FC = () => {
           const item = images[i];
           try {
             const blob = await processImageWithWorker(item);
-            const fileName = `Girar_Pixetide_com_${item.file.name}`;
+            const prefix = locale === 'es' ? 'Pixetide_Girar_' : 'Pixetide_Rotate_';
+            const fileName = `${prefix}${item.file.name}`;
             zip.file(fileName, blob);
           } catch (itemErr) {
             const error = (itemErr instanceof Error ? itemErr : new Error(String(itemErr))) as Error & { code?: string; itemId?: string };
@@ -392,8 +394,7 @@ export const RotateFlipModule: React.FC = () => {
         const zipContent = await zip.generateAsync({ type: 'blob' });
         const url = URL.createObjectURL(zipContent);
         
-        const firstBaseName = images[0].file.name.substring(0, images[0].file.name.lastIndexOf('.')) || 'imagenes';
-        const zipName = `Girar_Pixetide_com_${firstBaseName}.zip`;
+        const zipName = locale === 'es' ? 'Pixetide_Imagenes_Giradas.zip' : 'Pixetide_Rotated_Images.zip';
         
         const a = document.createElement('a');
         a.href = url;

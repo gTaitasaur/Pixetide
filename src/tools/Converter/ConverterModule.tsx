@@ -719,8 +719,9 @@ export const ConverterModule: React.FC = () => {
   const handleDownloadSingle = (item: ConverterImageItem) => {
     if (!item.resultBlob) return;
     const extension = item.targetFormat;
-    const baseName = item.file.name.substring(0, item.file.name.lastIndexOf('.')) || item.file.name;
-    const fileName = `Convertido_Pixetide_com_${baseName}.${extension}`;
+    const baseName = (item.originalName || item.file.name).substring(0, (item.originalName || item.file.name).lastIndexOf('.')) || (item.originalName || item.file.name);
+    const prefix = locale === 'es' ? 'Pixetide_Convertir_' : 'Pixetide_Convert_';
+    const fileName = `${prefix}${baseName}.${extension}`;
 
     const url = URL.createObjectURL(item.resultBlob);
     const a = document.createElement('a');
@@ -748,8 +749,9 @@ export const ConverterModule: React.FC = () => {
       const zip = new JSZip();
       processedImages.forEach(img => {
         const ext = img.targetFormat;
-        const baseName = img.file.name.substring(0, img.file.name.lastIndexOf('.')) || img.file.name;
-        const fileName = `Convertido_Pixetide_com_${baseName}.${ext}`;
+        const baseName = (img.originalName || img.file.name).substring(0, (img.originalName || img.file.name).lastIndexOf('.')) || (img.originalName || img.file.name);
+        const prefix = locale === 'es' ? 'Pixetide_Convertir_' : 'Pixetide_Convert_';
+        const fileName = `${prefix}${baseName}.${ext}`;
         zip.file(fileName, img.resultBlob!);
       });
 
@@ -757,8 +759,7 @@ export const ConverterModule: React.FC = () => {
         const zipContent = await zip.generateAsync({ type: 'blob' });
         const url = URL.createObjectURL(zipContent);
         
-        const firstBaseName = images[0].file.name.substring(0, images[0].file.name.lastIndexOf('.')) || 'imagenes';
-        const zipName = `Convertido_Pixetide_com_${firstBaseName}.zip`;
+        const zipName = locale === 'es' ? 'Pixetide_Imagenes_Convertidas.zip' : 'Pixetide_Converted_Images.zip';
         
         const a = document.createElement('a');
         a.href = url;

@@ -1101,7 +1101,7 @@ export const ConverterModule: React.FC = () => {
                 
                 {/* Formats Badges */}
                 <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-                  {['PNG', 'JPG', 'WEBP', 'GIF', 'SVG', 'HEIC', 'BMP', 'TIFF'].map((fmt) => (
+                  {['PNG', 'JPG', 'WEBP', 'GIF', 'SVG', 'HEIC', 'HEIF', 'BMP', 'TIFF'].map((fmt) => (
                     <span 
                       key={fmt} 
                       className="px-2 py-0.5 rounded-md text-[10px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200/60"

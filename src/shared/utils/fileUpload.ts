@@ -24,7 +24,7 @@ export const validateImageFile = (file: File): ValidationResult => {
   if (!isImageMime && !isAllowedExt) {
     return {
       isValid: false,
-      error: 'El archivo seleccionado no es un formato de imagen soportado. Usa JPG, PNG, WebP, GIF, SVG, HEIC o TIFF.',
+      error: 'El archivo seleccionado no es un formato de imagen soportado. Usa JPG, PNG, WebP, GIF, SVG, HEIC, HEIF o BMP.',
     };
   }
 

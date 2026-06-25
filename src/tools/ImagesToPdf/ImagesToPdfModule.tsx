@@ -193,6 +193,19 @@ export const ImagesToPdfModule: React.FC = () => {
     }> = [];
 
     Array.from(files).forEach((file) => {
+      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      
+      // Limitar el uso de TIFF en Imágenes a PDF
+      if (ext === '.tiff' || ext === '.tif' || file.type === 'image/tiff') {
+        showToast(
+          locale === 'es'
+            ? `El archivo ${file.name} no se pudo cargar: El formato TIFF no está soportado en la herramienta de PDF.`
+            : `File ${file.name} could not be loaded: TIFF format is not supported in the PDF tool.`,
+          'error'
+        );
+        return;
+      }
+
       const validation = validateImageFile(file);
       if (!validation.isValid) {
         showToast(
@@ -205,7 +218,6 @@ export const ImagesToPdfModule: React.FC = () => {
       }
 
       const id = Math.random().toString(36).substring(2, 9) + Date.now().toString(36);
-      const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
       const isSvg = ext === '.svg';
       const isHeic = ext === '.heic' || ext === '.heif';
       const isBmp = ext === '.bmp';
@@ -434,6 +446,9 @@ export const ImagesToPdfModule: React.FC = () => {
     canvas.height = img.naturalHeight;
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      // Rellenamos el fondo con blanco para evitar que las transparencias se vuelvan negras en JPEG
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(img, 0, 0);
       return canvas.toDataURL('image/jpeg', q);
     }
@@ -536,9 +551,22 @@ export const ImagesToPdfModule: React.FC = () => {
           pdf.addPage([pageWidth, pageHeight], finalOrientation);
         }
 
-        // 5. Aplicar compresión asíncrona si es necesario
+        // 5. Aplicar compresión o aplanamiento de fondo blanco si la imagen soporta transparencia
         let imageSrc = imgData.dataUrl;
-        if (quality < 1.0) {
+        const name = item.file.name.toLowerCase();
+        const dotIndex = name.lastIndexOf('.');
+        const ext = dotIndex !== -1 ? name.substring(dotIndex) : '';
+        const isTransparentCapable = 
+          ext === '.png' || 
+          ext === '.webp' || 
+          ext === '.gif' || 
+          ext === '.svg' ||
+          item.file.type === 'image/png' ||
+          item.file.type === 'image/webp' ||
+          item.file.type === 'image/gif' ||
+          item.file.type === 'image/svg+xml';
+
+        if (quality < 1.0 || isTransparentCapable) {
           imageSrc = compressImageToJpeg(imgData.imgElement, quality);
         }
 
@@ -720,7 +748,7 @@ export const ImagesToPdfModule: React.FC = () => {
         onChange={handleFileInputChange}
         className="hidden"
         multiple
-        accept="image/png, image/jpeg, image/webp, image/gif, image/tiff, image/bmp, image/svg+xml, .heic, .heif"
+        accept="image/png, image/jpeg, image/webp, image/gif, image/bmp, image/svg+xml, .heic, .heif"
       />
 
       {/* ─── COLUMNA IZQUIERDA: GALERÍA Y STORYBOARD ─── */}
@@ -805,7 +833,7 @@ export const ImagesToPdfModule: React.FC = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-                  {['PNG', 'JPG', 'WEBP', 'GIF', 'SVG', 'HEIC', 'BMP'].map((fmt) => (
+                  {['PNG', 'JPG', 'WEBP', 'GIF', 'SVG', 'HEIC', 'HEIF', 'BMP'].map((fmt) => (
                     <span
                       key={fmt}
                       className="px-2 py-0.5 rounded-md text-[10px] font-bold font-mono bg-slate-100 text-slate-600 border border-slate-200/60"

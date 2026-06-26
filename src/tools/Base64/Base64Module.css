@@ -1,191 +1,97 @@
 /* ==========================================================================
-   BASE64 MODULE - Estética Pixetide Ligera (Senior UI) (Encapsulado)
+   BASE64 MODULE - Estilos Premium Pixetide (Encapsulados)
    ========================================================================== */
 
-@keyframes b64-pop-in {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+/* Fondo cuadriculado suave (checkerboard) para transparencias */
+.dropzone-grid {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%), 
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
 }
 
-.b64-main-layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: var(--spacing-xl);
-  align-items: start;
-  min-width: 0;
-  width: 100%;
+/* Decoraciones de esquina de visor fotográfico */
+.corner-decorator {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: #cbd5e1;
+  pointer-events: none;
+  transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  /* ── Workspace (Lado Izquierdo) ── */
-  & .b64-workspace {
-    width: 100%;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
+.corner-tl {
+  top: 16px;
+  left: 16px;
+  border-top-width: 2px;
+  border-left-width: 2px;
+  border-top-left-radius: 4px;
+}
+
+.corner-tr {
+  top: 16px;
+  right: 16px;
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-top-right-radius: 4px;
+}
+
+.corner-bl {
+  bottom: 16px;
+  left: 16px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-left-radius: 4px;
+}
+
+.corner-br {
+  bottom: 16px;
+  right: 16px;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+  border-bottom-right-radius: 4px;
+}
+
+/* Hover en dropzone ilumina las esquinas con el color morado de Pixetide */
+.group:hover .corner-decorator {
+  border-color: #a855f7;
+}
+
+/* Animaciones */
+@keyframes b64-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
-
-  & .b64-preview-card {
-    width: 100%;
-    background-color: transparent;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  & .b64-output-area {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  & .b64-textarea {
-    width: 100%;
-    min-height: 250px;
-    padding: var(--spacing-md);
-    border: 2px solid var(--color-text-primary);
-    border-radius: 12px;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    line-height: 1.5;
-    resize: vertical;
-    color: var(--color-text-primary);
-    background-color: #fefefe;
-    box-sizing: border-box;
-    word-break: break-all;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.05);
-
-    &:focus {
-      outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 4px 4px 0px rgba(0,0,0,0.05);
-    }
-  }
-
-  & .b64-decode-label {
-    font-family: var(--font-sans);
-    font-size: 1.4rem;
-    color: var(--color-text-primary);
-    font-weight: bold;
-  }
-
-  & .b64-decode-error {
-    padding: 12px 16px;
-    background-color: #fef2f2;
-    border: 2px solid #fecaca;
-    border-radius: 12px;
-    font-family: var(--font-sans);
-    font-size: 0.95rem;
-    color: #dc2626;
-    font-weight: 500;
-  }
-
-  /* ── Sidebar (Lado Derecho) ── */
-  & .b64-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    background-color: #fefefe;
-    padding: var(--spacing-lg);
-    border: 2px solid var(--color-text-primary);
-    border-radius: 20px;
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.05);
-  }
-
-  & .b64-tabs {
-    display: flex;
-    background-color: #f5f5f7;
-    border-radius: 12px;
-    padding: 4px;
-    border: 1px solid #e5e5e5;
-  }
-
-  & .b64-tab {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    font-family: var(--font-sans);
-    font-size: 1.1rem;
-    color: var(--color-text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      color: var(--color-text-primary);
-    }
-
-    &.active {
-      background-color: white;
-      color: var(--secondary);
-      font-weight: bold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-  }
-
-  & .b64-file-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-bottom: var(--spacing-sm);
-    border-bottom: 1px dashed #e5e5e5;
-  }
-
-  & .b64-filename {
-    font-family: var(--font-sans);
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--color-text-primary);
-    word-break: break-all;
-    line-height: 1.2;
-  }
-
-  & .b64-filesize {
-    font-family: var(--font-sans);
-    font-size: 0.9rem;
-    color: var(--color-text-secondary);
-    display: flex;
-    justify-content: space-between;
-  }
-
-  & .b64-controls-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-  }
-
-  & .b64-copied-toast {
-    text-align: center;
-    font-family: var(--font-sans);
-    font-size: 1.15rem;
-    color: #16a34a;
-    padding: 8px;
-    background-color: #f0fdf4;
-    border: 2px solid #bbf7d0;
-    border-radius: 8px;
-    animation: b64-pop-in 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    margin-top: 8px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* ── Responsividad ── */
-@media (max-width: 1024px) {
-  .b64-main-layout {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
-  }
-  
-  .b64-main-layout .b64-sidebar {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-  }
+.animate-fade-in {
+  animation: b64-fade-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbar para los textareas */
+textarea::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+textarea::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

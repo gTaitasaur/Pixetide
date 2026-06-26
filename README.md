@@ -10,8 +10,10 @@
 [![Licencia](https://img.shields.io/badge/Licencia-MIT-gray?style=for-the-badge)](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/README.md)
 
 <p align="center">
-  A diferencia de los servicios convencionales que cargan tus archivos en servidores externos, <b>Pixetide procesa todas las imágenes en el entorno del navegador</b>. Tus archivos nunca salen de tu dispositivo y el consumo de red en transferencias pesadas es nulo.
+  A diferencia de los servicios convencionales que cargan tus archivos en servidores externos, <b>Pixetide procesa todas las imágenes en el entorno del navegador</b>. Los archivos nunca salen de tu dispositivo y el consumo de red en transferencias pesadas es nulo.
 </p>
+
+[![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/pixetide?utm_source=badge&utm_medium=embed)
 
 ---
 
@@ -110,12 +112,6 @@ Asegúrate de contar con [Node.js](https://nodejs.org/) y el gestor de paquetes 
    ```bash
    pnpm run dev
    ```
-
-3. **Construcción de producción (SSR/SSG Híbrido):**
-   ```bash
-   pnpm run build
-   ```
-   *El bundle optimizado se generará dentro de la carpeta `dist/`.*
 
 ---
 

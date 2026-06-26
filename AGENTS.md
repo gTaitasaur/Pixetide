@@ -104,12 +104,16 @@ Al procesar GIFs con `wasm-vips`, libvips carga las páginas en formato "toilet 
 *   **Aislamiento:** Cada imagen de la galería mantiene sus propios parámetros. Evitar actualizaciones en tiempo real del estado de la galería global en parámetros de alta frecuencia (como zoom o paneo) para no causar lag; persistirlos sólo al cambiar la imagen activa (`activeIndex`).
 *   **Descargas:** Si hay una sola imagen, descargar directamente. Si hay múltiples, generar un archivo `.zip` utilizando `jszip`. Usar la nomenclatura: `"DESCARGAR"` (para una imagen) y `"DESCARGAR (.zip)"` (para múltiples).
 
+### 5.5 Nombres de Archivo al Descargar
+*   **Nomenclatura Estándar:** Todos los archivos individuales descargados deben seguir el formato `[Prefijo_Herramienta]_[NombreOriginal].[Extensión]` (ej: `Pixetide_Comprimir_foto.webp`).
+*   **Localización:** El prefijo se debe adaptar de acuerdo al idioma del usuario (ej: `Pixetide_Girar_` en español, `Pixetide_Rotate_` en inglés).
+
 ---
 
 ## 6. Routing, SEO e i18n
 *   **Enrutado Híbrido:** `AppRoutes.tsx` define dos esquemas de layouts:
-    1.  `MainLayout` (Navbar y Footer globales): Usado en Home, Marca de agua, Paleta de colores, Base64 y Quitar fondo.
-    2.  `ToolsDashboard` (Sidebar colapsable para desktop y mobile-friendly): Usado para las herramientas de edición recurrente (Girar, Recortar, Comprimir, Convertir).
+    1.  `MainLayout` (Navbar y Footer globales): Usado en Home, Marca de agua, Paleta de colores y Quitar fondo.
+    2.  `ToolsDashboard` (Sidebar colapsable para desktop y mobile-friendly): Usado para las herramientas de edición y utilidades recurrentes (Girar, Recortar, Comprimir, Convertir, Imágenes a PDF, Convertidor Base64).
 *   **SEO Centralizado:** Toda la metadata SEO está en `core/seo/seoConfig.ts`. `SeoHead.tsx` inyecta las etiquetas dinámicamente. El script `scripts/prerender.ts` genera HTML estático por ruta para indexación rápida.
 *   **i18n Local:** Las traducciones en EN/ES viven en `core/i18n/translations.ts`. Consumir mediante el hook `useLocale()`, el cual expone `locale`, `t(key)`, `pathPrefix` y `setLocale()`.
 

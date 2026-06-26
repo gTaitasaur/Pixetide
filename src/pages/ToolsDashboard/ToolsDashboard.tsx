@@ -241,7 +241,7 @@ export const ToolsDashboard: React.FC = () => {
           {/* Botón de donación Ko-fi */}
           {!isCollapsed ? (
             <a
-              href="https://ko-fi.com/pixetide"
+              href="https://ko-fi.com/taitasaur"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center py-2 px-4 btn-support-kofi text-[10px] w-full"
@@ -277,7 +277,7 @@ export const ToolsDashboard: React.FC = () => {
             </a>
           ) : (
             <a
-              href="https://ko-fi.com/pixetide"
+              href="https://ko-fi.com/taitasaur"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center p-2 rounded-full border-2 border-black bg-[#ff5e5b] text-white hover:-translate-y-0.5 transition-transform size-9 mx-auto cursor-pointer"
@@ -424,7 +424,7 @@ export const ToolsDashboard: React.FC = () => {
 
                     {/* Botón de donación Ko-fi móvil */}
                     <a
-                      href="https://ko-fi.com/pixetide"
+                      href="https://ko-fi.com/taitasaur"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center py-3 px-5 btn-support-kofi text-xs w-full"

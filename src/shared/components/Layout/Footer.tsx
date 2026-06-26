@@ -83,10 +83,11 @@ export const Footer: React.FC = () => {
 
               {/* Twitter / X */}
               <a
-                href="#"
+                href="https://x.com/Taitasaur"
+                target="_blank"
+                rel="noopener noreferrer"
                 title="Twitter / X"
-                onClick={(e) => e.preventDefault()}
-                className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-primary hover:bg-neutral-50 transition-colors cursor-not-allowed"
+                className="w-10 h-10 rounded-full border border-gray-100 flex items-center justify-center text-primary hover:bg-neutral-50 transition-colors"
               >
                 <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -95,7 +96,7 @@ export const Footer: React.FC = () => {
 
               {/* Ko-fi */}
               <a
-                href="https://ko-fi.com/pixetide"
+                href="https://ko-fi.com/taitasaur"
                 target="_blank"
                 rel="noopener noreferrer"
                 title={t('nav.support')}
@@ -185,14 +186,15 @@ export const Footer: React.FC = () => {
                   GitHub
                 </a>
                 <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-sm text-muted-foreground/50 hover:text-primary/60 transition-colors cursor-not-allowed"
+                  href="https://x.com/Taitasaur"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium"
                 >
                   Twitter / X
                 </a>
                 <a
-                  href="https://ko-fi.com/pixetide"
+                  href="https://ko-fi.com/taitasaur"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium"

@@ -117,7 +117,7 @@ export const Navbar: React.FC = () => {
 
           {/* Botón de Apoyo (CTA) - Estilo Ko-fi Neobrutalista Pulsante */}
           <a
-            href="https://ko-fi.com/pixetide"
+            href="https://ko-fi.com/taitasaur"
             target="_blank"
             rel="noopener noreferrer"
             className="hidden md:inline-flex items-center px-5 py-2.5 btn-support-kofi text-[10px]"
@@ -227,7 +227,7 @@ export const Navbar: React.FC = () => {
                   </span>
                   <SheetClose asChild>
                     <a
-                      href="https://ko-fi.com/pixetide"
+                      href="https://ko-fi.com/taitasaur"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center py-3 btn-support-kofi text-xs text-center"

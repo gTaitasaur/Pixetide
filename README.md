@@ -17,7 +17,7 @@
 
 </div>
 
-## Pilares del Proyecto
+## 📌 Pilares del Proyecto
 
 Pixetide está diseñado bajo las siguientes directrices funcionales:
 
@@ -40,7 +40,7 @@ Pixetide está diseñado bajo las siguientes directrices funcionales:
 
 ---
 
-## Comparativa de Flujo de Datos
+## 🔄 Comparativa de Flujo de Datos
 
 El diseño arquitectónico de Pixetide elimina la necesidad de transferir datos por la red para editar archivos:
 
@@ -65,7 +65,7 @@ El diseño arquitectónico de Pixetide elimina la necesidad de transferir datos 
 
 ---
 
-## Herramientas Disponibles
+## 🛠️ Herramientas Disponibles
 
 La suite está estructurada de forma modular, permitiendo mantener cada herramienta aislada en su propio subdirectorio:
 
@@ -84,7 +84,7 @@ La suite está estructurada de forma modular, permitiendo mantener cada herramie
 
 ---
 
-## Arquitectura Técnica
+## ⚙️ Arquitectura Técnica
 
 Para ejecutar tareas de edición avanzadas en el lado del cliente con un consumo eficiente de recursos, la aplicación implementa las siguientes tecnologías:
 
@@ -119,5 +119,5 @@ Asegúrate de contar con [Node.js](https://nodejs.org/) y el gestor de paquetes 
 
 ---
 
-## Licencia
+## 📄 Licencia
 Este proyecto está bajo la Licencia MIT.

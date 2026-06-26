@@ -1,110 +1,122 @@
-# Pixetide
+<div align="center">
 
-![Privacidad](https://img.shields.io/badge/Privacidad-100%25_Local-emerald?style=flat-square)
-![Stack](https://img.shields.io/badge/Stack-React_%7C_Vite_%7C_Tailwind_v4-gray?style=flat-square)
-![Procesamiento](https://img.shields.io/badge/Procesamiento-wasm--vips-orange?style=flat-square)
-![Licencia](https://img.shields.io/badge/Licencia-MIT-blue?style=flat-square)
+# 🌊 Pixetide
 
-Pixetide es una suite web de herramientas de edición de imágenes de código abierto, gratuita y orientada prioritariamente a la privacidad de tus datos. 
+**Una suite web de herramientas de imágenes 100% privada, rápida y local.**
 
-A diferencia de la mayoría de servicios en línea que te piden subir fotos a sus servidores (con el consiguiente consumo de ancho de banda y el riesgo implícito sobre tus datos personales), **en Pixetide todo el procesamiento ocurre 100% en tu navegador**. Tus imágenes nunca salen de tu dispositivo.
+[![Privacidad](https://img.shields.io/badge/Privacidad-100%25_Local-emerald?style=for-the-badge)](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg)
+[![Stack](https://img.shields.io/badge/Stack-React_%7C_Vite_%7C_Tailwind_v4-blue?style=for-the-badge)](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg)
+[![Procesamiento](https://img.shields.io/badge/Procesamiento-wasm--vips-orange?style=for-the-badge)](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg)
+[![Licencia](https://img.shields.io/badge/Licencia-MIT-gray?style=for-the-badge)](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/README.md)
+
+<p align="center">
+  A diferencia de los servicios online convencionales que suben tus archivos a la nube, <b>Pixetide procesa todo localmente en tu dispositivo</b>. Tus fotos nunca tocan un servidor externo ni consumen tu ancho de banda en transferencias pesadas.
+</p>
 
 ---
 
-## El Enfoque: Privacidad y Procesamiento Local
+</div>
 
-El propósito fundamental de Pixetide es demostrar que la edición de imágenes potente no requiere sacrificar tu privacidad ni depender de infraestructura en la nube. 
+## ✨ Pilares del Proyecto
 
-### Comparativa de Flujo de Datos
+Para ofrecer una alternativa real a los editores tradicionales, Pixetide se fundamenta en tres pilares clave:
 
+<table width="100%">
+  <tr>
+    <td width="33.3%" align="center" valign="top">
+      <h3>🔒 Privacidad Real</h3>
+      <p>Cumplimiento estricto de privacidad local. El procesamiento ocurre en sandbox cliente; no hay bases de datos, perfiles ni almacenamiento de imágenes externo.</p>
+    </td>
+    <td width="33.3%" align="center" valign="top">
+      <h3>⚡ Rendimiento Nativo</h3>
+      <p>Aprovechamos el hardware de tu dispositivo usando hilos paralelos y código binario optimizado para procesar imágenes pesadas al instante.</p>
+    </td>
+    <td width="33.3%" align="center" valign="top">
+      <h3>🌐 Cero Rastreo</h3>
+      <p>Sin cookies invasivas, sin CDNs externos y sin scripts de terceros. Todo el código es auditable, transparente y se sirve de forma autónoma.</p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🔄 Comparativa de Flujo de Datos
+
+El diseño arquitectónico de Pixetide reescribe el procesamiento de imágenes web convencional para eliminar el viaje de tus datos por internet:
+
+### Enfoque Convencional (En la nube)
 ```text
-  TRADICIONAL (En la nube)
-  ┌────────────┐      Subida (Red)      ┌──────────────────────┐      Procesado/Almacén
-  │ Tu Imagen  │ ─────────────────────► │ Servidores Externos  │ ────────────────────────┐
-  └────────────┘                        └──────────────────────┘                         │
-                                                                                         ▼
-  ┌────────────┐      Descarga (Red)    ┌──────────────────────┐      Imagen Editada     │
-  │ Tu Imagen  │ ◄───────────────────── │ Servidores Externos  │ ◄───────────────────────┘
-  └────────────┘                        └──────────────────────┘
-
-  PIXETIDE (100% Local)
-  ┌────────────┐     Procesamiento      ┌──────────────────────┐      Descarga Directa
-  │ Tu Imagen  │ ─────────────────────► │ Tu Navegador (Local) │ ────────────────────────┐
-  └────────────┘                        │  (WASM + Workers)    │                         │
-                                        └──────────────────────┘                         ▼
-                                                                                   [Imagen Lista]
-                                                                                   (Instantáneo)
+┌───────────┐      Subida (Red)      ┌─────────────┐      Procesado y Almacén
+│ Tu Imagen │ ─────────────────────► │  Servidor   │ ───────────────┐
+└───────────┘                        │  Externo    │                │ (Riesgo de privacidad)
+                                     └─────────────┘                ▼
+┌───────────┐      Descarga (Red)    ┌─────────────┐      Imagen Modificada
+│ Tu Imagen │ ◄───────────────────── │  Servidor   │ ◄──────────────┘ (Consumo de datos)
+└───────────┘                        └─────────────┘
 ```
 
-> [!IMPORTANT]
-> **Privacidad Técnica por Diseño**: No utilizamos CDNs ni dependencias de terceros en runtime. Todo el código, estilos, fuentes y binarios WebAssembly se sirven desde el propio dominio de Pixetide. No recopilamos tus imágenes ni rastreamos tus datos.
+### Enfoque Pixetide (100% Local)
+```text
+┌───────────┐      Carga Local       ┌─────────────┐      Descarga Directa
+│ Tu Imagen │ ─────────────────────► │ Navegador   │ ──────────────────► [ Imagen Final ]
+└───────────┘                        │ (WASM/GPU)  │                     (Al instante)
+                                     └─────────────┘
+```
 
 ---
 
-## Herramientas Disponibles
+## 🛠️ Herramientas Disponibles
 
-La suite está organizada de manera modular. Cada herramienta está completamente aislada de las demás para garantizar la mantenibilidad del código:
+La suite está construida de forma totalmente modular. Cada herramienta es independiente y autocontenida:
 
-| Herramienta | Descripción | Módulo de Código |
-| :--- | :--- | :--- |
-| **Comprimir** | Reduce el peso de JPG, PNG o WebP sin pérdida apreciable de calidad. | [`src/tools/Optimizer`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Optimizer) |
-| **Convertir** | Cambia el formato de tus archivos en lote (PNG, JPG, WebP, GIF, etc.). | [`src/tools/Converter`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Converter) |
-| **Recortar** | Ajusta las dimensiones y relaciones de aspecto de tus fotos de forma exacta. | [`src/tools/AspectRatio`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/AspectRatio) |
-| **Girar y Voltear** | Rota en ángulos libres o refleja tus fotos horizontal y verticalmente. | [`src/tools/RotateFlip`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/RotateFlip) |
-| **Quitar Fondo** | Elimina el fondo de retratos u objetos usando Inteligencia Artificial local. | [`src/tools/BackgroundRemover`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/BackgroundRemover) |
-| **Marca de Agua** | Añade firmas, logos o textos personalizados para proteger tus fotos en lote. | [`src/tools/Watermark`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Watermark) |
-| **Paleta de Colores** | Extrae los colores dominantes y sus códigos HEX de cualquier imagen. | [`src/tools/ColorPalette`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/ColorPalette) |
-| **Imágenes a PDF** | Une múltiples capturas o fotos en un único archivo PDF ordenable. | [`src/tools/ImagesToPdf`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/ImagesToPdf) |
-| **Base64** | Codifica imágenes a texto Base64 o decodifica cadenas de texto a imagen. | [`src/tools/Base64`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Base64) |
-
----
-
-## Detalles Técnicos y Arquitectura
-
-Para lograr un rendimiento similar al de una aplicación nativa de escritorio directamente en el navegador, Pixetide se apoya en tecnologías web modernas:
-
-### 1. WebAssembly (`wasm-vips`)
-La compresión, conversión y transformaciones complejas utilizan **libvips** compilada a WebAssembly. Libvips es una biblioteca de procesamiento de imágenes extremadamente rápida que requiere poca memoria. Al ejecutarla mediante WASM dentro del navegador, obtenemos velocidades de procesamiento profesionales sin servidores de por medio.
-
-### 2. Hilos de Fondo (Web Workers)
-Para evitar congelamientos en la interfaz de usuario al procesar imágenes de alta resolución, delegamos el procesamiento a Web Workers independientes. La interfaz permanece interactiva y fluida mientras la imagen se procesa en segundo plano.
-
-### 3. Inteligencia Artificial Client-Side
-La herramienta de remoción de fondos aprovecha `@imgly/background-removal`. Esto nos permite descargar y ejecutar modelos de segmentación de imágenes directamente en la GPU/CPU del usuario gracias a ONNX Runtime Web.
+| Herramienta | Icono | Propósito | Directorio de Código |
+| :--- | :---: | :--- | :--- |
+| **Comprimir** | 🗜️ | Reduce el peso de imágenes sin pérdida visual de calidad. | [`src/tools/Optimizer`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Optimizer) |
+| **Convertir** | 🔄 | Conversión masiva entre múltiples formatos de imagen. | [`src/tools/Converter`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Converter) |
+| **Recortar** | 📐 | Ajusta dimensiones con relaciones de aspecto exactas. | [`src/tools/AspectRatio`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/AspectRatio) |
+| **Girar y Voltear** | ↩️ | Rotaciones precisas y efecto espejo horizontal/vertical. | [`src/tools/RotateFlip`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/RotateFlip) |
+| **Quitar Fondo** | 🔮 | Segmentación inteligente de retratos u objetos con IA. | [`src/tools/BackgroundRemover`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/BackgroundRemover) |
+| **Marca de Agua** | 🏷️ | Protege imágenes con textos o firmas gráficas en lote. | [`src/tools/Watermark`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Watermark) |
+| **Paleta de Colores**| 🎨 | Extracción automática de colores y códigos hexadecimales. | [`src/tools/ColorPalette`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/ColorPalette) |
+| **Imágenes a PDF** | 📄 | Convierte y une múltiples capturas en un archivo PDF. | [`src/tools/ImagesToPdf`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/ImagesToPdf) |
+| **Base64** | 🔤 | Codificación y decodificación directa bidireccional. | [`src/tools/Base64`](file:///home/taitasaur/Documentos/AntigravityProjects/MarkWaterImg/src/tools/Base64) |
 
 ---
 
-## Cómo Ejecutar Localmente
+## ⚙️ Arquitectura Técnica
 
-### Requisitos Previos
-* [Node.js](https://nodejs.org/) (versión recomendada en el archivo `.nvmrc`)
-* [pnpm](https://pnpm.io/) instalado globalmente (`npm install -g pnpm`)
+Para competir con las herramientas tradicionales de escritorio desde el navegador, empleamos tecnologías avanzadas en el lado del cliente:
 
-### Instalación de Dependencias
-Clona el repositorio e instala los paquetes necesarios usando `pnpm` (no utilices `npm` o `yarn` para asegurar la consistencia del archivo de bloqueo):
+*   **WebAssembly (`wasm-vips`):** Compilamos **libvips** (una de las librerías nativas más eficientes de procesamiento de imagen) a WASM. Esto nos da un motor de procesamiento sumamente veloz con uso mínimo de memoria RAM.
+*   **Web Workers (Multihilo):** Desplazamos las operaciones pesadas fuera del hilo principal de la interfaz. De esta forma, la interfaz web nunca se congela ni se torna lenta, manteniendo una respuesta fluida mientras se procesan imágenes complejas en segundo plano.
+*   **IA Lenta/Rápida Client-side:** Para herramientas como el removedor de fondos, ejecutamos modelos de aprendizaje profundo locales usando ONNX Runtime Web optimizados para la CPU y GPU del propio usuario.
 
-```bash
-pnpm install
-```
+---
 
-### Servidor de Desarrollo
-Inicia el entorno de desarrollo local con recarga rápida (HMR):
+## 💻 Desarrollo y Ejecución Local
 
-```bash
-pnpm run dev
-```
+Si deseas ejecutar Pixetide en tu computadora o contribuir al proyecto:
 
-### Construcción para Producción
-Compila el proyecto, genera el sitemap, ejecuta TypeScript y realiza el prerenderizado estático (SSR/SSG híbrido):
+### Preparación del Entorno
+Asegúrate de contar con [Node.js](https://nodejs.org/) y el gestor de paquetes [pnpm](https://pnpm.io/) instalado globalmente.
 
-```bash
-pnpm run build
-```
+1. **Instalar dependencias:**
+   ```bash
+   pnpm install
+   ```
 
-El resultado listo para desplegar en cualquier servidor estático se guardará en la carpeta `dist/`.
+2. **Servidor de desarrollo (HMR local):**
+   ```bash
+   pnpm run dev
+   ```
+
+3. **Construcción de producción (SSR/SSG Híbrido):**
+   ```bash
+   pnpm run build
+   ```
+   *El bundle optimizado se generará dentro de la carpeta `dist/`.*
 
 ---
 
 ## Licencia
 Este proyecto está bajo la Licencia MIT.
-

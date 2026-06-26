@@ -3,7 +3,6 @@ node_modules
 .env
 MANDAMIENTOS.md
 
-
 # Producción (Carpeta que genera 'pnpm run build')
 dist/
 
@@ -37,3 +36,13 @@ pnpm-debug.log*
 public/screen.png
 public/prototype.html
 public/Prototype DESIGN.md
+
+# Archivos de configuración y guías de Agentes de Inteligencia Artificial (Privados)
+.agents/
+AGENTS.md
+MANDAMIENTOS.md
+
+# Configuraciones de IDEs (Privados)
+.vscode/
+.idea/
+.cursor/

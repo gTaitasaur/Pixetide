@@ -13,7 +13,6 @@
   A diferencia de los servicios convencionales que cargan tus archivos en servidores externos, <b>Pixetide procesa todas las imágenes en el entorno del navegador</b>. Los archivos nunca salen de tu dispositivo y el consumo de red en transferencias pesadas es nulo.
 </p>
 
-[![Launched on DevGlobe](https://devglobe.app/badges/launched-on-devglobe-dark.svg)](https://devglobe.app/projects/pixetide?utm_source=badge&utm_medium=embed)
 
 ---
 

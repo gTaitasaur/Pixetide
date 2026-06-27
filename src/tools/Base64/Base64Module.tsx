@@ -320,14 +320,18 @@ export const Base64Module: React.FC = () => {
                     handleImageSelected(url, file);
                   }
                 }}
-                className="flex-1 border border-border/80 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-center items-center bg-slate-50/40 cursor-pointer transition-colors"
+                className="flex-1 dropzone-grid border border-border/80 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-center items-center cursor-pointer transition-colors"
               >
                 <div className="corner-decorator corner-tl"></div>
                 <div className="corner-decorator corner-tr"></div>
                 <div className="corner-decorator corner-bl"></div>
                 <div className="corner-decorator corner-br"></div>
                 <div className="w-full h-full max-h-[40vh] flex items-center justify-center">
-                  <ImagePreviewCanvas imageUrl={previewUrl!} maxHeight="40vh" />
+                  <ImagePreviewCanvas 
+                    imageUrl={previewUrl!} 
+                    maxHeight="40vh" 
+                    className="!bg-transparent !bg-none !border-none !shadow-none"
+                  />
                 </div>
               </div>
             ) : (
@@ -449,7 +453,11 @@ export const Base64Module: React.FC = () => {
               
               {decodePreview ? (
                 <div className="w-full h-full max-h-[40vh] flex items-center justify-center">
-                  <ImagePreviewCanvas imageUrl={decodePreview} maxHeight="40vh" />
+                  <ImagePreviewCanvas 
+                    imageUrl={decodePreview} 
+                    maxHeight="40vh" 
+                    className="!bg-transparent !bg-none !border-none !shadow-none"
+                  />
                 </div>
               ) : (
                 <div className="flex flex-col items-center gap-4 max-w-xs z-10 bg-white/95 backdrop-blur-sm p-6 rounded-2xl border border-border/40 shadow-sm">

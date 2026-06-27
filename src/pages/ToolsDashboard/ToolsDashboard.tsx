@@ -204,13 +204,19 @@ export const ToolsDashboard: React.FC = () => {
                           </div>
                         );
                       }
+                      const isSubActive = pathname.replace(/\/$/, '') === sub.to.replace(/\/$/, '');
                       return (
                         <Link 
                           key={subIdx} 
                           to={sub.to} 
-                          className="flex items-center gap-2.5 px-3 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-slate-50"
+                          className={cn(
+                            "flex items-center gap-2.5 px-3 py-1.5 text-[11px] font-medium transition-colors rounded-md",
+                            isSubActive 
+                              ? "bg-slate-100 text-primary font-bold shadow-[0_1px_2px_rgba(0,0,0,0.02)]" 
+                              : "text-muted-foreground hover:text-primary hover:bg-slate-50"
+                          )}
                         >
-                          <SubIcon className="size-3.5 shrink-0" />
+                          <SubIcon className={cn("size-3.5 shrink-0", isSubActive ? "text-primary stroke-[2.2px]" : "text-muted-foreground")} />
                           <span className="truncate leading-tight">{sub.label}</span>
                         </Link>
                       );
@@ -388,14 +394,20 @@ export const ToolsDashboard: React.FC = () => {
                                       </div>
                                     );
                                   }
+                                  const isSubActive = pathname.replace(/\/$/, '') === sub.to.replace(/\/$/, '');
                                   return (
                                     <Link 
                                       key={subIdx} 
                                       to={sub.to} 
                                       onClick={() => setIsMobileOpen(false)}
-                                      className="flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-slate-50"
+                                      className={cn(
+                                        "flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors rounded-md",
+                                        isSubActive 
+                                          ? "bg-slate-100 text-primary font-bold shadow-[0_1px_2px_rgba(0,0,0,0.02)]" 
+                                          : "text-muted-foreground hover:text-primary hover:bg-slate-50"
+                                      )}
                                     >
-                                      <SubIcon className="size-3.5 shrink-0" />
+                                      <SubIcon className={cn("size-3.5 shrink-0", isSubActive ? "text-primary stroke-[2.2px]" : "text-muted-foreground")} />
                                       <span className="truncate leading-tight">{sub.label}</span>
                                     </Link>
                                   );

@@ -75,7 +75,6 @@ const LazyTool: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 const TOOL_ROUTES = [
   { en: 'tools/watermark-image/',    es: 'herramientas/marca-de-agua/',        element: <LazyTool><WatermarkTool /></LazyTool> },
   { en: 'tools/color-palette/',      es: 'herramientas/paleta-colores/',       element: <LazyTool><ColorPaletteTool /></LazyTool> },
-  { en: 'tools/remove-background/',  es: 'herramientas/quitar-fondo/',         element: <LazyTool><BackgroundRemoverTool /></LazyTool> },
 ] as const;
 
 export const AppRoutes: React.FC = () => {
@@ -90,6 +89,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="convert-image" element={<LazyTool><ConverterTool /></LazyTool>} />
         <Route path="images-to-pdf" element={<LazyTool><ImagesToPdfTool /></LazyTool>} />
         <Route path="base64-converter" element={<LazyTool><Base64Tool /></LazyTool>} />
+        <Route path="remove-background" element={<LazyTool><BackgroundRemoverTool /></LazyTool>} />
       </Route>
       <Route path="/es/herramientas" element={<LazyTool><ToolsDashboard /></LazyTool>}>
         <Route index element={<LazyTool><ToolsHub /></LazyTool>} />
@@ -99,6 +99,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="convertir-imagen" element={<LazyTool><ConverterTool /></LazyTool>} />
         <Route path="imagenes-a-pdf" element={<LazyTool><ImagesToPdfTool /></LazyTool>} />
         <Route path="convertidor-base64" element={<LazyTool><Base64Tool /></LazyTool>} />
+        <Route path="quitar-fondo" element={<LazyTool><BackgroundRemoverTool /></LazyTool>} />
       </Route>
 
       {/* ═══ RUTAS EN INGLÉS (raíz) ═══ */}

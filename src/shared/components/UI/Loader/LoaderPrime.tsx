@@ -79,7 +79,7 @@ export const LoaderPrime: React.FC<LoaderPrimeProps> = ({ message, compact }) =>
         <div className="loader-prime-goo" />
       </div>
       {message && (
-        <p className="text-sm font-medium text-muted-foreground animate-pulse text-center max-w-[280px]">
+        <p className="text-sm font-semibold text-slate-800 animate-pulse text-center max-w-[280px]">
           {message}
         </p>
       )}

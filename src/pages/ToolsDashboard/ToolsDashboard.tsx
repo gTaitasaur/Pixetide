@@ -10,8 +10,6 @@ import { cn } from '../../shared/utils/cn';
 import {
   Home as HomeIcon,
   LayoutGrid,
-  BookOpen,
-  Info,
   Globe,
   Menu,
   X,
@@ -108,18 +106,6 @@ export const ToolsDashboard: React.FC = () => {
         icon: ICON_MAP[tool.iconName],
         disabled: tool.disabled
       }))
-    },
-    {
-      label: 'Blogs',
-      to: '#',
-      icon: BookOpen,
-      disabled: true,
-    },
-    {
-      label: t('nav.about'),
-      to: '#',
-      icon: Info,
-      disabled: true,
     },
   ];
 
@@ -243,63 +229,6 @@ export const ToolsDashboard: React.FC = () => {
             <Globe className="size-4 shrink-0" />
             {!isCollapsed && <span>{t('lang.switch')}</span>}
           </button>
-
-          {/* Botón de donación Ko-fi */}
-          {!isCollapsed ? (
-            <a
-              href="https://ko-fi.com/taitasaur"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center py-2 px-4 btn-support-kofi text-[10px] w-full"
-            >
-              <span className="truncate">{t('nav.support')}</span>
-              <svg 
-                className="w-4 h-4 ml-1.5 flex-shrink-0" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path 
-                  d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" 
-                  fill="#ffffff" 
-                  stroke="#000000" 
-                  strokeWidth="2.5" 
-                  strokeLinejoin="round"
-                />
-                <path 
-                  d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" 
-                  stroke="#000000" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-                <path 
-                  d="M10 6.6C9.64 6.12 9.09 5.92 8.55 5.92C7.38 5.92 6.47 6.83 6.47 8.01C6.47 9.42 7.52 10.33 8.68 11.47L10 12.7L11.32 11.47C12.48 10.33 13.53 9.42 13.53 8.01C13.53 6.83 12.62 5.92 11.45 5.92C10.91 5.92 10.36 6.12 10 6.6Z" 
-                  fill="#ff5e5b"
-                  stroke="#ff5e5b"
-                  strokeWidth="0.5"
-                />
-              </svg>
-            </a>
-          ) : (
-            <a
-              href="https://ko-fi.com/taitasaur"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center p-2 rounded-full border-2 border-black bg-[#ff5e5b] text-white hover:-translate-y-0.5 transition-transform size-9 mx-auto cursor-pointer"
-              title={t('nav.support')}
-            >
-              <svg 
-                className="w-4 h-4" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" fill="#ffffff" stroke="#000000" strokeWidth="2.5" />
-                <path d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" stroke="#000000" strokeWidth="2.5" />
-              </svg>
-            </a>
-          )}
         </div>
       </aside>
 
@@ -433,25 +362,6 @@ export const ToolsDashboard: React.FC = () => {
                       <Globe className="size-4" />
                       {locale === 'en' ? 'Español' : 'English'}
                     </button>
-
-                    {/* Botón de donación Ko-fi móvil */}
-                    <a
-                      href="https://ko-fi.com/taitasaur"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center py-3 px-5 btn-support-kofi text-xs w-full"
-                    >
-                      <span>{t('nav.support')}</span>
-                      <svg 
-                        className="w-5 h-5 ml-2 flex-shrink-0" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" fill="#ffffff" stroke="#000000" strokeWidth="2.5" />
-                        <path d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" stroke="#000000" strokeWidth="2.5" />
-                      </svg>
-                    </a>
                   </div>
 
                 </SheetContent>

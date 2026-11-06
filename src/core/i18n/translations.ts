@@ -23,23 +23,12 @@ const en = {
   // ─── Navbar ───
   "nav.home": "Home",
   "nav.tools": "Tools",
-  "nav.about": "About",
   "nav.openMenu": "Open menu",
   "nav.closeMenu": "Close menu",
-  "nav.support": "Support Pixetide",
-  "nav.supportMicrocopy": "No ads, no subscriptions. Help me keep it that way.",
 
   // ─── Language Switcher ───
   "lang.switch": "ES",
   "lang.switchLabel": "Cambiar a español",
-
-  // ─── Footer ───
-  "footer.tagline":
-    "Pixetide — 100% browser-powered. Your images never leave your device.",
-  "footer.privacy": "Privacy",
-  "footer.tools": "All Tools",
-  "footer.about": "About",
-  "footer.rights": "All rights reserved.",
 
   // ─── Home Hero ───
   "home.heroTitle": "Pixetide: Your Private, Fast & Free Image Editing Suite",
@@ -355,24 +344,12 @@ const es: Record<TranslationKey, string> = {
   // ─── Navbar ───
   "nav.home": "Inicio",
   "nav.tools": "Herramientas",
-  "nav.about": "Acerca de",
   "nav.openMenu": "Abrir menú",
   "nav.closeMenu": "Cerrar menú",
-  "nav.support": "Apoya a Pixetide",
-  "nav.supportMicrocopy":
-    "Sin anuncios, sin suscripciones. Ayúdame a que siga así.",
 
   // ─── Language Switcher ───
   "lang.switch": "EN",
   "lang.switchLabel": "Switch to English",
-
-  // ─── Footer ───
-  "footer.tagline":
-    "Pixetide — Rendimiento 100% en tu navegador. Tus imágenes nunca salen de tu dispositivo.",
-  "footer.privacy": "Privacidad",
-  "footer.tools": "Herramientas",
-  "footer.about": "Información",
-  "footer.rights": "Todos los derechos reservados.",
 
   // ─── Home Hero ───
   "home.heroTitle": "Pixetide: Tu Suite de Edición Local, Rápida y Privada",

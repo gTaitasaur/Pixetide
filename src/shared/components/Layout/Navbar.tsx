@@ -91,14 +91,6 @@ export const Navbar: React.FC = () => {
           >
             {t('nav.tools')}
           </Link>
-
-          {/* Placeholders visuales del prototipo */}
-          <span className="text-xs font-semibold text-muted-foreground/40 cursor-not-allowed uppercase tracking-[0.2em] select-none">
-            Blogs
-          </span>
-          <span className="text-xs font-semibold text-muted-foreground/40 cursor-not-allowed uppercase tracking-[0.2em] select-none">
-            {t('nav.about')}
-          </span>
         </div>
 
         {/* Lado Derecho: Acciones Desktop */}
@@ -114,46 +106,6 @@ export const Navbar: React.FC = () => {
             <Globe className="size-3.5" />
             {t('lang.switch')}
           </button>
-
-          {/* Botón de Apoyo (CTA) - Estilo Ko-fi Neobrutalista Pulsante */}
-          <a
-            href="https://ko-fi.com/taitasaur"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:inline-flex items-center px-5 py-2.5 btn-support-kofi text-[10px]"
-          >
-            {t('nav.support')}
-            <svg 
-              className="w-5 h-5 ml-2 flex-shrink-0" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Contorno de la taza */}
-              <path 
-                d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" 
-                fill="#ffffff" 
-                stroke="#000000" 
-                strokeWidth="2.5" 
-                strokeLinejoin="round"
-              />
-              {/* Asa de la taza */}
-              <path 
-                d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" 
-                stroke="#000000" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              />
-              {/* Corazón en el centro */}
-              <path 
-                d="M10 6.6C9.64 6.12 9.09 5.92 8.55 5.92C7.38 5.92 6.47 6.83 6.47 8.01C6.47 9.42 7.52 10.33 8.68 11.47L10 12.7L11.32 11.47C12.48 10.33 13.53 9.42 13.53 8.01C13.53 6.83 12.62 5.92 11.45 5.92C10.91 5.92 10.36 6.12 10 6.6Z" 
-                fill="#ff5e5b"
-                stroke="#ff5e5b"
-                strokeWidth="0.5"
-              />
-            </svg>
-          </a>
 
           {/* Menú Hamburguesa Móvil (shadcn/ui Sheet) */}
           <div className="min-[990px]:hidden">
@@ -200,12 +152,6 @@ export const Navbar: React.FC = () => {
                         {t('nav.tools')}
                       </Link>
                     </SheetClose>
-                    <span className="text-lg font-semibold text-muted-foreground/30 cursor-not-allowed uppercase tracking-[0.15em] py-2 border-b border-border/30 select-none">
-                      Blogs
-                    </span>
-                    <span className="text-lg font-semibold text-muted-foreground/30 cursor-not-allowed uppercase tracking-[0.15em] py-2 border-b border-border/30 select-none">
-                      {t('nav.about')}
-                    </span>
                   </div>
 
                   {/* Selector de idioma móvil */}
@@ -217,53 +163,6 @@ export const Navbar: React.FC = () => {
                       <Globe className="size-4" />
                       {locale === 'en' ? 'Español' : 'English'}
                     </button>
-                  </SheetClose>
-                </div>
-
-                {/* Soporte Móvil */}
-                <div className="flex flex-col space-y-4 mb-8">
-                  <span className="text-[11px] text-muted-foreground/80 leading-relaxed font-medium">
-                    {t('nav.supportMicrocopy')}
-                  </span>
-                  <SheetClose asChild>
-                    <a
-                      href="https://ko-fi.com/taitasaur"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center py-3 btn-support-kofi text-xs text-center"
-                    >
-                      {t('nav.support')}
-                      <svg 
-                        className="w-5.5 h-5.5 ml-2 flex-shrink-0" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        {/* Contorno de la taza */}
-                        <path 
-                          d="M3 5C3 3.89543 3.89543 3 5 3H15C16.1046 3 17 3.89543 17 5V11C17 14.3137 14.3137 17 11 17H9C5.68629 17 3 14.3137 3 11V5Z" 
-                          fill="#ffffff" 
-                          stroke="#000000" 
-                          strokeWidth="2.5" 
-                          strokeLinejoin="round"
-                        />
-                        {/* Asa de la taza */}
-                        <path 
-                          d="M17 6H19C20.6569 6 22 7.34315 22 9C22 10.6569 20.6569 12 19 12H17" 
-                          stroke="#000000" 
-                          strokeWidth="2.5" 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round"
-                        />
-                        {/* Corazón en el centro */}
-                        <path 
-                          d="M10 6.6C9.64 6.12 9.09 5.92 8.55 5.92C7.38 5.92 6.47 6.83 6.47 8.01C6.47 9.42 7.52 10.33 8.68 11.47L10 12.7L11.32 11.47C12.48 10.33 13.53 9.42 13.53 8.01C13.53 6.83 12.62 5.92 11.45 5.92C10.91 5.92 10.36 6.12 10 6.6Z" 
-                          fill="#ff5e5b"
-                          stroke="#ff5e5b"
-                          strokeWidth="0.5"
-                        />
-                      </svg>
-                    </a>
                   </SheetClose>
                 </div>
 
